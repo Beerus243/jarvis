@@ -1,5 +1,6 @@
 from tools import open_browser, get_time, open_musique
 import json
+from personality import speak
 
 def load_memory():
     with open("user.json", "r") as f:
@@ -14,9 +15,7 @@ def save_memory():
 def jarvis(message):
     message = message.lower()
 
-    if "bonjour" in message:
-        return "Bonjour Fabrice. Je suis à votre disposition."
-    elif "quel heure il est" in message:
+    if "quel heure il est" in message:
         heure = get_time()
         return f"Il est actuellement {heure}"
     
@@ -40,7 +39,7 @@ def jarvis(message):
 
     elif "retiens que ma musique préférée est" in message:
         musique = message.split()[-1]
-        user['preferences']['passion'] = musique
+        user['preferences']['musique'] = musique
         save_memory()
         return f"J'ai retenu que votre musique préférée est {musique}."
 
@@ -52,14 +51,21 @@ def jarvis(message):
 
     elif "quelle est ma couleur préférée" in message:
         return f"Votre couleur préférée est {user['preferences']['couleur']}."
+
+    reponse = speak(message)
+
+    if reponse:
+        return reponse
+
     else:
         return "Je ne comprends pas."
+
 
 
 # Démarrage de JARVIS
 
 print("================================")
-print("          JARVIS V0.1")
+print("          JARVIS V0.5")
 print("================================")
 print("Bonjour Fabrice.")
 print("JARVIS est opérationnel.")
