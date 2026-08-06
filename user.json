@@ -1,0 +1,13 @@
+{
+    "identite": {
+        "name": "Fabrice",
+        "postnom": "Malanga",
+        "ville": "Kinshasa"
+    },
+    "preferences": {
+        "passion": "Informatique, anime, jeux vidéo",
+        "couleur": "jaune"
+    },
+    "habitudes": {},
+    "projets": {}
+}
