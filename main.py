@@ -1,6 +1,9 @@
+import intent
 from tools import open_browser, get_time, open_musique
 import json
 from personality import speak
+from intent import detect_intent
+
 
 def load_memory():
     with open("user.json", "r") as f:
@@ -15,14 +18,16 @@ def save_memory():
 def jarvis(message):
     message = message.lower()
 
-    if "quel heure il est" in message:
+    intent = detect_intent(message)
+    
+    if intent == "GET_TIME":
         heure = get_time()
         return f"Il est actuellement {heure}"
     
-    elif "ouvre mon navigateur" in message:
-         return open_browser()
+    elif intent == "OPEN_BROWSER":
+        return open_browser()
     
-    elif "met la musique" in message:
+    elif intent == "PLAY_MUSIC":
         return open_musique()
 
     elif "quelle sont mes passions" in message:
