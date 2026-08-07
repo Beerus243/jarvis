@@ -3,7 +3,7 @@ from personality import speak
 def detect_intent(message):
     message = message.lower()
 
-    if any (mot in message for mot in ["bonjour", "salut","hey","bro" "coucou"]):
+    if any (mot in message for mot in ["bonjour", "salut","hey","bro", "coucou"]):
         return "GREETINGS"
 
     elif any (mot in message for mot in ["musique", "play", "spotify", "jouer"]):

@@ -1,14 +1,15 @@
 def speak(message):
+
     message = message.lower()
 
     if "bonjour" in message:
-        return "Bonjour Fabrice. je suis heureux de vous voir."
+        return "Bonjour Fabrice. Je suis heureux de vous voir."
 
     elif "merci" in message:
-        return "De rien, Monsieur. Je suis là pour vous aider."
-    elif "verifie" in message:
-        return "Je vais vérifier cela pour vous."
-    elif "comment ca va aujourd'hui" in message:
-        return "Je vais bien, merci. j'attends vos ordres?"
+        return "De rien Fabrice. Je suis là pour vous aider."
+
+    elif "comment ca va" in message:
+        return "Je fonctionne parfaitement. Merci de vous en inquiéter."
+
     else:
         return None

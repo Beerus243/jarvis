@@ -4,10 +4,11 @@
         "postnom": "Malanga",
         "ville": "Kinshasa"
     },
+
     "preferences": {
-        "passion": "Informatique, anime, jeux vidéo",
-        "couleur": "jaune"
+        "couleur": "noir",
+        "musique": "Damso"
     },
-    "habitudes": {},
-    "projets": {}
+
+    "memory": {}
 }
