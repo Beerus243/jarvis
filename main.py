@@ -1,9 +1,12 @@
+from habits import analyze_habit
 from tools import open_browser, get_time, open_musique
 import json
 from personality import speak
 from intent import detect_intent
 from dispatcher import dispatch
 from memory import save_history
+from profile import analyze_profile
+from ai import ask_ai
 
 
 def load_memory():
@@ -17,13 +20,33 @@ def save_memory():
         json.dump(user, f, indent=4)
 
 def jarvis(message):
-    message = message.lower()
 
     intent = detect_intent(message)
+
     response = dispatch(intent)
+
     if response:
         return response
-    return "Je ne comprends pas."
+
+
+    profile_response = analyze_profile(message)
+
+    if profile_response:
+        return profile_response
+
+    habit_response = analyze_habit(message)
+
+    if habit_response:
+        return habit_response
+
+
+    response = speak(message)
+
+    if response:
+        return response
+
+
+    return ask_ai(message)
 
 
 
