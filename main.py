@@ -1,4 +1,5 @@
 from habits import analyze_habit
+from history import save_message
 from tools import open_browser, get_time, open_musique
 import json
 from personality import speak
@@ -7,6 +8,17 @@ from dispatcher import dispatch
 from memory import save_history
 from profile import analyze_profile
 from ai import ask_ai
+from listen import listen
+from brain import think
+from voice import speak
+from memory_ai import analyze_memory
+from brain import think
+from history import save_message
+from listen import listen
+from listen import listen
+from wake_word import detect_wake_word
+from brain import think
+from voice import speak
 
 
 def load_memory():
@@ -27,9 +39,17 @@ def jarvis(message):
 
     if response:
         return response
+    memory_response = analyze_memory(message)
 
+    if memory_response:
+        return memory_response
 
     profile_response = analyze_profile(message)
+
+    memory_response = analyze_memory(message)
+
+    if memory_response:
+        return memory_response
 
     if profile_response:
         return profile_response
@@ -51,24 +71,36 @@ def jarvis(message):
 
 
 # Démarrage de JARVIS
-
 print("================================")
-print("          JARVIS V0.5")
+print("          JARVIS V1.1")
 print("================================")
 print("Bonjour Fabrice.")
 print("JARVIS est opérationnel.")
-print("Tapez 'quitter' pour arrêter.")
+print("Dites 'JARVIS' pour m'activer.")
 
 
 while True:
 
-    message = input("\nFabrice > ")
+    message = listen()
 
-    if message.lower() == "quitter":
-        print("\nJARVIS > À bientôt, Fabrice.")
+    if not message:
+        continue
+
+    if message in ["quitter", "bye", "adieu", "arrête"]:
+
+        speak("À bientôt Fabrice.")
         break
 
-    reponse = jarvis(message)
+    if detect_wake_word(message):
 
-    print("JARVIS >", reponse)
-    save_history(message, reponse)
+        speak("Je vous écoute, Fabrice.")
+
+        command = listen()
+
+        if command:
+
+            response = think(command)
+
+            print("JARVIS >", response)
+
+            speak(response)
