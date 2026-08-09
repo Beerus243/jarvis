@@ -4,11 +4,15 @@
         "postnom": "Malanga",
         "ville": "Kinshasa"
     },
-
     "preferences": {
         "couleur": "noir",
         "musique": "Damso"
     },
-
-    "memory": {}
+    "memory": {
+        "aime": "dragon ball",
+        "objectif": "devenir développeur"
+    },
+    "habits": {
+        "sport": 1
+    }
 }
