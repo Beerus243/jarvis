@@ -2,10 +2,12 @@ from intent import detect_intent
 from dispatcher import dispatch
 from memory_ai import analyze_memory
 from personality import speak
+from conversation import add_message
 from ai import ask_ai
 
 
 def think(message):
+    add_message("user", message)
 
     # 1. Chercher une commande connue
     intent = detect_intent(message)
@@ -15,6 +17,7 @@ def think(message):
         response = dispatch(intent)
 
         if response:
+            add_message("assistant", response)
             return response
 
 

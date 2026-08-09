@@ -183,5 +183,21 @@
     {
         "user": "jarvis",
         "jarvis": "Pas de changement, Fabrice. Je suis toujours l\u00e0, pr\u00eat \u00e0 t'aider ou \u00e0 discuter. Qu'est-ce que tu veux faire maintenant ?"
+    },
+    {
+        "user": "echo \".env\" >> .gitignore",
+        "jarvis": "C'est une commande pour ajouter le fichier `.env` \u00e0 l'ignore de Git, Fabrice. Cela signifie que tes variables d'environnement ne seront pas commises dans ton r\u00e9positoire Git. C'est une bonne pratique pour garder tes informations sensibles \u00e0 l'abri."
+    },
+    {
+        "user": "echo \".env\" >> .gitignore",
+        "jarvis": "Fabrice. Tu viens de cr\u00e9er ou de modifier le fichier `.gitignore` pour sp\u00e9cifier que le fichier `.env` doit \u00eatre ignor\u00e9 par Git. C'est un excellent moyen de contr\u00f4ler les fichiers sensibles qui ne devraient pas \u00eatre versionn\u00e9s."
+    },
+    {
+        "user": "git add .gitignore",
+        "jarvis": "Fabrice, tu viens de soumettre les modifications que tu as faites au fichier `.gitignore` afin de les commiter dans le r\u00e9positoire Git. Maintenant, ces modifications seront disponibles pour d'autres personnes qui travailleront sur ce projet."
+    },
+    {
+        "user": "git add .gitignore",
+        "jarvis": "Fabrice, je vois que tu as ajout\u00e9 le fichier `.gitignore` \u00e0 la zone de travail de Git avec la commande `git add`. Cependant, il est probablement pr\u00e9f\u00e9rable de soumettre les autres fichiers qui ont chang\u00e9 depuis la derni\u00e8re fois que tu as mis \u00e0 jour le Git, et pas seulement le fichier `.gitignore`. Je serais heureux de t'aider \u00e0 soumettre les modifications correctement."
     }
 ]
