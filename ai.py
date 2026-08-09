@@ -1,5 +1,5 @@
 from multiprocessing import get_context
-
+from history import get_recent_history
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
@@ -14,7 +14,7 @@ client = OpenAI(
 
 
 def ask_ai(message):
-
+    history = get_recent_history(limit=10)
     try: 
         context = get_context()
         system_prompt = f"""Tu es JARVIS, l'assistant personnel de Fabrice.
@@ -29,19 +29,34 @@ Utilise ces informations uniquement lorsqu'elles sont pertinentes.
 Ne prétends jamais connaître une information qui n'est pas présente
 dans ton contexte.
 """
+        messages = [
+            {
+                "role": "system",
+                "content": system_prompt
+            }
+        ]
+
+        for conversation in history:
+            messages.append({
+                "role": "user",
+                "content": conversation["user"]
+            })
+            messages.append({
+                "role": "assistant",
+                "content": conversation["jarvis"]
+            })
+
+        messages.append({
+            "role": "user",
+            "content": message
+        })
+
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
-            messages=[
-                {
-                    "role": "system",
-                    "content": system_prompt
-                },
-                {
-                    "role": "user",
-                    "content": message
-                }
-            ]
+            messages=messages
         )
+
+        
 
         return response.choices[0].message.content
 

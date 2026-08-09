@@ -35,3 +35,19 @@ def remember(key, value):
 
     with open("user.json", "w") as f:
         json.dump(user, f, indent=4)
+
+import json
+
+
+def remember(key, value):
+
+    with open("user.json", "r") as f:
+        user = json.load(f)
+
+    if "memory" not in user:
+        user["memory"] = {}
+
+    user["memory"][key] = value
+
+    with open("user.json", "w") as f:
+        json.dump(user, f, indent=4)
