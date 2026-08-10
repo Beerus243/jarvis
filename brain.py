@@ -7,9 +7,30 @@ from ai import ask_ai
 
 
 def think(message):
+    """
+    Cerveau principal de JARVIS.
+
+    Ordre de traitement :
+    1. Enregistrer le message
+    2. Chercher une commande connue
+    3. Chercher une information à mémoriser
+    4. Vérifier la personnalité
+    5. Utiliser Groq si rien n'a fonctionné
+    """
+
+    # Normaliser le message
+    message = message.lower().strip()
+
+    # --------------------------------------------------
+    # 1. MÉMOIRE DE CONVERSATION
+    # --------------------------------------------------
+
     add_message("user", message)
 
-    # 1. Chercher une commande connue
+    # --------------------------------------------------
+    # 2. COMMANDES / INTENTS
+    # --------------------------------------------------
+
     intent = detect_intent(message)
 
     if intent:
@@ -20,20 +41,35 @@ def think(message):
             add_message("assistant", response)
             return response
 
+    # --------------------------------------------------
+    # 3. MÉMOIRE UTILISATEUR
+    # --------------------------------------------------
 
-    # 2. Chercher une information à mémoriser
     memory_response = analyze_memory(message)
 
     if memory_response:
+
+        add_message("assistant", memory_response)
         return memory_response
 
+    # --------------------------------------------------
+    # 4. PERSONNALITÉ
+    # --------------------------------------------------
 
-    # 3. Vérifier la personnalité de JARVIS
     personality_response = speak(message)
 
     if personality_response:
+
+        add_message("assistant", personality_response)
         return personality_response
 
+    # --------------------------------------------------
+    # 5. INTELLIGENCE ARTIFICIELLE — GROQ
+    # --------------------------------------------------
 
-    # 4. Si rien n'a fonctionné → Groq
-    return ask_ai(message)
+    response = ask_ai(message)
+
+    add_message("assistant", response)
+
+    return response
+
