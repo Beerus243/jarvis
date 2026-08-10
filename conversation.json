@@ -1,17 +1,5 @@
 [
     {
-        "role": "user",
-        "message": "je traville sur quoi ?"
-    },
-    {
-        "role": "assistant",
-        "message": "Désolé, mais c'est notre premier échange. Je ne dispose d'aucune information sur ce que vous travaillez en ce moment. Pouvez-vous me donner plus de détails sur votre projet ou votre tâche actuelle ? Je serai ravi de vous aider si je le peux !"
-    },
-    {
-        "role": "user",
-        "message": "je travaille sur mon projet jarvis"
-    },
-    {
         "role": "assistant",
         "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
     },
@@ -38,5 +26,17 @@
     {
         "role": "assistant",
         "message": "Je me souviens ! Votre projet JARVIS est écrit en Python. Qu'est-ce que vous aimeriez faire ou accomplir avec votre projet JARVIS ? Avez-vous besoin d'aide pour une fonctionnalité spécifique ou pour résoudre un problème ? Je suis là pour vous aider !"
+    },
+    {
+        "role": "user",
+        "message": "je travaille sur mon projet jarvis"
+    },
+    {
+        "role": "assistant",
+        "message": "Je ne connais pas encore votre projet."
+    },
+    {
+        "role": "assistant",
+        "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
     }
 ]

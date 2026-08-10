@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime
 
 MEMORY_FILE = "user.json"
 
@@ -12,17 +12,12 @@ def load_memory():
 
     try:
 
-        with open(MEMORY_FILE, "r") as f:
+        with open(MEMORY_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
 
-    except FileNotFoundError:
+    except (FileNotFoundError, json.JSONDecodeError):
 
-        return {
-            "identite": {},
-            "preferences": {},
-            "memory": {},
-            "habits": {}
-        }
+        return {}
 
 
 # ============================================================
@@ -31,7 +26,7 @@ def load_memory():
 
 def save_memory(user):
 
-    with open(MEMORY_FILE, "w") as f:
+    with open(MEMORY_FILE, "w", encoding="utf-8") as f:
 
         json.dump(
             user,
@@ -42,32 +37,69 @@ def save_memory(user):
 
 
 # ============================================================
+# GÉNÉRER UN ID DE SOUVENIR
+# ============================================================
+
+def generate_memory_id(user):
+
+    souvenirs = user.get("souvenirs", [])
+
+    if not souvenirs:
+        return "s001"
+
+    numbers = []
+
+    for souvenir in souvenirs:
+
+        identifiant = souvenir.get("id", "")
+
+        if identifiant.startswith("s"):
+
+            try:
+                numbers.append(
+                    int(identifiant[1:])
+                )
+
+            except ValueError:
+                pass
+
+    if not numbers:
+        return "s001"
+
+    return f"s{max(numbers) + 1:03d}"
+
+
+# ============================================================
 # MÉMORISER UNE INFORMATION
 # ============================================================
 
-def remember(key, value):
+def remember(contenu, categorie, importance="moyenne"):
 
     user = load_memory()
 
-    if "memory" not in user:
-        user["memory"] = {}
+    if "souvenirs" not in user:
+        user["souvenirs"] = []
 
-    user["memory"][key] = value
+    souvenir = {
+
+        "id": generate_memory_id(user),
+
+        "contenu": contenu,
+
+        "categorie": categorie,
+
+        "date": datetime.now().isoformat(
+            timespec="seconds"
+        ),
+
+        "importance": importance
+    }
+
+    user["souvenirs"].append(souvenir)
 
     save_memory(user)
 
-    return True
-
-
-# ============================================================
-# RÉCUPÉRER UNE INFORMATION
-# ============================================================
-
-def recall(key):
-
-    user = load_memory()
-
-    return user.get("memory", {}).get(key)
+    return souvenir
 
 
 # ============================================================
@@ -76,7 +108,9 @@ def recall(key):
 
 def analyze_memory(message):
 
-    message = message.lower().strip()
+    original_message = message.strip()
+
+    message = original_message.lower()
 
 
     # --------------------------------------------------------
@@ -85,21 +119,18 @@ def analyze_memory(message):
 
     if "ma couleur préférée est" in message:
 
-        value = message.split(
-            "ma couleur préférée est",
+        value = original_message.split(
+            "est",
             1
         )[1].strip()
 
         if value:
 
-            user = load_memory()
-
-            if "preferences" not in user:
-                user["preferences"] = {}
-
-            user["preferences"]["couleur"] = value
-
-            save_memory(user)
+            remember(
+                f"La couleur préférée de Fabrice est {value}",
+                "preference",
+                "moyenne"
+            )
 
             return (
                 f"J'ai retenu que votre couleur "
@@ -113,21 +144,18 @@ def analyze_memory(message):
 
     if "ma musique préférée est" in message:
 
-        value = message.split(
-            "ma musique préférée est",
+        value = original_message.split(
+            "est",
             1
         )[1].strip()
 
         if value:
 
-            user = load_memory()
-
-            if "preferences" not in user:
-                user["preferences"] = {}
-
-            user["preferences"]["musique"] = value
-
-            save_memory(user)
+            remember(
+                f"La musique préférée de Fabrice est {value}",
+                "preference",
+                "moyenne"
+            )
 
             return (
                 f"J'ai retenu que votre musique "
@@ -141,16 +169,17 @@ def analyze_memory(message):
 
     if "je travaille sur" in message:
 
-        value = message.split(
-            "je travaille sur",
+        value = original_message.split(
+            "sur",
             1
         )[1].strip()
 
         if value:
 
             remember(
-                "projet_actuel",
-                value
+                f"Fabrice travaille sur {value}",
+                "projet",
+                "haute"
             )
 
             return (
@@ -165,25 +194,70 @@ def analyze_memory(message):
 
     if "je m'appelle" in message:
 
-        value = message.split(
+        value = original_message.split(
             "je m'appelle",
             1
         )[1].strip()
 
         if value:
 
-            user = load_memory()
-
-            if "identite" not in user:
-                user["identite"] = {}
-
-            user["identite"]["name"] = value
-
-            save_memory(user)
+            remember(
+                f"Fabrice s'appelle {value}",
+                "identite",
+                "haute"
+            )
 
             return (
                 f"Très bien, je retiens que "
                 f"vous vous appelez {value}."
+            )
+
+
+    # --------------------------------------------------------
+    # OBJECTIF
+    # --------------------------------------------------------
+
+    if "mon objectif est" in message:
+
+        value = original_message.split(
+            "mon objectif est",
+            1
+        )[1].strip()
+
+        if value:
+
+            remember(
+                f"L'objectif de Fabrice est {value}",
+                "objectif",
+                "haute"
+            )
+
+            return (
+                f"Je retiens votre objectif : {value}."
+            )
+
+
+    # --------------------------------------------------------
+    # APPRENTISSAGE
+    # --------------------------------------------------------
+
+    if "j'apprends" in message:
+
+        value = original_message.split(
+            "j'apprends",
+            1
+        )[1].strip()
+
+        if value:
+
+            remember(
+                f"Fabrice apprend {value}",
+                "competence",
+                "haute"
+            )
+
+            return (
+                f"Je retiens que vous apprenez {value}."
             )
 
 
@@ -200,6 +274,91 @@ def recall_memory(message):
 
     user = load_memory()
 
+    souvenirs = user.get("souvenirs", [])
+
+
+    # --------------------------------------------------------
+    # RECHERCHE PAR CATÉGORIE
+    # --------------------------------------------------------
+    mots_project = [
+        "projet",
+        "travaille",
+        "travail",
+        "développe",
+        "développer",
+        "projet actuel"
+    ]
+    if any(mot in message for mot in mots_project):
+
+        resultats = [
+            souvenir
+            for souvenir in souvenirs
+            if souvenir.get("categorie") == "projet"
+        ]
+
+        if resultats:
+
+            souvenir = resultats[-1]
+
+            contenu = souvenir["contenu"]
+
+            return (
+                f"D'après ma mémoire, {contenu}."
+            )
+
+
+        return "Je ne connais pas encore votre projet."
+
+    # --------------------------------------------------------
+    # OBJECTIF
+    # --------------------------------------------------------
+
+    imots_objectif = 
+
+        if resultats:
+
+            souvenir = resultats[-1]
+
+            return (
+                f"Votre objectif est : "
+                f"{souvenir['contenu']}."
+            )
+
+
+        return "Je ne connais pas encore vos objectifs."
+
+
+    # --------------------------------------------------------
+    # COMPÉTENCE
+    # --------------------------------------------------------
+
+    if (
+        "apprends" in message
+        or "apprentissage" in message
+        or "compétence" in message
+    ):
+
+        resultats = [
+            souvenir
+            for souvenir in souvenirs
+            if souvenir.get("categorie") == "competence"
+        ]
+
+        if resultats:
+
+            souvenirs_text = ", ".join(
+                souvenir["contenu"]
+                for souvenir in resultats
+            )
+
+            return (
+                f"Vous apprenez actuellement : "
+                f"{souvenirs_text}."
+            )
+
+
+        return "Je ne connais pas encore vos apprentissages."
+
 
     # --------------------------------------------------------
     # COULEUR
@@ -207,14 +366,18 @@ def recall_memory(message):
 
     if "couleur" in message:
 
-        value = user.get(
-            "preferences",
-            {}
-        ).get("couleur")
+        resultats = [
+            souvenir
+            for souvenir in souvenirs
+            if (
+                souvenir.get("categorie") == "preference"
+                and "couleur" in souvenir.get("contenu", "").lower()
+            )
+        ]
 
-        if value:
+        if resultats:
 
-            return f"Votre couleur préférée est {value}."
+            return resultats[-1]["contenu"] + "."
 
         return "Je ne connais pas encore votre couleur préférée."
 
@@ -225,34 +388,20 @@ def recall_memory(message):
 
     if "musique" in message:
 
-        value = user.get(
-            "preferences",
-            {}
-        ).get("musique")
+        resultats = [
+            souvenir
+            for souvenir in souvenirs
+            if (
+                souvenir.get("categorie") == "preference"
+                and "musique" in souvenir.get("contenu", "").lower()
+            )
+        ]
 
-        if value:
+        if resultats:
 
-            return f"Votre musique préférée est {value}."
+            return resultats[-1]["contenu"] + "."
 
         return "Je ne connais pas encore votre musique préférée."
-
-
-    # --------------------------------------------------------
-    # PROJET
-    # --------------------------------------------------------
-
-    if "projet" in message:
-
-        value = user.get(
-            "memory",
-            {}
-        ).get("projet_actuel")
-
-        if value:
-
-            return f"Vous travaillez actuellement sur {value}."
-
-        return "Je ne connais pas encore votre projet actuel."
 
 
     # --------------------------------------------------------
@@ -261,14 +410,15 @@ def recall_memory(message):
 
     if "nom" in message or "appelle" in message:
 
-        value = user.get(
-            "identite",
-            {}
-        ).get("name")
+        resultats = [
+            souvenir
+            for souvenir in souvenirs
+            if souvenir.get("categorie") == "identite"
+        ]
 
-        if value:
+        if resultats:
 
-            return f"Vous vous appelez {value}."
+            return resultats[-1]["contenu"] + "."
 
         return "Je ne connais pas encore votre nom."
 

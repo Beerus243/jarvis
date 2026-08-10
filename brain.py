@@ -1,11 +1,6 @@
 from intent import detect_intent
 from dispatcher import dispatch
-
-from memory import (
-    analyze_memory,
-    recall_memory
-)
-
+from memory import analyze_memory, recall_memory
 from personality import speak
 
 from conversation import (
@@ -17,16 +12,10 @@ from ai import ask_ai
 
 
 def think(message):
-
     # ========================================================
     # 1. AJOUTER LE MESSAGE UTILISATEUR
     # ========================================================
-
-    add_message(
-        "user",
-        message
-    )
-
+    
 
     # ========================================================
     # 2. COMMANDES
@@ -51,9 +40,7 @@ def think(message):
     # ========================================================
     # 3. MÉMOIRE LONGUE
     # ========================================================
-
     memory_response = analyze_memory(message)
-
     if memory_response:
 
         add_message(
@@ -62,6 +49,18 @@ def think(message):
         )
 
         return memory_response
+
+
+
+    recall_response = recall_memory(message)
+
+    if recall_response:
+        add_message(
+            "assistant",
+            recall_response
+        )
+
+        return recall_response
 
 
     # ========================================================
