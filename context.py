@@ -1,30 +1,20 @@
-import json
+from conversation import get_recent_history
 
 
 def get_context():
 
-    with open("user.json", "r") as f:
-        user = json.load(f)
+    history = get_recent_history(5)
 
-    identite = user.get("identite", {})
-    preferences = user.get("preferences", {})
-    memory = user.get("memory", {})
-    habits = user.get("habits", {})
+    if not history:
+        return ""
 
-    context = f"""
-Nom : {identite.get('name', 'inconnu')}
-Postnom : {identite.get('postnom', '')}
-Ville : {identite.get('ville', 'inconnue')}
-Passions : {identite.get('passion', 'inconnues')}
+    context = []
 
-Couleur préférée : {preferences.get('couleur', 'inconnue')}
-Musique préférée : {preferences.get('musique', 'inconnue')}
+    for message in history:
 
-Mémoire :
-{memory}
+        role = message["role"]
+        text = message["message"]
 
-Habitudes :
-{habits}
-"""
+        context.append(f"{role}: {text}")
 
-    return context
+    return "\n".join(context)
