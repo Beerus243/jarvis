@@ -1,3 +1,5 @@
+import json
+
 history = []
 
 
@@ -32,3 +34,70 @@ def get_recent_history(limit=5):
 def clear_history():
 
     history.clear()
+
+
+CONVERSATION_FILE = "conversation.json"
+
+
+# ============================================================
+# CHARGER LA CONVERSATION
+# ============================================================
+
+def load_conversation():
+
+    try:
+
+        with open(CONVERSATION_FILE, "r") as f:
+            return json.load(f)
+
+    except FileNotFoundError:
+
+        return []
+
+
+# ============================================================
+# AJOUTER UN MESSAGE
+# ============================================================
+
+def add_message(role, message):
+
+    conversation = load_conversation()
+
+    conversation.append({
+        "role": role,
+        "message": message
+    })
+
+    # Garder uniquement les 10 derniers messages
+    conversation = conversation[-10:]
+
+    with open(CONVERSATION_FILE, "w") as f:
+
+        json.dump(
+            conversation,
+            f,
+            indent=4,
+            ensure_ascii=False
+        )
+
+
+# ============================================================
+# RÉCUPÉRER LE CONTEXTE
+# ============================================================
+
+def get_context():
+
+    conversation = load_conversation()
+
+    return conversation
+
+
+# ============================================================
+# EFFACER LE CONTEXTE
+# ============================================================
+
+def clear_conversation():
+
+    with open(CONVERSATION_FILE, "w") as f:
+
+        json.dump([], f)

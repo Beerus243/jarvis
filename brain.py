@@ -1,35 +1,36 @@
 from intent import detect_intent
 from dispatcher import dispatch
-from memory_ai import analyze_memory
+
+from memory import (
+    analyze_memory,
+    recall_memory
+)
+
 from personality import speak
-from conversation import add_message
+
+from conversation import (
+    add_message,
+    get_context
+)
+
 from ai import ask_ai
 
 
 def think(message):
-    """
-    Cerveau principal de JARVIS.
 
-    Ordre de traitement :
-    1. Enregistrer le message
-    2. Chercher une commande connue
-    3. Chercher une information à mémoriser
-    4. Vérifier la personnalité
-    5. Utiliser Groq si rien n'a fonctionné
-    """
+    # ========================================================
+    # 1. AJOUTER LE MESSAGE UTILISATEUR
+    # ========================================================
 
-    # Normaliser le message
-    message = message.lower().strip()
+    add_message(
+        "user",
+        message
+    )
 
-    # --------------------------------------------------
-    # 1. MÉMOIRE DE CONVERSATION
-    # --------------------------------------------------
 
-    add_message("user", message)
-
-    # --------------------------------------------------
-    # 2. COMMANDES / INTENTS
-    # --------------------------------------------------
+    # ========================================================
+    # 2. COMMANDES
+    # ========================================================
 
     intent = detect_intent(message)
 
@@ -38,38 +39,81 @@ def think(message):
         response = dispatch(intent)
 
         if response:
-            add_message("assistant", response)
+
+            add_message(
+                "assistant",
+                response
+            )
+
             return response
 
-    # --------------------------------------------------
-    # 3. MÉMOIRE UTILISATEUR
-    # --------------------------------------------------
+
+    # ========================================================
+    # 3. MÉMOIRE LONGUE
+    # ========================================================
 
     memory_response = analyze_memory(message)
 
     if memory_response:
 
-        add_message("assistant", memory_response)
+        add_message(
+            "assistant",
+            memory_response
+        )
+
         return memory_response
 
-    # --------------------------------------------------
-    # 4. PERSONNALITÉ
-    # --------------------------------------------------
+
+    # ========================================================
+    # 4. RECHERCHE MÉMOIRE
+    # ========================================================
+
+    memory_response = recall_memory(message)
+
+    if memory_response:
+
+        add_message(
+            "assistant",
+            memory_response
+        )
+
+        return memory_response
+
+
+    # ========================================================
+    # 5. PERSONNALITÉ
+    # ========================================================
 
     personality_response = speak(message)
 
     if personality_response:
 
-        add_message("assistant", personality_response)
+        add_message(
+            "assistant",
+            personality_response
+        )
+
         return personality_response
 
-    # --------------------------------------------------
-    # 5. INTELLIGENCE ARTIFICIELLE — GROQ
-    # --------------------------------------------------
 
-    response = ask_ai(message)
+    # ========================================================
+    # 6. CONTEXTE
+    # ========================================================
 
-    add_message("assistant", response)
+    context = get_context()
+
+
+    # ========================================================
+    # 7. GROQ
+    # ========================================================
+
+    response = ask_ai(
+        message
+    )
+
+    add_message(
+        "assistant",
+        response
+    )
 
     return response
-

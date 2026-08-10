@@ -20,7 +20,6 @@ from tools import open_browser, get_time, open_musique
 from personality import speak
 from intent import detect_intent
 from dispatcher import dispatch
-from memory import save_history
 from profile import analyze_profile
 from ai import ask_ai
 

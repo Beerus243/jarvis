@@ -1,71 +1,82 @@
-from multiprocessing import get_context
-from history import get_recent_history
-from openai import OpenAI
 import os
+
 from dotenv import load_dotenv
+from openai import OpenAI
 
 from context import get_context
+
+
 load_dotenv()
 
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+
+if not GROQ_API_KEY:
+    raise RuntimeError(
+        "GROQ_API_KEY introuvable. Vérifie ton fichier .env."
+    )
+
+
 client = OpenAI(
-    api_key=os.getenv("GROQ_API_KEY"),
+    api_key=GROQ_API_KEY,
     base_url="https://api.groq.com/openai/v1"
 )
 
-import os
 
-from groq import Groq
-
-from context import get_context
-
-
-client = Groq(
-    api_key=os.getenv("GROQ_API_KEY")
-)
+MODEL = "llama-3.3-70b-versatile"
 
 
 def ask_ai(message):
 
     context = get_context()
 
-    system_prompt = """
-Tu es JARVIS, un assistant personnel créé pour Fabrice.
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "Tu es JARVIS, l'assistant personnel de Fabrice. "
+                "Réponds toujours en français. "
+                "Utilise l'historique fourni pour comprendre "
+                "les références aux messages précédents. "
+                "Si l'utilisateur dit 'il', 'elle', 'ça', 'ce projet', "
+                "etc., utilise le contexte précédent pour déterminer "
+                "ce à quoi il fait référence."
+            )
+        }
+    ]
 
-Tu réponds en français.
-Tu es poli, naturel, précis et concis.
 
-Tu peux utiliser le contexte de conversation pour comprendre
-les références comme "ça", "il", "elle", "le", "la", "cette chose",
-etc.
+    # Ajouter l'historique
 
-Si le contexte ne permet pas de déterminer ce que Fabrice veut dire,
-demande une précision au lieu d'inventer.
-"""
+    messages.extend(context)
 
-    user_message = f"""
-Contexte récent :
 
-{context}
+    # Ajouter le message actuel
 
-Nouvelle demande de Fabrice :
+    messages.append({
+        "role": "user",
+        "content": message
+    })
 
-{message}
-"""
 
-    response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            {
-                "role": "user",
-                "content": user_message
-            }
-        ],
-        temperature=0.7,
-        max_tokens=500
-    )
+    try:
 
-    return response.choices[0].message.content
+        response = client.chat.completions.create(
+            model=MODEL,
+            messages=messages,
+            temperature=0.7,
+            max_tokens=100
+        )
+
+        return response.choices[0].message.content
+
+
+    except Exception as error:
+
+        print(f"Erreur Groq : {error}")
+
+        return (
+            "Désolé Fabrice, je rencontre "
+            "un problème avec mon cerveau IA."
+        )
