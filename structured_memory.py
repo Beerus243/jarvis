@@ -1,5 +1,5 @@
 import json
-
+from text_normalizer import normalize_text
 MEMORY_FILE = "user.json"
 
 
@@ -74,3 +74,135 @@ def get_project_attribute(attribute):
     project = get_project()
 
     return project.get(attribute)
+
+# ============================================================
+# ANALYSER LES INFORMATIONS DU PROJET
+# ============================================================
+
+def analyze_project_information(message):
+
+    text = normalize_text(message)
+
+    # --------------------------------------------------------
+    # LANGAGE
+    # --------------------------------------------------------
+
+    if (
+    "développé en" in text
+    or "développe en" in text
+    or "développer en" in text
+    or "developpé en" in text
+    or "developpe en" in text
+    or "developper en" in text
+):
+
+        if "python" in text:
+
+            update_project(
+                "langage",
+                "Python"
+            )
+
+            return (
+                "J'ai enregistré que le projet "
+                "est développé en Python."
+            )
+
+        if "javascript" in text:
+
+            update_project(
+                "langage",
+                "JavaScript"
+            )
+
+            return (
+                "J'ai enregistré que le projet "
+                "est développé en JavaScript."
+            )
+
+        if "typescript" in text:
+
+            update_project(
+                "langage",
+                "TypeScript"
+            )
+
+            return (
+                "J'ai enregistré que le projet "
+                "est développé en TypeScript."
+            )
+
+
+    # --------------------------------------------------------
+    # BASE DE DONNÉES
+    # --------------------------------------------------------
+
+    if (
+        "base de données" in text
+        or "base de donnée" in text
+    ):
+
+        if (
+            "postgresql" in text
+            or "postgres" in text
+        ):
+
+            update_project(
+                "base_de_donnees",
+                "PostgreSQL"
+            )
+
+            return (
+                "J'ai enregistré que le projet "
+                "utilise PostgreSQL."
+            )
+
+        if "mysql" in text:
+
+            update_project(
+                "base_de_donnees",
+                "MySQL"
+            )
+
+            return (
+                "J'ai enregistré que le projet "
+                "utilise MySQL."
+            )
+
+        if (
+            "mongodb" in text
+            or "mongo" in text
+        ):
+
+            update_project(
+                "base_de_donnees",
+                "MongoDB"
+            )
+
+            return (
+                "J'ai enregistré que le projet "
+                "utilise MongoDB."
+            )
+
+
+    # --------------------------------------------------------
+    # TYPE DU PROJET
+    # --------------------------------------------------------
+
+    if (
+        "assistant ia" in text
+        or "assistant intelligent" in text
+    ):
+
+        update_project(
+            "type",
+            "assistant IA"
+        )
+
+        return (
+            "J'ai enregistré que JARVIS "
+            "est un assistant IA."
+        )
+
+
+    return None

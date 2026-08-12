@@ -5,26 +5,6 @@
     },
     {
         "role": "user",
-        "message": "il est developper en python"
-    },
-    {
-        "role": "user",
-        "message": "il est développé en Python"
-    },
-    {
-        "role": "user",
-        "message": "il utiise quel base de données ?"
-    },
-    {
-        "role": "user",
-        "message": "je travaille sur mon projet jarvis"
-    },
-    {
-        "role": "assistant",
-        "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
-    },
-    {
-        "role": "user",
         "message": "il est developpé en python"
     },
     {
@@ -38,5 +18,25 @@
     {
         "role": "assistant",
         "message": "Désolé, mais je n'ai pas encore cette information. Vous m'avez dit que votre projet Jarvis était développé en Python, mais vous n'avez pas encore mentionné quelle base de données il utilise. Pouvez-vous me donner plus de détails à ce sujet ? Utilisez-vous une base de données relationnelle comme MySQL ou PostgreSQL, ou peut-être une base de données NoSQL comme MongoDB ?"
+    },
+    {
+        "role": "user",
+        "message": "le projet est dévellopé en python"
+    },
+    {
+        "role": "user",
+        "message": "le projet est développer en python"
+    },
+    {
+        "role": "user",
+        "message": "le projet est dévelloper en python"
+    },
+    {
+        "role": "user",
+        "message": "le projet est développer en python"
+    },
+    {
+        "role": "assistant",
+        "message": "J'ai enregistré que le projet est développé en Python."
     }
 ]

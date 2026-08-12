@@ -1,5 +1,6 @@
 from intent import detect_intent
 from dispatcher import dispatch
+from structured_memory import analyze_project_information
 from reference import resolve_reference
 
 from memory import (
@@ -64,6 +65,22 @@ def think(message):
         )
 
         return memory_response
+
+
+    # ========================================================
+# 3.5 MÉMOIRE STRUCTURÉE
+# ========================================================
+
+    structured_response = analyze_project_information(message)
+
+    if structured_response:
+
+        add_message(
+        "assistant",
+        structured_response
+    )
+
+    return structured_response
 
 
     # ========================================================
