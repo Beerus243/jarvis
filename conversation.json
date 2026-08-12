@@ -1,17 +1,5 @@
 [
     {
-        "role": "user",
-        "message": "je travaille sur mon projet jarvis"
-    },
-    {
-        "role": "assistant",
-        "message": "Je ne connais pas encore votre projet."
-    },
-    {
-        "role": "assistant",
-        "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
-    },
-    {
         "role": "assistant",
         "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
     },
@@ -38,5 +26,17 @@
     {
         "role": "assistant",
         "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
+    },
+    {
+        "role": "assistant",
+        "message": "Compris. Je retiens que vous travaillez sur JARVIS."
+    },
+    {
+        "role": "assistant",
+        "message": "Vous utilisez Pop OS, une distribution Linux basée sur Ubuntu, développée par System76. C'est une excellente choix pour les utilisateurs qui recherchent une expérience Linux fluide et personnalisable. Qu'est-ce que vous faites avec Pop OS ? Vous avez besoin d'aide pour configurer quelque chose ou vous souhaitez discuter des fonctionnalités de ce système d'exploitation ?"
+    },
+    {
+        "role": "assistant",
+        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
     }
 ]

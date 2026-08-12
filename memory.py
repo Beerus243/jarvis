@@ -271,10 +271,16 @@ def recall_memory(message):
 
     message = message.lower().strip()
 
-    user = load_memory()
+    
 
-    souvenirs = user.get("souvenirs", [])
+    souvenir = find_best_memory(message)
 
+    if souvenir : 
+        return (
+            f"D'après ma mémoire, "
+            f"{souvenir['contenu']}."
+        )
+    user = load_memory()    
 
     # ========================================================
     # PROJET
@@ -475,3 +481,40 @@ def recall_memory(message):
 
 
     return None
+
+
+# ============================================================
+# CALCUL DE PERTINENCE
+# ============================================================
+
+def find_best_memory(message):
+
+    user = load_memory()
+
+    souvenirs = user.get("souvenirs", [])
+
+    if not souvenirs:
+        return None
+
+    mots_question = message.lower().split()
+
+    meilleur_score = 0
+    meilleur_souvenir = None
+
+    for souvenir in souvenirs:
+
+        contenu = souvenir["contenu"].lower()
+
+        score = 0
+
+        for mot in mots_question:
+
+            if mot in contenu:
+                score += 1
+
+        if score > meilleur_score:
+
+            meilleur_score = score
+            meilleur_souvenir = souvenir
+
+    return meilleur_souvenir
