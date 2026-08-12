@@ -1,26 +1,19 @@
 import unicodedata
 
 
-CORRECTIONS = {
-    "develloper": "developper",
-    "develloppe": "developpe",
-    "devellopé": "developpe",
-    "dévelloper": "développer",
-    "dévellopé": "développé",
-    "developper": "développer",
-    "developpe": "développe",
-}
-
-
 def normalize_text(text):
 
     text = text.lower().strip()
 
-    for erreur, correction in CORRECTIONS.items():
+    text = unicodedata.normalize(
+        "NFD",
+        text
+    )
 
-        text = text.replace(
-            erreur,
-            correction
-        )
+    text = "".join(
+        char
+        for char in text
+        if unicodedata.category(char) != "Mn"
+    )
 
     return text

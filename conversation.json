@@ -5,10 +5,6 @@
     },
     {
         "role": "user",
-        "message": "il est développé en quel language"
-    },
-    {
-        "role": "user",
         "message": "il est développé en quel langage ?"
     },
     {
@@ -24,8 +20,12 @@
         "message": "il est développé en quel langage ?"
     },
     {
+        "role": "assistant",
+        "message": "Le projet est développé en Python."
+    },
+    {
         "role": "user",
-        "message": "le projet est développé en python"
+        "message": "le projet est DEVELOPPE en PYTHON"
     },
     {
         "role": "assistant",
@@ -33,7 +33,7 @@
     },
     {
         "role": "user",
-        "message": "il est développé en quel langage ?"
+        "message": "IL est développé en quel langage ?"
     },
     {
         "role": "assistant",

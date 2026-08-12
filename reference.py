@@ -1,4 +1,5 @@
 from conversation import get_context
+from text_normalizer import normalize_text
 
 
 REFERENCES = [
@@ -17,7 +18,7 @@ REFERENCES = [
 
 def has_reference(message):
 
-    message = message.lower()
+    message = normalize_text(message)
 
     return any(
         reference in message
