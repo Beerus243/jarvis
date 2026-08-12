@@ -1,30 +1,6 @@
 [
     {
         "role": "assistant",
-        "message": "Votre projet, c'est moi ! Vous m'avez créé pour être votre assistant personnel, que vous avez nommé JARVIS, inspiré par l'assistant de Tony Stark dans les films Marvel. Mon rôle est de vous aider et de répondre à vos questions en français. Je suis là pour vous aider à gérer vos tâches, à vous fournir des informations et à vous assister dans vos projets. Qu'est-ce que vous aimeriez faire ou disc"
-    },
-    {
-        "role": "assistant",
-        "message": "Compris. Je retiens que vous travaillez sur quoi."
-    },
-    {
-        "role": "assistant",
-        "message": "D'après ma mémoire, Fabrice travaille sur quoi."
-    },
-    {
-        "role": "assistant",
-        "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
-    },
-    {
-        "role": "assistant",
-        "message": "Compris. Je retiens que vous travaillez sur JARVIS."
-    },
-    {
-        "role": "assistant",
-        "message": "Vous utilisez Pop OS, une distribution Linux basée sur Ubuntu, développée par System76. C'est une excellente choix pour les utilisateurs qui recherchent une expérience Linux fluide et personnalisable. Qu'est-ce que vous faites avec Pop OS ? Vous avez besoin d'aide pour configurer quelque chose ou vous souhaitez discuter des fonctionnalités de ce système d'exploitation ?"
-    },
-    {
-        "role": "assistant",
         "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
     },
     {
@@ -38,5 +14,29 @@
     {
         "role": "assistant",
         "message": "Je retiens que vous apprenez ?."
+    },
+    {
+        "role": "user",
+        "message": "je travaille sur mon projet jarvis"
+    },
+    {
+        "role": "assistant",
+        "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
+    },
+    {
+        "role": "user",
+        "message": "sur quoi je travaille actuellement"
+    },
+    {
+        "role": "assistant",
+        "message": "D'après ma mémoire, Fabrice travaille sur quoi"
+    },
+    {
+        "role": "user",
+        "message": "sur quoi je travaille actuellement"
+    },
+    {
+        "role": "assistant",
+        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis"
     }
 ]
