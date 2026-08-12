@@ -1,9 +1,9 @@
 from intent import detect_intent
 from dispatcher import dispatch
+from reference import resolve_reference
 
 from memory import (
     analyze_memory,
-    recall_memory,
     search_memory
 )
 
@@ -28,6 +28,7 @@ def think(message):
         message
     )
 
+    resolved_reference = resolve_reference(message)
 
     # ========================================================
     # 2. COMMANDES
@@ -68,53 +69,23 @@ def think(message):
     # ========================================================
     # 4. RECHERCHE SÉMANTIQUE
     # ========================================================
+    semantic_results = search_memory(message,limit=3)
+    memory_context = "" 
 
-    semantic_results = search_memory(
-        message,
-        limit=3
-    )
-
-    if semantic_results:
-
-        best_memory = semantic_results[0]
-
-        score = best_memory["score"]
-        souvenir = best_memory["souvenir"]
-
-
-        # ----------------------------------------------------
-        # Seuil de confiance
-        # ----------------------------------------------------
+    for result in semantic_results:
+        score = result["score"]
+        souvenir = result["souvenir"]
 
         if score >= 0.45:
-
-            response = (
-                f"D'après ma mémoire, "
-                f"{souvenir.get('contenu')}"
-            )
-
-            add_message(
-                "assistant",
-                response
-            )
-
-            return response
-
-
+            contenu = souvenir.get("contenu","")
+            memory_context += (
+            f"- {contenu}\n"
+        )
     # ========================================================
     # 5. RECHERCHE MÉMOIRE CLASSIQUE
     # ========================================================
 
-    memory_response = recall_memory(message)
 
-    if memory_response:
-
-        add_message(
-            "assistant",
-            memory_response
-        )
-
-        return memory_response
 
 
     # ========================================================
@@ -145,7 +116,7 @@ def think(message):
     # ========================================================
 
     response = ask_ai(
-        message
+        resolved_reference, memory_context
     )
 
     add_message(

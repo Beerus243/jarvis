@@ -27,7 +27,7 @@ client = OpenAI(
 MODEL = "llama-3.3-70b-versatile"
 
 
-def ask_ai(message):
+def ask_ai(message, memory_context=""):
 
     context = get_context()
 
@@ -41,7 +41,10 @@ def ask_ai(message):
                 "les références aux messages précédents. "
                 "Si l'utilisateur dit 'il', 'elle', 'ça', 'ce projet', "
                 "etc., utilise le contexte précédent pour déterminer "
-                "ce à quoi il fait référence."
+                "ce à quoi il fait référence.\n\n"
+
+            "Voici les souvenirs pertinents de Fabrice :\n"
+            f"{memory_context}"
             )
         }
     ]

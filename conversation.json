@@ -1,19 +1,19 @@
 [
     {
         "role": "assistant",
-        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
+        "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
     },
     {
-        "role": "assistant",
-        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
+        "role": "user",
+        "message": "il est developper en python"
     },
     {
-        "role": "assistant",
-        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
+        "role": "user",
+        "message": "il est développé en Python"
     },
     {
-        "role": "assistant",
-        "message": "Je retiens que vous apprenez ?."
+        "role": "user",
+        "message": "il utiise quel base de données ?"
     },
     {
         "role": "user",
@@ -25,18 +25,18 @@
     },
     {
         "role": "user",
-        "message": "sur quoi je travaille actuellement"
+        "message": "il est developpé en python"
     },
     {
         "role": "assistant",
-        "message": "D'après ma mémoire, Fabrice travaille sur quoi"
+        "message": "Oui, je me souviens. Votre projet, que vous appelez également \"Jarvis\" comme moi, est développé en Python. Et si je me rappelle bien, nous avions discuté précédemment des bases de données utilisées par le projet. Vous aviez posé la question sur la base de données utilisée, mais nous n'avions pas encore obtenu la réponse. Voulez-vous que nous explorions cette question ensemble ?"
     },
     {
         "role": "user",
-        "message": "sur quoi je travaille actuellement"
+        "message": "il utilise quel base de données ?"
     },
     {
         "role": "assistant",
-        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis"
+        "message": "Désolé, mais je n'ai pas encore cette information. Vous m'avez dit que votre projet Jarvis était développé en Python, mais vous n'avez pas encore mentionné quelle base de données il utilise. Pouvez-vous me donner plus de détails à ce sujet ? Utilisez-vous une base de données relationnelle comme MySQL ou PostgreSQL, ou peut-être une base de données NoSQL comme MongoDB ?"
     }
 ]

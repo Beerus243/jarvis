@@ -652,29 +652,27 @@ def find_semantic_memory(message):
     if not souvenirs:
         return None
 
+    query_embedding = create_memory_embedding(message)
+
     meilleur_score = 0
     meilleur_souvenir = None
 
     for souvenir in souvenirs:
 
-        contenu = souvenir.get(
-            "contenu",
-            ""
-        )
+        embedding = souvenir.get("embedding")
+
+        if not embedding:
+            continue
 
         score = similarity(
-            message,
-            contenu
+            query_embedding,
+            embedding
         )
 
         if score > meilleur_score:
 
             meilleur_score = score
             meilleur_souvenir = souvenir
-
-    # --------------------------------------------------------
-    # SEUIL DE CONFIANCE
-    # --------------------------------------------------------
 
     if meilleur_score < 0.45:
         return None
