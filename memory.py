@@ -1,6 +1,10 @@
 import json
 from datetime import datetime
-from semantic_memory import similarity
+
+from semantic_memory import (
+    similarity,
+    create_memory_embedding
+)
 
 MEMORY_FILE = "user.json"
 
