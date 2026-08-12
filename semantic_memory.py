@@ -46,3 +46,64 @@ def similarity(vector1, vector2):
 def create_memory_embedding(content):
 
     return encode(content)
+
+
+# ============================================================
+# RECHERCHE SÉMANTIQUE
+# ============================================================
+
+def search_semantic_memory(query, souvenirs, limit=3):
+
+    if not souvenirs:
+        return []
+
+
+    # --------------------------------------------------------
+    # Transformer la question en embedding
+    # --------------------------------------------------------
+
+    query_embedding = encode(query)
+
+
+    results = []
+
+
+    # --------------------------------------------------------
+    # Comparer avec chaque souvenir
+    # --------------------------------------------------------
+
+    for souvenir in souvenirs:
+
+        embedding = souvenir.get("embedding")
+
+        if not embedding:
+            continue
+
+
+        score = similarity(
+            query_embedding,
+            embedding
+        )
+
+
+        results.append({
+            "souvenir": souvenir,
+            "score": score
+        })
+
+
+    # --------------------------------------------------------
+    # Trier du plus proche au moins proche
+    # --------------------------------------------------------
+
+    results.sort(
+        key=lambda x: x["score"],
+        reverse=True
+    )
+
+
+    # --------------------------------------------------------
+    # Retourner les meilleurs résultats
+    # --------------------------------------------------------
+
+    return results[:limit]

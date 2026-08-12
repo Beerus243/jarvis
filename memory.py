@@ -3,7 +3,8 @@ from datetime import datetime
 
 from semantic_memory import (
     similarity,
-    create_memory_embedding
+    create_memory_embedding,
+    search_semantic_memory
 )
 
 MEMORY_FILE = "user.json"
@@ -85,19 +86,23 @@ def remember(contenu, categorie, importance="moyenne"):
     if "souvenirs" not in user:
         user["souvenirs"] = []
 
+    # ========================================================
+    # CRÉER L'EMBEDDING DU SOUVENIR
+    # ========================================================
+
+    embedding = create_memory_embedding(contenu)
+
+    # ========================================================
+    # CRÉER LE SOUVENIR
+    # ========================================================
+
     souvenir = {
-
-        "id": generate_memory_id(user),
-
+        "id": f"s{len(user['souvenirs']) + 1:03d}",
         "contenu": contenu,
-
         "categorie": categorie,
-
-        "date": datetime.now().isoformat(
-            timespec="seconds"
-        ),
-
-        "importance": importance
+        "date": datetime.now().isoformat(),
+        "importance": importance,
+        "embedding": embedding
     }
 
     user["souvenirs"].append(souvenir)
@@ -675,3 +680,77 @@ def find_semantic_memory(message):
         return None
 
     return meilleur_souvenir
+
+# ============================================================
+# METTRE À JOUR LES EMBEDDINGS DES SOUVENIRS
+# ============================================================
+# ============================================================
+# METTRE À JOUR LES EMBEDDINGS DES SOUVENIRS
+# ============================================================
+
+def update_missing_embeddings():
+
+    from semantic_memory import create_memory_embedding
+
+    user = load_memory()
+
+    souvenirs = user.get("souvenirs", [])
+
+    if not souvenirs:
+        print("Aucun souvenir à traiter.")
+        return False
+
+    modified = False
+
+    for souvenir in souvenirs:
+
+        if "embedding" not in souvenir:
+
+            contenu = souvenir.get("contenu", "")
+
+            if contenu:
+
+                souvenir["embedding"] = create_memory_embedding(
+                    contenu
+                )
+
+                modified = True
+
+    if modified:
+
+        save_memory(user)
+
+        print("Embeddings ajoutés aux souvenirs.")
+
+    else:
+
+        print("Tous les souvenirs possèdent déjà un embedding.")
+
+    return modified
+
+
+# ============================================================
+# RECHERCHER DANS LA MÉMOIRE SÉMANTIQUE
+# ============================================================
+
+def search_memory(query, limit=3):
+
+    user = load_memory()
+
+    souvenirs = user.get(
+        "souvenirs",
+        []
+    )
+
+    if not souvenirs:
+        return []
+
+
+    results = search_semantic_memory(
+        query,
+        souvenirs,
+        limit
+    )
+
+
+    return results
