@@ -2,6 +2,7 @@ from intent import detect_intent
 from dispatcher import dispatch
 from memory import analyze_memory, recall_memory
 from personality import speak
+from memory import find_semantic_memory
 
 from conversation import (
     add_message,
@@ -52,15 +53,18 @@ def think(message):
 
 
 
-    recall_response = recall_memory(message)
+# ========================================================
+# RECHERCHE SÉMANTIQUE
+# ========================================================
 
-    if recall_response:
-        add_message(
-            "assistant",
-            recall_response
-        )
+    semantic_memory = find_semantic_memory(message)
+    
+    if semantic_memory:
 
-        return recall_response
+        return (
+        f"D'après ma mémoire : "
+        f"{semantic_memory['contenu']}"
+    )
 
 
     # ========================================================

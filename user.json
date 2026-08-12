@@ -44,6 +44,13 @@
             "categorie": "projet",
             "date": "2026-08-12T02:01:48",
             "importance": "haute"
+        },
+        {
+            "id": "s005",
+            "contenu": "Fabrice apprend ?",
+            "categorie": "competence",
+            "date": "2026-08-12T02:09:41",
+            "importance": "haute"
         }
     ]
 }

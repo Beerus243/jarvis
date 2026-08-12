@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from semantic_memory import similarity
 
 MEMORY_FILE = "user.json"
 
@@ -486,7 +487,6 @@ def recall_memory(message):
 # ============================================================
 # CALCUL DE PERTINENCE
 # ============================================================
-
 def find_best_memory(message):
 
     user = load_memory()
@@ -496,25 +496,178 @@ def find_best_memory(message):
     if not souvenirs:
         return None
 
-    mots_question = message.lower().split()
+    mots_question = [
+        mot
+        for mot in message.split()
+        if mot not in STOP_WORDS
+    ]
 
     meilleur_score = 0
     meilleur_souvenir = None
 
     for souvenir in souvenirs:
 
-        contenu = souvenir["contenu"].lower()
+        contenu = souvenir.get(
+            "contenu",
+            ""
+        ).lower()
 
         score = 0
 
         for mot in mots_question:
 
+            # ------------------------------------------------
+            # Correspondance directe
+            # ------------------------------------------------
+
             if mot in contenu:
+
                 score += 1
+
+
+            # ------------------------------------------------
+            # Correspondance par synonymes
+            # ------------------------------------------------
+
+            for mot_principal, synonymes in SYNONYMES.items():
+
+                if mot == mot_principal:
+
+                    for synonyme in synonymes:
+
+                        if synonyme in contenu:
+
+                            score += 1
+
+
+                elif mot in synonymes:
+
+                    if mot_principal in contenu:
+
+                        score += 1
+
+
+        # ----------------------------------------------------
+        # Garder le meilleur souvenir
+        # ----------------------------------------------------
+
+        if score > meilleur_score:
+
+            meilleur_score = score
+
+            meilleur_souvenir = souvenir
+
+
+    return meilleur_souvenir
+# ============================================================
+# SYNONYMES
+# ============================================================
+
+SYNONYMES = {
+
+    "projet": [
+        "travail",
+        "application",
+        "programme",
+        "développement",
+        "developpement"
+    ],
+
+    "python": [
+        "programmation",
+        "programmer",
+        "coder",
+        "code"
+    ],
+
+    "apprendre": [
+        "étudier",
+        "etudier",
+        "apprentissage",
+        "apprends",
+        "étudie",
+        "etudie"
+    ],
+
+    "objectif": [
+        "but",
+        "ambition",
+        "rêve",
+        "reve"
+    ]
+}
+
+STOP_WORDS = {
+    "je",
+    "j",
+    "mon",
+    "ma",
+    "mes",
+    "le",
+    "la",
+    "les",
+    "un",
+    "une",
+    "des",
+    "de",
+    "du",
+    "dans",
+    "sur",
+    "est",
+    "quel",
+    "quelle",
+    "quels",
+    "quelles",
+    "quoi",
+    "que",
+    "qui",
+    "me",
+    "tu",
+    "te",
+    "mon"
+}
+
+# ============================================================
+# RECHERCHE SÉMANTIQUE
+# ============================================================
+
+def find_semantic_memory(message):
+
+    user = load_memory()
+
+    souvenirs = user.get(
+        "souvenirs",
+        []
+    )
+
+    if not souvenirs:
+        return None
+
+    meilleur_score = 0
+    meilleur_souvenir = None
+
+    for souvenir in souvenirs:
+
+        contenu = souvenir.get(
+            "contenu",
+            ""
+        )
+
+        score = similarity(
+            message,
+            contenu
+        )
 
         if score > meilleur_score:
 
             meilleur_score = score
             meilleur_souvenir = souvenir
+
+    # --------------------------------------------------------
+    # SEUIL DE CONFIANCE
+    # --------------------------------------------------------
+
+    if meilleur_score < 0.45:
+        return None
 
     return meilleur_souvenir

@@ -1,18 +1,6 @@
 [
     {
         "role": "assistant",
-        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
-    },
-    {
-        "role": "assistant",
-        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
-    },
-    {
-        "role": "assistant",
-        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
-    },
-    {
-        "role": "assistant",
         "message": "Votre projet, c'est moi ! Vous m'avez créé pour être votre assistant personnel, que vous avez nommé JARVIS, inspiré par l'assistant de Tony Stark dans les films Marvel. Mon rôle est de vous aider et de répondre à vos questions en français. Je suis là pour vous aider à gérer vos tâches, à vous fournir des informations et à vous assister dans vos projets. Qu'est-ce que vous aimeriez faire ou disc"
     },
     {
@@ -38,5 +26,17 @@
     {
         "role": "assistant",
         "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
+    },
+    {
+        "role": "assistant",
+        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
+    },
+    {
+        "role": "assistant",
+        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
+    },
+    {
+        "role": "assistant",
+        "message": "Je retiens que vous apprenez ?."
     }
 ]
