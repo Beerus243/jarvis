@@ -3554,5 +3554,12 @@
                 -0.042917076498270035
             ]
         }
-    ]
+    ],
+    "structured_memory": {
+        "projet": {
+            "nom": "JARVIS",
+            "langage": "Python",
+            "type": "assistant IA"
+        }
+    }
 }
