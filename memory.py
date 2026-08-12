@@ -267,7 +267,6 @@ def analyze_memory(message):
 # ============================================================
 # RECHERCHE DANS LA MÉMOIRE
 # ============================================================
-
 def recall_memory(message):
 
     message = message.lower().strip()
@@ -277,10 +276,11 @@ def recall_memory(message):
     souvenirs = user.get("souvenirs", [])
 
 
-    # --------------------------------------------------------
-    # RECHERCHE PAR CATÉGORIE
-    # --------------------------------------------------------
-    mots_project = [
+    # ========================================================
+    # PROJET
+    # ========================================================
+
+    mots_projet = [
         "projet",
         "travaille",
         "travail",
@@ -288,7 +288,8 @@ def recall_memory(message):
         "développer",
         "projet actuel"
     ]
-    if any(mot in message for mot in mots_project):
+
+    if any(mot in message for mot in mots_projet):
 
         resultats = [
             souvenir
@@ -309,33 +310,55 @@ def recall_memory(message):
 
         return "Je ne connais pas encore votre projet."
 
-    # --------------------------------------------------------
-    # OBJECTIF
-    # --------------------------------------------------------
 
-    imots_objectif = 
+    # ========================================================
+    # OBJECTIF
+    # ========================================================
+
+    mots_objectif = [
+        "objectif",
+        "but",
+        "veux devenir",
+        "veux faire"
+    ]
+
+    if any(mot in message for mot in mots_objectif):
+
+        resultats = [
+            souvenir
+            for souvenir in souvenirs
+            if souvenir.get("categorie") == "objectif"
+        ]
 
         if resultats:
 
             souvenir = resultats[-1]
 
             return (
-                f"Votre objectif est : "
+                f"D'après ma mémoire, "
                 f"{souvenir['contenu']}."
             )
 
 
-        return "Je ne connais pas encore vos objectifs."
+        return "Je ne connais pas encore votre objectif."
 
 
-    # --------------------------------------------------------
-    # COMPÉTENCE
-    # --------------------------------------------------------
+    # ========================================================
+    # APPRENTISSAGE
+    # ========================================================
 
-    if (
-        "apprends" in message
-        or "apprentissage" in message
-        or "compétence" in message
+    mots_competence = [
+        "apprends",
+        "apprentissage",
+        "j'étudie",
+        "j'étudie",
+        "compétence",
+        "apprendre"
+    ]
+
+    if any(
+        mot in message
+        for mot in mots_competence
     ):
 
         resultats = [
@@ -346,23 +369,27 @@ def recall_memory(message):
 
         if resultats:
 
-            souvenirs_text = ", ".join(
+            textes = [
                 souvenir["contenu"]
                 for souvenir in resultats
-            )
+            ]
 
             return (
-                f"Vous apprenez actuellement : "
-                f"{souvenirs_text}."
+                "D'après ma mémoire, vous apprenez : "
+                + ", ".join(textes)
+                + "."
             )
 
 
-        return "Je ne connais pas encore vos apprentissages."
+        return (
+            "Je ne connais pas encore "
+            "ce que vous apprenez."
+        )
 
 
-    # --------------------------------------------------------
-    # COULEUR
-    # --------------------------------------------------------
+    # ========================================================
+    # PRÉFÉRENCE
+    # ========================================================
 
     if "couleur" in message:
 
@@ -371,20 +398,25 @@ def recall_memory(message):
             for souvenir in souvenirs
             if (
                 souvenir.get("categorie") == "preference"
-                and "couleur" in souvenir.get("contenu", "").lower()
+                and "couleur" in souvenir.get(
+                    "contenu",
+                    ""
+                ).lower()
             )
         ]
 
         if resultats:
 
-            return resultats[-1]["contenu"] + "."
+            return (
+                f"D'après ma mémoire, "
+                f"{resultats[-1]['contenu']}."
+            )
 
-        return "Je ne connais pas encore votre couleur préférée."
+        return (
+            "Je ne connais pas encore "
+            "votre couleur préférée."
+        )
 
-
-    # --------------------------------------------------------
-    # MUSIQUE
-    # --------------------------------------------------------
 
     if "musique" in message:
 
@@ -393,22 +425,35 @@ def recall_memory(message):
             for souvenir in souvenirs
             if (
                 souvenir.get("categorie") == "preference"
-                and "musique" in souvenir.get("contenu", "").lower()
+                and "musique" in souvenir.get(
+                    "contenu",
+                    ""
+                ).lower()
             )
         ]
 
         if resultats:
 
-            return resultats[-1]["contenu"] + "."
+            return (
+                f"D'après ma mémoire, "
+                f"{resultats[-1]['contenu']}."
+            )
 
-        return "Je ne connais pas encore votre musique préférée."
+        return (
+            "Je ne connais pas encore "
+            "votre musique préférée."
+        )
 
 
-    # --------------------------------------------------------
-    # NOM
-    # --------------------------------------------------------
+    # ========================================================
+    # IDENTITÉ
+    # ========================================================
 
-    if "nom" in message or "appelle" in message:
+    if (
+        "qui suis-je" in message
+        or "mon nom" in message
+        or "comment je m'appelle" in message
+    ):
 
         resultats = [
             souvenir
@@ -418,9 +463,15 @@ def recall_memory(message):
 
         if resultats:
 
-            return resultats[-1]["contenu"] + "."
+            return (
+                f"D'après ma mémoire, "
+                f"{resultats[-1]['contenu']}."
+            )
 
-        return "Je ne connais pas encore votre nom."
+        return (
+            "Je ne connais pas encore "
+            "votre identité."
+        )
 
 
     return None

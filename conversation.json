@@ -1,39 +1,39 @@
 [
     {
-        "role": "assistant",
-        "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
-    },
-    {
-        "role": "user",
-        "message": "il est en python"
-    },
-    {
-        "role": "assistant",
-        "message": "Je vois ! Vous avez mentionné que quelque chose est en Python, mais je n'ai pas encore de contexte précis sur ce à quoi vous faites référence. Pouvez-vous me donner plus de détails sur ce que vous avez en Python ? Est-ce un projet, un script, une bibliothèque ou autre chose ? Je suis là pour vous aider !"
-    },
-    {
-        "role": "user",
-        "message": "je travaille sur mon projet jarvis"
-    },
-    {
-        "role": "assistant",
-        "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
-    },
-    {
-        "role": "user",
-        "message": "il est en python"
-    },
-    {
-        "role": "assistant",
-        "message": "Je me souviens ! Votre projet JARVIS est écrit en Python. Qu'est-ce que vous aimeriez faire ou accomplir avec votre projet JARVIS ? Avez-vous besoin d'aide pour une fonctionnalité spécifique ou pour résoudre un problème ? Je suis là pour vous aider !"
-    },
-    {
         "role": "user",
         "message": "je travaille sur mon projet jarvis"
     },
     {
         "role": "assistant",
         "message": "Je ne connais pas encore votre projet."
+    },
+    {
+        "role": "assistant",
+        "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
+    },
+    {
+        "role": "assistant",
+        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
+    },
+    {
+        "role": "assistant",
+        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
+    },
+    {
+        "role": "assistant",
+        "message": "D'après ma mémoire, Fabrice travaille sur mon projet jarvis."
+    },
+    {
+        "role": "assistant",
+        "message": "Votre projet, c'est moi ! Vous m'avez créé pour être votre assistant personnel, que vous avez nommé JARVIS, inspiré par l'assistant de Tony Stark dans les films Marvel. Mon rôle est de vous aider et de répondre à vos questions en français. Je suis là pour vous aider à gérer vos tâches, à vous fournir des informations et à vous assister dans vos projets. Qu'est-ce que vous aimeriez faire ou disc"
+    },
+    {
+        "role": "assistant",
+        "message": "Compris. Je retiens que vous travaillez sur quoi."
+    },
+    {
+        "role": "assistant",
+        "message": "D'après ma mémoire, Fabrice travaille sur quoi."
     },
     {
         "role": "assistant",
