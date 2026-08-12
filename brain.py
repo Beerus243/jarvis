@@ -1,6 +1,11 @@
 from intent import detect_intent
 from dispatcher import dispatch
-from structured_memory import analyze_project_information
+
+from structured_memory import (
+    analyze_project_information,
+    answer_project_question
+)
+
 from reference import resolve_reference
 
 from memory import (
@@ -17,19 +22,21 @@ from conversation import (
 
 from ai import ask_ai
 
-
 def think(message):
 
     # ========================================================
     # 1. AJOUTER LE MESSAGE UTILISATEUR
     # ========================================================
 
-    add_message(
-        "user",
-        message
-    )
-
     resolved_reference = resolve_reference(message)
+
+    print("DEBUG RESOLVED :", resolved_reference)
+
+    add_message(
+    "user",
+    message
+)
+
 
     # ========================================================
     # 2. COMMANDES
@@ -79,8 +86,24 @@ def think(message):
         "assistant",
         structured_response
     )
+        return structured_response
 
-    return structured_response
+# ========================================================
+# 3.6 LECTURE DE LA MÉMOIRE STRUCTURÉE
+# ========================================================
+
+    project_response = answer_project_question(
+    resolved_reference
+)
+
+    if project_response:
+
+        add_message(
+        "assistant",
+        project_response
+    )
+
+        return project_response
 
 
     # ========================================================

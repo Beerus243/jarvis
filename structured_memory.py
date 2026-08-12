@@ -75,6 +75,63 @@ def get_project_attribute(attribute):
 
     return project.get(attribute)
 
+def answer_project_question(message):
+
+    text = normalize_text(message)
+
+    project = get_project()
+
+    if not project:
+        return None
+
+    # ========================================================
+    # LANGAGE
+    # ========================================================
+
+    mots_langage = [
+        "langage",
+        "language",
+        "langage de programmation",
+        "codé",
+        "code",
+        "développé"
+    ]
+
+    if any(mot in text for mot in mots_langage):
+
+        langage = project.get("langage")
+
+        if langage:
+
+            return (
+                f"Le projet est développé en {langage}."
+            )
+
+    # ========================================================
+    # BASE DE DONNÉES
+    # ========================================================
+
+    mots_database = [
+        "base de données",
+        "base de donnée",
+        "database",
+        "bdd"
+    ]
+
+    if any(mot in text for mot in mots_database):
+
+        database = project.get(
+            "base_de_donnees"
+        )
+
+        if database:
+
+            return (
+                f"Le projet utilise {database}."
+            )
+
+    return None
+
 # ============================================================
 # ANALYSER LES INFORMATIONS DU PROJET
 # ============================================================
@@ -205,4 +262,19 @@ def analyze_project_information(message):
         )
 
 
-    return None
+    return None   
+
+
+def get_project_information():
+
+    user = load_memory()
+
+    structured = user.get(
+        "structured_memory",
+        {}
+    )
+
+    return structured.get(
+        "projet",
+        {}
+    )

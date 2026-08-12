@@ -1,42 +1,42 @@
 [
     {
         "role": "assistant",
-        "message": "Compris. Je retiens que vous travaillez sur mon projet jarvis."
+        "message": "J'ai enregistré que le projet est développé en Python."
     },
     {
         "role": "user",
-        "message": "il est developpé en python"
-    },
-    {
-        "role": "assistant",
-        "message": "Oui, je me souviens. Votre projet, que vous appelez également \"Jarvis\" comme moi, est développé en Python. Et si je me rappelle bien, nous avions discuté précédemment des bases de données utilisées par le projet. Vous aviez posé la question sur la base de données utilisée, mais nous n'avions pas encore obtenu la réponse. Voulez-vous que nous explorions cette question ensemble ?"
+        "message": "il est développé en quel language"
     },
     {
         "role": "user",
-        "message": "il utilise quel base de données ?"
-    },
-    {
-        "role": "assistant",
-        "message": "Désolé, mais je n'ai pas encore cette information. Vous m'avez dit que votre projet Jarvis était développé en Python, mais vous n'avez pas encore mentionné quelle base de données il utilise. Pouvez-vous me donner plus de détails à ce sujet ? Utilisez-vous une base de données relationnelle comme MySQL ou PostgreSQL, ou peut-être une base de données NoSQL comme MongoDB ?"
+        "message": "il est développé en quel langage ?"
     },
     {
         "role": "user",
-        "message": "le projet est dévellopé en python"
-    },
-    {
-        "role": "user",
-        "message": "le projet est développer en python"
-    },
-    {
-        "role": "user",
-        "message": "le projet est dévelloper en python"
-    },
-    {
-        "role": "user",
-        "message": "le projet est développer en python"
+        "message": "le projet est développé en python"
     },
     {
         "role": "assistant",
         "message": "J'ai enregistré que le projet est développé en Python."
+    },
+    {
+        "role": "user",
+        "message": "il est développé en quel langage ?"
+    },
+    {
+        "role": "user",
+        "message": "le projet est développé en python"
+    },
+    {
+        "role": "assistant",
+        "message": "J'ai enregistré que le projet est développé en Python."
+    },
+    {
+        "role": "user",
+        "message": "il est développé en quel langage ?"
+    },
+    {
+        "role": "assistant",
+        "message": "Le projet est développé en Python."
     }
 ]

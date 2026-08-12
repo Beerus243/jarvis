@@ -5,7 +5,6 @@ REFERENCES = [
     "il",
     "elle",
     "lui",
-    "elle",
     "ça",
     "cela",
     "ce projet",
@@ -20,12 +19,10 @@ def has_reference(message):
 
     message = message.lower()
 
-    for reference in REFERENCES:
-
-        if reference in message:
-            return True
-
-    return False
+    return any(
+        reference in message
+        for reference in REFERENCES
+    )
 
 
 def get_previous_subject():
@@ -35,53 +32,37 @@ def get_previous_subject():
     if not context:
         return None
 
-    # On parcourt les derniers messages
-    # du plus récent au plus ancien
-
     for message in reversed(context):
 
-        content = message.get("content", "")
-
-        if not content:
+        if message.get("role") != "user":
             continue
 
-        # Pour l'instant on récupère simplement
-        # le dernier message utilisateur pertinent
+        content = message.get("message", "").strip()
 
-        if message.get("role") == "user":
-
+        if content:
             return content
 
     return None
 
+
 def resolve_reference(message):
+
+    # --------------------------------------------------------
+    # Si la phrase ne contient pas de référence,
+    # inutile de chercher un contexte.
+    # --------------------------------------------------------
+
+    if not has_reference(message):
+
+        return message
+
 
     previous_subject = get_previous_subject()
 
     if not previous_subject:
+
         return message
 
-    message_lower = message.lower()
-
-    references = [
-        "il",
-        "elle",
-        "lui",
-        "ça",
-        "cela",
-        "ce projet",
-        "cette application",
-        "ce programme",
-        "ce logiciel"
-    ]
-
-    has_ref = any(
-        ref in message_lower
-        for ref in references
-    )
-
-    if not has_ref:
-        return message
 
     return (
         f"Contexte précédent : {previous_subject}\n"
