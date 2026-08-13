@@ -3,6 +3,7 @@ from dispatcher import dispatch
 
 from structured_memory import (
     analyze_project_information,
+    analyze_project_update,
     answer_project_question,
     answer_project_stack
 )
@@ -74,24 +75,29 @@ def think(message):
 
         return memory_response
 
-
     # ========================================================
-# 3.5 MÉMOIRE STRUCTURÉE
-# ========================================================
+    # 3.5 MÉMOIRE STRUCTURÉE
+    # ========================================================
 
-    structured_response = analyze_project_information(message)
+    project_update_response = analyze_project_update(message)
 
-    if structured_response:
+    print(
+        "DEBUG PROJECT UPDATE :",
+        message
+    )
+
+    if project_update_response:
 
         add_message(
-        "assistant",
-        structured_response
-    )
-        return structured_response
+            "assistant",
+            project_update_response
+        )
 
-# ========================================================
-# 3.6 LECTURE DE LA MÉMOIRE STRUCTURÉE
-# ========================================================
+        return project_update_response
+
+    # ========================================================
+    # 3.6 LECTURE DE LA MÉMOIRE STRUCTURÉE
+    # ========================================================
 
     # ========================================================
     # 3.6.1 QUESTION SUR LA STACK
@@ -130,9 +136,9 @@ def think(message):
     if project_response:
 
         add_message(
-        "assistant",
-        project_response
-    )
+            "assistant",
+            project_response
+        )
 
         return project_response
 

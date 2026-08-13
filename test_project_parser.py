@@ -23,3 +23,15 @@ for phrase in tests:
     print("Phrase :", phrase)
     print("Résultat :", result)
     print()
+
+    print(
+    parse_project_information(
+        "Mon backend utilise FastAPI"
+    )
+)
+
+print(
+    parse_project_information(
+        "Mon backend utilise Django"
+    )
+)

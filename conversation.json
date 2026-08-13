@@ -1,42 +1,42 @@
 [
     {
         "role": "user",
-        "message": "Le projet est développé en Python."
+        "message": "Mon backend utilise FastAPI"
     },
     {
         "role": "assistant",
-        "message": "J'ai enregistré que le projet est développé en Python."
+        "message": "J'ai mis à jour backend : Django → FastAPI."
     },
     {
         "role": "user",
-        "message": "Le backend utilise FastAPI."
+        "message": "Quel backend utilise mon projet ?"
     },
     {
         "role": "assistant",
-        "message": "J'ai enregistré que le backend utilise FastAPI."
+        "message": "Le backend du projet utilise FastAPI."
     },
     {
         "role": "user",
-        "message": "Le projet utilise PostgreSQL."
+        "message": "Maintenant mon backend utilise Django"
     },
     {
         "role": "assistant",
-        "message": "J'ai enregistré que le projet utilise PostgreSQL."
+        "message": "J'ai mis à jour backend : FastAPI → Django."
     },
     {
         "role": "user",
-        "message": "Le frontend utilise React."
+        "message": "Quel backend utilise mon projet ?"
     },
     {
         "role": "assistant",
-        "message": "J'ai enregistré que le frontend utilise React."
+        "message": "Le backend du projet utilise Django."
     },
     {
         "role": "user",
-        "message": "Quelle est la stack de mon project ?"
+        "message": "quiiter"
     },
     {
         "role": "assistant",
-        "message": "La stack actuelle de JARVIS est : développé en Python, avec FastAPI en backend, React en frontend, et PostgreSQL comme base de données."
+        "message": "Je pense que vous voulez dire \"quitter\". Dans ce cas, je suppose que vous voulez quitter notre conversation. Au revoir ! Si vous avez besoin de quoi que ce soit, n'hésitez pas à me contacter à nouveau. Le projet utilise toujours Django comme backend. À bientôt !"
     }
 ]

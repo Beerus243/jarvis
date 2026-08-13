@@ -20,10 +20,35 @@ def has_reference(message):
 
     message = normalize_text(message)
 
-    return any(
-        reference in message
-        for reference in REFERENCES
-    )
+    words = message.split()
+
+    references_simples = [
+        "il",
+        "elle",
+        "lui",
+        "ça",
+        "cela",
+    ]
+
+    for reference in references_simples:
+
+        if reference in words:
+            return True
+
+    references_composes = [
+        "ce projet",
+        "cette application",
+        "ce programme",
+        "ce logiciel",
+        "cet objectif",
+    ]
+
+    for reference in references_composes:
+
+        if reference in message:
+            return True
+
+    return False
 
 
 def get_previous_subject():

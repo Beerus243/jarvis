@@ -2,8 +2,8 @@ import json
 
 from text_normalizer import normalize_text
 from project_parser import parse_project_information
-MEMORY_FILE = "user.json"
 
+MEMORY_FILE = "user.json"
 
 def load_memory():
 
@@ -70,6 +70,59 @@ def update_project(attribute, value):
     user["structured_memory"]["projet"][attribute] = value
 
     save_memory(user)
+
+
+def update_project_attribute(attribute, value):
+
+    user = load_memory()
+
+    if "structured_memory" not in user:
+        user["structured_memory"] = {}
+
+    if "projet" not in user["structured_memory"]:
+        user["structured_memory"]["projet"] = {}
+
+    user["structured_memory"]["projet"][attribute] = value
+
+    save_memory(user)
+
+
+def get_project_attribute(attribute):
+
+    project = get_project()
+
+    return project.get(attribute)
+
+
+
+def update_project_information(attribute, value):
+
+    old_value = get_project_attribute(attribute)
+
+    update_project(
+        attribute,
+        value
+    )
+
+    if old_value is None:
+
+        return (
+            f"J'ai enregistré que le {attribute} "
+            f"est {value}."
+        )
+
+    if old_value == value:
+
+        return (
+            f"Cette information est déjà enregistrée : "
+            f"{value}."
+        )
+
+    return (
+        f"J'ai mis à jour le {attribute} : "
+        f"{old_value} → {value}."
+    )
+
 
 def get_project_stack():
 
@@ -197,16 +250,11 @@ def answer_project_question(message):
     # LANGAGE
     # ========================================================
 
-    mots_langage = [
-        "langage",
-        "language",
-        "langage de programmation",
-        "codé",
-        "code",
-        "développé"
-    ]
-
-    if any(mot in text for mot in mots_langage):
+    if (
+        "langage" in text
+        or "language" in text
+        or "langage de programmation" in text
+    ):
 
         langage = project.get("langage")
 
@@ -217,26 +265,79 @@ def answer_project_question(message):
             )
 
     # ========================================================
+    # BACKEND
+    # ========================================================
+
+    if "backend" in text:
+
+        backend = project.get("backend")
+
+        if backend:
+
+            return (
+                f"Le backend du projet utilise {backend}."
+            )
+
+    # ========================================================
+    # FRONTEND
+    # ========================================================
+
+    if "frontend" in text:
+
+        frontend = project.get("frontend")
+
+        if frontend:
+
+            return (
+                f"Le frontend du projet utilise {frontend}."
+            )
+
+    # ========================================================
     # BASE DE DONNÉES
     # ========================================================
 
-    mots_database = [
-        "base de données",
-        "base de donnée",
-        "database",
-        "bdd"
-    ]
+    if (
+        "base de données" in text
+        or "base de donnée" in text
+        or "base de donnees" in text
+        or "base de donnee" in text
+        or "database" in text
+        or "bdd" in text
+    ):
 
-    if any(mot in text for mot in mots_database):
-
-        database = project.get(
-            "base_de_donnees"
-        )
+        database = project.get("base_de_donnees")
 
         if database:
 
             return (
-                f"Le projet utilise {database}."
+                f"Le projet utilise "
+                f"{database} comme base de données."
+            )
+
+    # ========================================================
+    # STACK
+    # ========================================================
+
+    if "stack" in text:
+
+        langage = project.get("langage")
+        backend = project.get("backend")
+        frontend = project.get("frontend")
+        database = project.get("base_de_donnees")
+
+        if any([
+            langage,
+            backend,
+            frontend,
+            database
+        ]):
+
+            return (
+                "La stack actuelle de JARVIS est : "
+                f"développé en {langage}, "
+                f"avec {backend} en backend, "
+                f"{frontend} en frontend, "
+                f"et {database} comme base de données."
             )
 
     return None
@@ -312,4 +413,74 @@ def get_project_information():
     return structured.get(
         "projet",
         {}
+    )
+
+
+def analyze_project_information_v2(message):
+
+    result = parse_project_information(
+        message
+    )
+
+    if not result:
+        return None
+
+    attribute = result["attribute"]
+    value = result["value"]
+
+    return update_project_information(
+        attribute,
+        value
+    )
+
+def analyze_project_update(message):
+    information = parse_project_information(message)
+
+    if not information:
+        return None
+
+    attribute = information["attribute"]
+    new_value = information["value"]
+
+    old_value = get_project_attribute(attribute)
+
+    # --------------------------------------------------------
+    # Aucune ancienne valeur
+    # --------------------------------------------------------
+
+    if old_value is None:
+
+        update_project_attribute(
+            attribute,
+            new_value
+        )
+
+        return (
+            f"J'ai enregistré que "
+            f"{attribute} utilise {new_value}."
+        )
+
+    # --------------------------------------------------------
+    # Même valeur
+    # --------------------------------------------------------
+
+    if old_value == new_value:
+
+        return (
+            f"Cette information est déjà enregistrée : "
+            f"{new_value}."
+        )
+
+    # --------------------------------------------------------
+    # Nouvelle valeur
+    # --------------------------------------------------------
+
+    update_project_attribute(
+        attribute,
+        new_value
+    )
+
+    return (
+        f"J'ai mis à jour {attribute} : "
+        f"{old_value} → {new_value}."
     )
