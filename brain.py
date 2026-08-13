@@ -32,7 +32,6 @@ def think(message):
 
     resolved_reference = resolve_reference(message)
 
-    print("DEBUG RESOLVED :", resolved_reference)
 
     add_message(
     "user",
@@ -80,11 +79,6 @@ def think(message):
     # ========================================================
 
     project_update_response = analyze_project_update(message)
-
-    print(
-        "DEBUG PROJECT UPDATE :",
-        message
-    )
 
     if project_update_response:
 

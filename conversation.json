@@ -1,6 +1,22 @@
 [
     {
         "role": "user",
+        "message": "Où sont stockées les données du projet ?"
+    },
+    {
+        "role": "assistant",
+        "message": "Le projet utilise PostgreSQL comme base de données."
+    },
+    {
+        "role": "user",
+        "message": "Quel backend utilise mon projet ?"
+    },
+    {
+        "role": "assistant",
+        "message": "Le backend du projet utilise Django."
+    },
+    {
+        "role": "user",
         "message": "Quelle technologie gère le serveur ?"
     },
     {
@@ -9,34 +25,18 @@
     },
     {
         "role": "user",
-        "message": "Le backend du projet utilise Django."
+        "message": "Mon backend utilise FastAPI"
     },
     {
         "role": "assistant",
-        "message": "Cette information est déjà enregistrée : Django."
+        "message": "J'ai mis à jour le backend : Django → FastAPI."
     },
     {
         "role": "user",
-        "message": "Quelle technologie gère l'interface ?"
+        "message": "Quel backend utilise mon projet ?"
     },
     {
         "role": "assistant",
-        "message": "Le frontend du projet utilise React."
-    },
-    {
-        "role": "user",
-        "message": "Le frontend du projet utilise React."
-    },
-    {
-        "role": "assistant",
-        "message": "Cette information est déjà enregistrée : React."
-    },
-    {
-        "role": "user",
-        "message": "Où sont stockées les données du projet ?"
-    },
-    {
-        "role": "assistant",
-        "message": "Le projet utilise PostgreSQL comme base de données."
+        "message": "Le backend du projet utilise FastAPI."
     }
 ]
