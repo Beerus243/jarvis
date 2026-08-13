@@ -2,6 +2,7 @@ import json
 
 from text_normalizer import normalize_text
 from project_parser import parse_project_information
+from project_responses import format_project_update
 
 MEMORY_FILE = "user.json"
 
@@ -434,6 +435,7 @@ def analyze_project_information_v2(message):
     )
 
 def analyze_project_update(message):
+
     information = parse_project_information(message)
 
     if not information:
@@ -444,9 +446,9 @@ def analyze_project_update(message):
 
     old_value = get_project_attribute(attribute)
 
-    # --------------------------------------------------------
-    # Aucune ancienne valeur
-    # --------------------------------------------------------
+    # ========================================================
+    # AUCUNE ANCIENNE VALEUR
+    # ========================================================
 
     if old_value is None:
 
@@ -455,32 +457,35 @@ def analyze_project_update(message):
             new_value
         )
 
-        return (
-            f"J'ai enregistré que "
-            f"{attribute} utilise {new_value}."
+        return format_project_update(
+            attribute,
+            None,
+            new_value
         )
 
-    # --------------------------------------------------------
-    # Même valeur
-    # --------------------------------------------------------
+    # ========================================================
+    # MÊME VALEUR
+    # ========================================================
 
     if old_value == new_value:
 
-        return (
-            f"Cette information est déjà enregistrée : "
-            f"{new_value}."
+        return format_project_update(
+            attribute,
+            old_value,
+            new_value
         )
 
-    # --------------------------------------------------------
-    # Nouvelle valeur
-    # --------------------------------------------------------
+    # ========================================================
+    # NOUVELLE VALEUR
+    # ========================================================
 
     update_project_attribute(
         attribute,
         new_value
     )
 
-    return (
-        f"J'ai mis à jour {attribute} : "
-        f"{old_value} → {new_value}."
+    return format_project_update(
+        attribute,
+        old_value,
+        new_value
     )

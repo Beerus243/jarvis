@@ -1,11 +1,19 @@
 [
     {
         "role": "user",
+        "message": "quiiter"
+    },
+    {
+        "role": "assistant",
+        "message": "Je pense que vous voulez dire \"quitter\". Dans ce cas, je suppose que vous voulez quitter notre conversation. Au revoir ! Si vous avez besoin de quoi que ce soit, n'hésitez pas à me contacter à nouveau. Le projet utilise toujours Django comme backend. À bientôt !"
+    },
+    {
+        "role": "user",
         "message": "Mon backend utilise FastAPI"
     },
     {
         "role": "assistant",
-        "message": "J'ai mis à jour backend : Django → FastAPI."
+        "message": "J'ai mis à jour le backend : Django → FastAPI."
     },
     {
         "role": "user",
@@ -17,11 +25,11 @@
     },
     {
         "role": "user",
-        "message": "Maintenant mon backend utilise Django"
+        "message": "Mon backend utilise Django"
     },
     {
         "role": "assistant",
-        "message": "J'ai mis à jour backend : FastAPI → Django."
+        "message": "J'ai mis à jour le backend : FastAPI → Django."
     },
     {
         "role": "user",
@@ -30,13 +38,5 @@
     {
         "role": "assistant",
         "message": "Le backend du projet utilise Django."
-    },
-    {
-        "role": "user",
-        "message": "quiiter"
-    },
-    {
-        "role": "assistant",
-        "message": "Je pense que vous voulez dire \"quitter\". Dans ce cas, je suppose que vous voulez quitter notre conversation. Au revoir ! Si vous avez besoin de quoi que ce soit, n'hésitez pas à me contacter à nouveau. Le projet utilise toujours Django comme backend. À bientôt !"
     }
 ]
