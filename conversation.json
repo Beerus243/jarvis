@@ -1,42 +1,42 @@
 [
     {
         "role": "user",
-        "message": "quiiter"
-    },
-    {
-        "role": "assistant",
-        "message": "Je pense que vous voulez dire \"quitter\". Dans ce cas, je suppose que vous voulez quitter notre conversation. Au revoir ! Si vous avez besoin de quoi que ce soit, n'hésitez pas à me contacter à nouveau. Le projet utilise toujours Django comme backend. À bientôt !"
-    },
-    {
-        "role": "user",
-        "message": "Mon backend utilise FastAPI"
-    },
-    {
-        "role": "assistant",
-        "message": "J'ai mis à jour le backend : Django → FastAPI."
-    },
-    {
-        "role": "user",
-        "message": "Quel backend utilise mon projet ?"
-    },
-    {
-        "role": "assistant",
-        "message": "Le backend du projet utilise FastAPI."
-    },
-    {
-        "role": "user",
-        "message": "Mon backend utilise Django"
-    },
-    {
-        "role": "assistant",
-        "message": "J'ai mis à jour le backend : FastAPI → Django."
-    },
-    {
-        "role": "user",
-        "message": "Quel backend utilise mon projet ?"
+        "message": "Quelle technologie gère le serveur ?"
     },
     {
         "role": "assistant",
         "message": "Le backend du projet utilise Django."
+    },
+    {
+        "role": "user",
+        "message": "Le backend du projet utilise Django."
+    },
+    {
+        "role": "assistant",
+        "message": "Cette information est déjà enregistrée : Django."
+    },
+    {
+        "role": "user",
+        "message": "Quelle technologie gère l'interface ?"
+    },
+    {
+        "role": "assistant",
+        "message": "Le frontend du projet utilise React."
+    },
+    {
+        "role": "user",
+        "message": "Le frontend du projet utilise React."
+    },
+    {
+        "role": "assistant",
+        "message": "Cette information est déjà enregistrée : React."
+    },
+    {
+        "role": "user",
+        "message": "Où sont stockées les données du projet ?"
+    },
+    {
+        "role": "assistant",
+        "message": "Le projet utilise PostgreSQL comme base de données."
     }
 ]

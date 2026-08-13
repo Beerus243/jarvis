@@ -2,7 +2,9 @@ import json
 
 from text_normalizer import normalize_text
 from project_parser import parse_project_information
+from project_questions import detect_project_question
 from project_responses import format_project_update
+from project_questions import detect_project_question
 
 MEMORY_FILE = "user.json"
 
@@ -247,15 +249,13 @@ def answer_project_question(message):
     if not project:
         return None
 
+    question_type = detect_project_question(message)
+
     # ========================================================
     # LANGAGE
     # ========================================================
 
-    if (
-        "langage" in text
-        or "language" in text
-        or "langage de programmation" in text
-    ):
+    if question_type == "langage":
 
         langage = project.get("langage")
 
@@ -269,7 +269,7 @@ def answer_project_question(message):
     # BACKEND
     # ========================================================
 
-    if "backend" in text:
+    if question_type == "backend":
 
         backend = project.get("backend")
 
@@ -283,7 +283,7 @@ def answer_project_question(message):
     # FRONTEND
     # ========================================================
 
-    if "frontend" in text:
+    if question_type == "frontend":
 
         frontend = project.get("frontend")
 
@@ -297,14 +297,7 @@ def answer_project_question(message):
     # BASE DE DONNÉES
     # ========================================================
 
-    if (
-        "base de données" in text
-        or "base de donnée" in text
-        or "base de donnees" in text
-        or "base de donnee" in text
-        or "database" in text
-        or "bdd" in text
-    ):
+    if question_type == "base_de_donnees":
 
         database = project.get("base_de_donnees")
 
@@ -314,35 +307,64 @@ def answer_project_question(message):
                 f"Le projet utilise "
                 f"{database} comme base de données."
             )
+            # ========================================================
+    # TYPE DU PROJET
+    # ========================================================
+
+    if (
+        "type du projet" in text
+        or "type de projet" in text
+        or "quel type de projet" in text
+    ):
+
+        project_type = project.get("type")
+
+        if project_type:
+
+            return (
+                f"JARVIS est un {project_type}."
+            )
 
     # ========================================================
     # STACK
     # ========================================================
 
-    if "stack" in text:
+    if question_type == "stack":
 
         langage = project.get("langage")
         backend = project.get("backend")
         frontend = project.get("frontend")
         database = project.get("base_de_donnees")
 
-        if any([
-            langage,
-            backend,
-            frontend,
-            database
-        ]):
+        elements = []
+
+        if langage:
+            elements.append(
+                f"développé en {langage}"
+            )
+
+        if backend:
+            elements.append(
+                f"avec {backend} en backend"
+            )
+
+        if frontend:
+            elements.append(
+                f"{frontend} en frontend"
+            )
+
+        if database:
+            elements.append(
+                f"{database} comme base de données"
+            )
+
+        if elements:
 
             return (
                 "La stack actuelle de JARVIS est : "
-                f"développé en {langage}, "
-                f"avec {backend} en backend, "
-                f"{frontend} en frontend, "
-                f"et {database} comme base de données."
+                + ", ".join(elements)
+                + "."
             )
-
-    return None
-
 # ============================================================
 # ANALYSER LES INFORMATIONS DU PROJET
 # ============================================================

@@ -19,19 +19,26 @@ tests = [
 for phrase in tests:
 
     result = parse_project_information(phrase)
-
-    print("Phrase :", phrase)
-    print("Résultat :", result)
-    print()
-
-    print(
+print(
     parse_project_information(
-        "Mon backend utilise FastAPI"
+        "Quel backend utilise mon projet ?"
+    )
+)
+
+print(
+    parse_project_information(
+        "Quelle technologie gère le serveur ?"
     )
 )
 
 print(
     parse_project_information(
         "Mon backend utilise Django"
+    )
+)
+
+print(
+    parse_project_information(
+        "Le frontend utilise React"
     )
 )

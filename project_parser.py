@@ -4,6 +4,31 @@ from text_normalizer import normalize_text
 def parse_project_information(message):
 
     text = normalize_text(message)
+        # ========================================================
+    # UNE QUESTION N'EST PAS UNE INFORMATION À MÉMORISER
+    # ========================================================
+
+    question_markers = [
+        "quel",
+        "quelle",
+        "quels",
+        "quelles",
+        "comment",
+        "pourquoi",
+        "ou",
+        "quand",
+        "qui",
+        "est-ce que",
+    ]
+
+    if (
+        text.endswith("?")
+        or any(
+            text.startswith(marker + " ")
+            for marker in question_markers
+        )
+    ):
+        return None
 
     # ========================================================
     # PYTHON

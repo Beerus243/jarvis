@@ -1,23 +1,25 @@
-from structured_memory import (
-    get_project_stack,
-    answer_project_stack
-)
+from structured_memory import answer_project_question
+
+
+questions = [
+    "Quelle technologie gère le serveur ?",
+"Quelle technologie gère l'interface ?",
+"Quelle technologie stocke les données ?",
+"Avec quel langage ai-je développé JARVIS ?",
+]
 
 
 print("================================")
 print("TEST MÉMOIRE STRUCTURÉE")
 print("================================")
 
+for question in questions:
 
-print("\nSTACK :")
+    print()
+    print("Question :", question)
 
-stack = get_project_stack()
+    response = answer_project_question(
+        question
+    )
 
-print(stack)
-
-
-print("\nRÉPONSE :")
-
-response = answer_project_stack()
-
-print(response)
+    print("Réponse :", response)
