@@ -1,5 +1,7 @@
 import json
+
 from text_normalizer import normalize_text
+from project_parser import parse_project_information
 MEMORY_FILE = "user.json"
 
 
@@ -69,11 +71,118 @@ def update_project(attribute, value):
 
     save_memory(user)
 
-def get_project_attribute(attribute):
+def get_project_stack():
 
     project = get_project()
 
-    return project.get(attribute)
+    if not project:
+        return None
+
+    return {
+        "nom": project.get("nom"),
+        "langage": project.get("langage"),
+        "type": project.get("type"),
+        "backend": project.get("backend"),
+        "frontend": project.get("frontend"),
+        "base_de_donnees": project.get(
+            "base_de_donnees"
+        )
+    }
+
+def get_project_stack():
+
+    project = get_project()
+
+    if not project:
+        return None
+
+    langage = project.get("langage")
+    backend = project.get("backend")
+    frontend = project.get("frontend")
+    database = project.get("base_de_donnees")
+
+    return {
+        "langage": langage,
+        "backend": backend,
+        "frontend": frontend,
+        "base_de_donnees": database
+    }
+
+def answer_project_stack():
+
+    stack = get_project_stack()
+
+    if not stack:
+        return None
+
+    parts = []
+
+    if stack["langage"]:
+        parts.append(
+            f"{stack['langage']}"
+        )
+
+    if stack["backend"]:
+        parts.append(
+            f"{stack['backend']} en backend"
+        )
+
+    if stack["frontend"]:
+        parts.append(
+            f"{stack['frontend']} en frontend"
+        )
+
+    if stack["base_de_donnees"]:
+        parts.append(
+            f"{stack['base_de_donnees']} comme base de données"
+        )
+
+    if not parts:
+        return None
+
+    return (
+        "La stack actuelle de JARVIS est : "
+        + ", ".join(parts)
+        + "."
+    )
+
+def answer_project_stack():
+
+    stack = get_project_stack()
+
+    if not stack:
+        return None
+
+    parts = []
+
+    if stack["langage"]:
+        parts.append(
+            f"développé en {stack['langage']}"
+        )
+
+    if stack["backend"]:
+        parts.append(
+            f"avec {stack['backend']} en backend"
+        )
+
+    if stack["frontend"]:
+        parts.append(
+            f"{stack['frontend']} en frontend"
+        )
+
+    if stack["base_de_donnees"]:
+        parts.append(
+            f"et {stack['base_de_donnees']} comme base de données"
+        )
+
+    if not parts:
+        return None
+
+    return (
+        "La stack actuelle de JARVIS est : "
+        + ", ".join(parts)
+        + "."
+    )
 
 def answer_project_question(message):
 
@@ -138,131 +247,57 @@ def answer_project_question(message):
 
 def analyze_project_information(message):
 
-    text = normalize_text(message)
+    result = parse_project_information(message)
 
-    # --------------------------------------------------------
-    # LANGAGE
-    # --------------------------------------------------------
+    if not result:
+        return None
 
-    if (
-    "développé en" in text
-    or "développe en" in text
-    or "développer en" in text
-    or "developpé en" in text
-    or "developpe en" in text
-    or "developper en" in text
-):
+    attribute = result["attribute"]
+    value = result["value"]
 
-        if "python" in text:
+    update_project(
+        attribute,
+        value
+    )
 
-            update_project(
-                "langage",
-                "Python"
-            )
-
-            return (
-                "J'ai enregistré que le projet "
-                "est développé en Python."
-            )
-
-        if "javascript" in text:
-
-            update_project(
-                "langage",
-                "JavaScript"
-            )
-
-            return (
-                "J'ai enregistré que le projet "
-                "est développé en JavaScript."
-            )
-
-        if "typescript" in text:
-
-            update_project(
-                "langage",
-                "TypeScript"
-            )
-
-            return (
-                "J'ai enregistré que le projet "
-                "est développé en TypeScript."
-            )
-
-
-    # --------------------------------------------------------
-    # BASE DE DONNÉES
-    # --------------------------------------------------------
-
-    if (
-        "base de données" in text
-        or "base de donnée" in text
-    ):
-
-        if (
-            "postgresql" in text
-            or "postgres" in text
-        ):
-
-            update_project(
-                "base_de_donnees",
-                "PostgreSQL"
-            )
-
-            return (
-                "J'ai enregistré que le projet "
-                "utilise PostgreSQL."
-            )
-
-        if "mysql" in text:
-
-            update_project(
-                "base_de_donnees",
-                "MySQL"
-            )
-
-            return (
-                "J'ai enregistré que le projet "
-                "utilise MySQL."
-            )
-
-        if (
-            "mongodb" in text
-            or "mongo" in text
-        ):
-
-            update_project(
-                "base_de_donnees",
-                "MongoDB"
-            )
-
-            return (
-                "J'ai enregistré que le projet "
-                "utilise MongoDB."
-            )
-
-
-    # --------------------------------------------------------
-    # TYPE DU PROJET
-    # --------------------------------------------------------
-
-    if (
-        "assistant ia" in text
-        or "assistant intelligent" in text
-    ):
-
-        update_project(
-            "type",
-            "assistant IA"
-        )
+    if attribute == "langage":
 
         return (
-            "J'ai enregistré que JARVIS "
-            "est un assistant IA."
+            f"J'ai enregistré que le projet "
+            f"est développé en {value}."
         )
 
+    if attribute == "backend":
 
-    return None   
+        return (
+            f"J'ai enregistré que le backend "
+            f"utilise {value}."
+        )
+
+    if attribute == "base_de_donnees":
+
+        return (
+            f"J'ai enregistré que le projet "
+            f"utilise {value}."
+        )
+
+    if attribute == "frontend":
+
+        return (
+            f"J'ai enregistré que le frontend "
+            f"utilise {value}."
+        )
+
+    if attribute == "type":
+
+        return (
+            f"J'ai enregistré que JARVIS "
+            f"est un {value}."
+        )
+
+    return (
+        f"J'ai enregistré : {attribute} = {value}."
+    )  
 
 
 def get_project_information():

@@ -3559,7 +3559,10 @@
         "projet": {
             "nom": "JARVIS",
             "langage": "Python",
-            "type": "assistant IA"
+            "type": "assistant IA",
+            "backend": "FastAPI",
+            "base_de_donnees": "PostgreSQL",
+            "frontend": "React"
         }
     }
 }

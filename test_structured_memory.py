@@ -1,30 +1,23 @@
 from structured_memory import (
-    update_project,
-    get_project,
-    get_project_attribute
+    get_project_stack,
+    answer_project_stack
 )
 
 
-update_project(
-    "nom",
-    "JARVIS"
-)
-
-update_project(
-    "langage",
-    "Python"
-)
-
-update_project(
-    "type",
-    "assistant IA"
-)
+print("================================")
+print("TEST MÉMOIRE STRUCTURÉE")
+print("================================")
 
 
-print(
-    get_project()
-)
+print("\nSTACK :")
 
-print(
-    get_project_attribute("langage")
-)
+stack = get_project_stack()
+
+print(stack)
+
+
+print("\nRÉPONSE :")
+
+response = answer_project_stack()
+
+print(response)

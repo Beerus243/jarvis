@@ -3,7 +3,8 @@ from dispatcher import dispatch
 
 from structured_memory import (
     analyze_project_information,
-    answer_project_question
+    answer_project_question,
+    answer_project_stack
 )
 
 from reference import resolve_reference
@@ -92,9 +93,39 @@ def think(message):
 # 3.6 LECTURE DE LA MÉMOIRE STRUCTURÉE
 # ========================================================
 
+    # ========================================================
+    # 3.6.1 QUESTION SUR LA STACK
+    # ========================================================
+
+    normalized_message = message.lower()
+
+    stack_keywords = [
+        "stack",
+        "technologies utilisées",
+        "technologies utilisees",
+        "technologies du projet",
+        "technologies de mon projet"
+    ]
+
+    if any(
+        keyword in normalized_message
+        for keyword in stack_keywords
+    ):
+
+        stack_response = answer_project_stack()
+
+        if stack_response:
+
+            add_message(
+                "assistant",
+                stack_response
+            )
+
+            return stack_response
+
     project_response = answer_project_question(
-    resolved_reference
-)
+        resolved_reference
+    )
 
     if project_response:
 

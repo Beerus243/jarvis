@@ -1,42 +1,42 @@
 [
     {
-        "role": "assistant",
-        "message": "J'ai enregistré que le projet est développé en Python."
-    },
-    {
         "role": "user",
-        "message": "il est développé en quel langage ?"
-    },
-    {
-        "role": "user",
-        "message": "le projet est développé en python"
-    },
-    {
-        "role": "assistant",
-        "message": "J'ai enregistré que le projet est développé en Python."
-    },
-    {
-        "role": "user",
-        "message": "il est développé en quel langage ?"
-    },
-    {
-        "role": "assistant",
         "message": "Le projet est développé en Python."
     },
     {
-        "role": "user",
-        "message": "le projet est DEVELOPPE en PYTHON"
-    },
-    {
         "role": "assistant",
         "message": "J'ai enregistré que le projet est développé en Python."
     },
     {
         "role": "user",
-        "message": "IL est développé en quel langage ?"
+        "message": "Le backend utilise FastAPI."
     },
     {
         "role": "assistant",
-        "message": "Le projet est développé en Python."
+        "message": "J'ai enregistré que le backend utilise FastAPI."
+    },
+    {
+        "role": "user",
+        "message": "Le projet utilise PostgreSQL."
+    },
+    {
+        "role": "assistant",
+        "message": "J'ai enregistré que le projet utilise PostgreSQL."
+    },
+    {
+        "role": "user",
+        "message": "Le frontend utilise React."
+    },
+    {
+        "role": "assistant",
+        "message": "J'ai enregistré que le frontend utilise React."
+    },
+    {
+        "role": "user",
+        "message": "Quelle est la stack de mon project ?"
+    },
+    {
+        "role": "assistant",
+        "message": "La stack actuelle de JARVIS est : développé en Python, avec FastAPI en backend, React en frontend, et PostgreSQL comme base de données."
     }
 ]
