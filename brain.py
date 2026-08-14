@@ -1,6 +1,11 @@
 from intent import detect_intent
 from dispatcher import dispatch
-
+from operation_router import (
+    detect_operation,
+    READ_MEMORY,
+    UPDATE_MEMORY,
+    ASK_AI
+)
 from structured_memory import (
     analyze_project_information,
     analyze_project_update,
@@ -29,7 +34,7 @@ def think(message):
     # ========================================================
     # 1. AJOUTER LE MESSAGE UTILISATEUR
     # ========================================================
-
+    operation = detect_operation(message)
     resolved_reference = resolve_reference(message)
 
 
@@ -123,13 +128,15 @@ def think(message):
 
             return stack_response
 
-    project_response = answer_project_question(
+        if operation == READ_MEMORY:
+
+            project_response = answer_project_question(
         resolved_reference
     )
 
-    if project_response:
+        if project_response:
 
-        add_message(
+            add_message(
             "assistant",
             project_response
         )

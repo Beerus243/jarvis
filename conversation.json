@@ -1,42 +1,42 @@
 [
     {
         "role": "user",
-        "message": "Où sont stockées les données du projet ?"
+        "message": "ma couleur préférée est le jaune"
     },
     {
         "role": "assistant",
-        "message": "Le projet utilise PostgreSQL comme base de données."
+        "message": "J'ai retenu que votre couleur préférée est le jaune."
     },
     {
         "role": "user",
-        "message": "Quel backend utilise mon projet ?"
+        "message": "quel est ma couleur préférée ?"
     },
     {
         "role": "assistant",
-        "message": "Le backend du projet utilise Django."
+        "message": "Je me souviens ! Votre couleur préférée est le jaune."
     },
     {
         "role": "user",
-        "message": "Quelle technologie gère le serveur ?"
+        "message": "pourquoi python est si connu ?"
     },
     {
         "role": "assistant",
-        "message": "Le backend du projet utilise Django."
+        "message": "Désolé Fabrice, je rencontre un problème avec mon cerveau IA."
     },
     {
         "role": "user",
-        "message": "Mon backend utilise FastAPI"
+        "message": "quelle est ma couleur préférée ?"
     },
     {
         "role": "assistant",
-        "message": "J'ai mis à jour le backend : Django → FastAPI."
+        "message": "Désolé Fabrice, je rencontre un problème avec mon cerveau IA."
     },
     {
         "role": "user",
-        "message": "Quel backend utilise mon projet ?"
+        "message": "quelle est ma couleur préférée ?"
     },
     {
         "role": "assistant",
-        "message": "Le backend du projet utilise FastAPI."
+        "message": "Votre couleur préférée est le jaune, Fabrice."
     }
 ]
