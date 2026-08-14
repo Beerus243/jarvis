@@ -4,6 +4,7 @@ from operation_router import (
     detect_operation,
     READ_MEMORY,
     UPDATE_MEMORY,
+    ACTION,
     ASK_AI
 )
 from structured_memory import (
@@ -34,6 +35,7 @@ def think(message):
     # ========================================================
     # 1. AJOUTER LE MESSAGE UTILISATEUR
     # ========================================================
+    
     operation = detect_operation(message)
     resolved_reference = resolve_reference(message)
 
@@ -47,6 +49,28 @@ def think(message):
     # ========================================================
     # 2. COMMANDES
     # ========================================================
+
+    # ========================================================
+    # ACTION
+    # ========================================================
+
+    if operation == ACTION:
+
+        intent = detect_intent(message)
+
+        if intent:
+
+            response = dispatch(intent)
+
+            if response:
+
+                add_message(
+                    "assistant",
+                    response
+                )
+
+                return response
+
 
     intent = detect_intent(message)
 
@@ -83,16 +107,24 @@ def think(message):
     # 3.5 MÉMOIRE STRUCTURÉE
     # ========================================================
 
-    project_update_response = analyze_project_update(message)
+     # ========================================================
+    # MISE À JOUR MÉMOIRE
+    # ========================================================
 
-    if project_update_response:
+    if operation == UPDATE_MEMORY:
 
-        add_message(
-            "assistant",
-            project_update_response
+        project_update_response = analyze_project_update(
+            message
         )
 
-        return project_update_response
+        if project_update_response:
+
+            add_message(
+                "assistant",
+                project_update_response
+            )
+
+            return project_update_response
 
     # ========================================================
     # 3.6 LECTURE DE LA MÉMOIRE STRUCTURÉE
@@ -130,9 +162,24 @@ def think(message):
 
         if operation == READ_MEMORY:
 
-            project_response = answer_project_question(
-        resolved_reference
-    )
+    # ========================================================
+    # LECTURE MÉMOIRE
+    # ========================================================
+
+            if operation == READ_MEMORY:
+
+                project_response = answer_project_question(
+            resolved_reference
+        )
+
+        if project_response:
+
+            add_message(
+                "assistant",
+                project_response
+            )
+
+            return project_response
 
         if project_response:
 

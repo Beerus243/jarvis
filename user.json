@@ -3953,7 +3953,7 @@
             "nom": "JARVIS",
             "langage": "Python",
             "type": "assistant IA",
-            "backend": "Django",
+            "backend": "FastAPI",
             "base_de_donnees": "PostgreSQL",
             "frontend": "React"
         }

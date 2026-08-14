@@ -1,6 +1,7 @@
 from text_normalizer import normalize_text
 from project_parser import parse_project_information
 from project_questions import detect_project_question
+from intent import detect_intent
 
 
 # ============================================================
@@ -9,6 +10,7 @@ from project_questions import detect_project_question
 
 READ_MEMORY = "READ_MEMORY"
 UPDATE_MEMORY = "UPDATE_MEMORY"
+ACTION = "ACTION"
 ASK_AI = "ASK_AI"
 
 
@@ -34,7 +36,18 @@ def detect_operation(message):
 
 
     # ========================================================
-    # 2. QUESTION SUR LE PROJET
+    # 2. ACTION
+    # ========================================================
+
+    intent = detect_intent(message)
+
+    if intent:
+
+        return ACTION
+
+
+    # ========================================================
+    # 3. QUESTION SUR LE PROJET
     # ========================================================
 
     project_question = detect_project_question(
@@ -47,7 +60,7 @@ def detect_operation(message):
 
 
     # ========================================================
-    # 3. QUESTION GÉNÉRALE
+    # 4. QUESTION GÉNÉRALE
     # ========================================================
 
     if (
@@ -62,7 +75,7 @@ def detect_operation(message):
 
 
     # ========================================================
-    # 4. PAR DÉFAUT
+    # 5. PAR DÉFAUT
     # ========================================================
 
     return ASK_AI

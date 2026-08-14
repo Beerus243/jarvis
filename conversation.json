@@ -1,42 +1,42 @@
 [
     {
         "role": "user",
-        "message": "ma couleur préférée est le jaune"
+        "message": "Quel backend utilise mon projet ?"
     },
     {
         "role": "assistant",
-        "message": "J'ai retenu que votre couleur préférée est le jaune."
+        "message": "Je ne dispose pas d'informations sur le backend spécifique utilisé par votre projet, Fabrice. Pouvez-vous me fournir plus de détails sur votre projet Jarvis ?"
     },
     {
         "role": "user",
-        "message": "quel est ma couleur préférée ?"
+        "message": "Quel backend utilise mon projet ?"
     },
     {
         "role": "assistant",
-        "message": "Je me souviens ! Votre couleur préférée est le jaune."
+        "message": "Je n'ai toujours pas d'informations sur le backend utilisé par votre projet Jarvis, Fabrice. Si vous souhaitez me partager ces informations, je serais ravi de les connaître."
     },
     {
         "role": "user",
-        "message": "pourquoi python est si connu ?"
+        "message": "Mon backend utilise FastAPI"
     },
     {
         "role": "assistant",
-        "message": "Désolé Fabrice, je rencontre un problème avec mon cerveau IA."
+        "message": "J'ai mis à jour le backend : Django → FastAPI."
     },
     {
         "role": "user",
-        "message": "quelle est ma couleur préférée ?"
+        "message": "Ouvre Spotify"
     },
     {
         "role": "assistant",
-        "message": "Désolé Fabrice, je rencontre un problème avec mon cerveau IA."
+        "message": "J'ouvre Spotify."
     },
     {
         "role": "user",
-        "message": "quelle est ma couleur préférée ?"
+        "message": "Pourquoi Python est-il populaire ?"
     },
     {
         "role": "assistant",
-        "message": "Votre couleur préférée est le jaune, Fabrice."
+        "message": "Python est populaire pour plusieurs raisons. Tout d'abord, il est facile à apprendre et à utiliser, même pour les débutants. Il a également une grande communauté de développeurs, ce qui signifie qu'il y a de nombreuses ressources disponibles pour les aider. De plus, Python est très polyvalent et peut être utilisé pour une variété de tâches, telles que le développement web, l'analyse de données, l'intelligence artificielle, etc. Il est également compatible avec de nombreux systèmes d'exploitation et a une grande collection de bibliothèques et de frameworks, comme FastAPI que vous utilisez pour votre backend. Tout cela contribue à sa popularité parmi les développeurs."
     }
 ]

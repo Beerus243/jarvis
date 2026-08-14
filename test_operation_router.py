@@ -2,19 +2,20 @@ from operation_router import (
     detect_operation,
     READ_MEMORY,
     UPDATE_MEMORY,
+    ACTION,
     ASK_AI
 )
 
 
 tests = [
     "Quel backend utilise mon projet ?",
-    "Quelle technologie gère le serveur ?",
     "Quelle est la stack de mon projet ?",
     "Mon backend utilise FastAPI",
     "Le frontend utilise React",
-    "Le projet est développé en Python",
-    "Pourquoi Python est-il populaire ?",
-    "Explique-moi ce qu'est une API"
+    "Ouvre Spotify",
+    "Quelle heure est-il ?",
+    "Pourquoi Python est populaire ?",
+    "Explique-moi ce qu'est une API",
 ]
 
 
