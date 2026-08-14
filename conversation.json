@@ -5,15 +5,7 @@
     },
     {
         "role": "assistant",
-        "message": "Je ne dispose pas d'informations sur le backend spécifique utilisé par votre projet, Fabrice. Pouvez-vous me fournir plus de détails sur votre projet Jarvis ?"
-    },
-    {
-        "role": "user",
-        "message": "Quel backend utilise mon projet ?"
-    },
-    {
-        "role": "assistant",
-        "message": "Je n'ai toujours pas d'informations sur le backend utilisé par votre projet Jarvis, Fabrice. Si vous souhaitez me partager ces informations, je serais ravi de les connaître."
+        "message": "Le backend du projet utilise FastAPI."
     },
     {
         "role": "user",
@@ -21,7 +13,23 @@
     },
     {
         "role": "assistant",
-        "message": "J'ai mis à jour le backend : Django → FastAPI."
+        "message": "Cette information est déjà enregistrée : FastAPI."
+    },
+    {
+        "role": "user",
+        "message": "Quel backend utilise mon projet ?"
+    },
+    {
+        "role": "assistant",
+        "message": "Le backend du projet utilise FastAPI."
+    },
+    {
+        "role": "user",
+        "message": "Pourquoi Python est-il populaire ?"
+    },
+    {
+        "role": "assistant",
+        "message": "Python est populaire pour plusieurs raisons :\n\n1. **Facilité d'utilisation** : Python a une syntaxe simple et lisible, ce qui le rend facile à apprendre et à utiliser, même pour les débutants.\n2. **Polyvalence** : Python peut être utilisé pour une large gamme de tâches, telles que le développement web, l'analyse de données, l'intelligence artificielle, l'automatisation de tâches, etc.\n3. **Bibliothèques et frameworks** : Python dispose d'une grande collection de bibliothèques et de frameworks qui facilitent le développement de projets, tels que NumPy, pandas, Flask, Django, etc.\n4. **Communauté active** : La communauté Python est très active et contribue régulièrement à l'amélioration du langage et à la création de nouvelles bibliothèques et outils.\n5. **Compatibilité** : Python est compatible avec la plupart des systèmes d'exploitation, ce qui le rend facile à utiliser sur différents environnements.\n\nCes facteurs contribuent à la popularité de Python et en font un langage de programmation très utilisé dans de nombreux domaines. Et, comme vous utilisez FastAPI, c'est probablement que vous appréciez la rapidité et la facilité d'utilisation de Python pour le développement web !"
     },
     {
         "role": "user",
@@ -30,13 +38,5 @@
     {
         "role": "assistant",
         "message": "J'ouvre Spotify."
-    },
-    {
-        "role": "user",
-        "message": "Pourquoi Python est-il populaire ?"
-    },
-    {
-        "role": "assistant",
-        "message": "Python est populaire pour plusieurs raisons. Tout d'abord, il est facile à apprendre et à utiliser, même pour les débutants. Il a également une grande communauté de développeurs, ce qui signifie qu'il y a de nombreuses ressources disponibles pour les aider. De plus, Python est très polyvalent et peut être utilisé pour une variété de tâches, telles que le développement web, l'analyse de données, l'intelligence artificielle, etc. Il est également compatible avec de nombreux systèmes d'exploitation et a une grande collection de bibliothèques et de frameworks, comme FastAPI que vous utilisez pour votre backend. Tout cela contribue à sa popularité parmi les développeurs."
     }
 ]
