@@ -1,19 +1,59 @@
-THRESHOLD = 0.45
+from memory import find_semantic_memory
 
-tests = [
-    ("Quelle technologie gère mon serveur ?", 0.3710),
-    ("Quelle technologie utilise mon interface ?", 0.4221),
-    ("Quelle est ma couleur préférée ?", 0.3350),
-    ("Qu'est-ce que j'aime regarder ?", 0.6951),
+
+# ============================================================
+# TEST MÉMOIRE SÉMANTIQUE HYBRIDE — JARVIS V1.7
+# ============================================================
+
+QUESTIONS = [
+    "Quelle technologie gère mon serveur ?",
+    "Quelle technologie utilise mon interface ?",
+    "Quelle est ma couleur préférée ?",
+    "Qu'est-ce que j'aime regarder ?",
+    "Avec quel langage ai-je développé le projet ?",
+    "Où sont stockées les données ?",
 ]
 
-for question, score in tests:
+
+print("=" * 60)
+print("TEST MÉMOIRE SÉMANTIQUE HYBRIDE — JARVIS V1.7")
+print("=" * 60)
+
+
+for question in QUESTIONS:
 
     print()
-    print("Question :", question)
-    print("Score :", score)
+    print("-" * 60)
+    print(f"Question : {question}")
+    print("-" * 60)
 
-    if score >= THRESHOLD:
-        print("✓ Pertinent")
+    souvenir = find_semantic_memory(question)
+
+    if souvenir:
+
+        print()
+        print("✓ SOUVENIR RETENU")
+        print()
+        print(
+            f"ID         : {souvenir.get('id', 'inconnu')}"
+        )
+        print(
+            f"Catégorie  : {souvenir.get('categorie', 'inconnue')}"
+        )
+        print(
+            f"Contenu    : {souvenir.get('contenu', '')}"
+        )
+        print(
+            f"Importance : {souvenir.get('importance', 'inconnue')}"
+        )
+
     else:
-        print("✗ Rejeté")
+
+        print()
+        print("✗ Aucun souvenir suffisamment pertinent")
+
+
+print()
+print("=" * 60)
+print("FIN DU TEST")
+print("=" * 60)

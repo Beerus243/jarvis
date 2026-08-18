@@ -639,7 +639,6 @@ STOP_WORDS = {
 # ============================================================
 # RECHERCHE SÉMANTIQUE
 # ============================================================
-
 def find_semantic_memory(message):
 
     user = load_memory()
@@ -652,29 +651,126 @@ def find_semantic_memory(message):
     if not souvenirs:
         return None
 
+    # ========================================================
+    # EMBEDDING DE LA QUESTION
+    # ========================================================
+
     query_embedding = create_memory_embedding(message)
+
+    # ========================================================
+    # MOTS DE LA QUESTION
+    # ========================================================
+
+    mots_question = [
+        mot
+        for mot in message.lower().split()
+        if mot not in STOP_WORDS
+    ]
 
     meilleur_score = 0
     meilleur_souvenir = None
 
+    # ========================================================
+    # ANALYSE DE CHAQUE SOUVENIR
+    # ========================================================
+
     for souvenir in souvenirs:
 
-        embedding = souvenir.get("embedding")
+        contenu = souvenir.get(
+            "contenu",
+            ""
+        ).lower()
+
+        embedding = souvenir.get(
+            "embedding"
+        )
 
         if not embedding:
             continue
 
-        score = similarity(
+        # ----------------------------------------------------
+        # SCORE SÉMANTIQUE
+        # ----------------------------------------------------
+
+        score_semantique = similarity(
             query_embedding,
             embedding
         )
 
-        if score > meilleur_score:
+        # ----------------------------------------------------
+        # SCORE LEXICAL
+        # ----------------------------------------------------
 
-            meilleur_score = score
+        score_lexical = 0
+
+        for mot in mots_question:
+
+            if mot in contenu:
+
+                score_lexical += 1
+
+            # ------------------------------------------------
+            # SYNONYMES
+            # ------------------------------------------------
+
+            for mot_principal, synonymes in SYNONYMES.items():
+
+                if mot == mot_principal:
+
+                    for synonyme in synonymes:
+
+                        if synonyme in contenu:
+                            score_lexical += 1
+
+                elif mot in synonymes:
+
+                    if mot_principal in contenu:
+                        score_lexical += 1
+
+        # ----------------------------------------------------
+        # NORMALISATION DU SCORE LEXICAL
+        # ----------------------------------------------------
+
+        if mots_question:
+
+            score_lexical = min(
+                score_lexical / len(mots_question),
+                1
+            )
+
+        # ----------------------------------------------------
+        # SCORE FINAL
+        # ----------------------------------------------------
+
+        score_final = (
+            score_semantique * 0.65
+            +
+            score_lexical * 0.35
+        )
+
+        print(
+            f"[MEMORY] "
+            f"{score_semantique:.3f} semantic | "
+            f"{score_lexical:.3f} lexical | "
+            f"{score_final:.3f} final | "
+            f"{contenu}"
+        )
+
+        # ----------------------------------------------------
+        # MEILLEUR SOUVENIR
+        # ----------------------------------------------------
+
+        if score_final > meilleur_score:
+
+            meilleur_score = score_final
             meilleur_souvenir = souvenir
 
-    if meilleur_score < 0.50:
+    # ========================================================
+    # SEUIL DE CONFIANCE
+    # ========================================================
+
+    if meilleur_score < 0.45:
+
         return None
 
     return meilleur_souvenir
