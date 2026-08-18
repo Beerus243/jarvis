@@ -24,7 +24,8 @@ client = OpenAI(
 )
 
 
-MODEL = "llama-3.3-70b-versatile"
+# Modèle récent recommandé par Groq après le retrait de Llama 3.3.
+MODEL = os.getenv("MODEL", "openai/gpt-oss-120b")
 
 
 def ask_ai(message, memory_context=""):
@@ -35,7 +36,6 @@ def ask_ai(message, memory_context=""):
         {
             "role": "system",
             "content": (
-                "Tu es JARVIS, l'assistant personnel de Fabrice. "
                 "Tu es JARVIS, l'assistant personnel de Fabrice. "
 "Réponds toujours en français. "
 "Adapte la longueur de ta réponse à la question. "
@@ -87,9 +87,19 @@ def ask_ai(message, memory_context=""):
 
     except Exception as error:
 
-        print(f"Erreur Groq : {error}")
+        err_str = str(error)
+        print(f"Erreur Groq : {err_str}")
+
+        # Fournir un message clair si le modèle est introuvable
+        if "model_not_found" in err_str or "does not exist" in err_str:
+            return (
+                "Désolé Fabrice, le modèle demandé n'est pas disponible "
+                "ou tu n'y as pas accès. Vérifie la variable d'environnement "
+                "`MODEL` dans ton fichier .env (par ex. "
+                "MODEL=openai/gpt-oss-120b) "
+                "ou demande l'accès au modèle auprès du fournisseur."
+            )
 
         return (
-            "Désolé Fabrice, je rencontre "
-            "un problème avec mon cerveau IA."
+            "Désolé Fabrice, je rencontre un problème avec mon cerveau IA."
         )

@@ -1,42 +1,42 @@
 [
     {
         "role": "user",
-        "message": "Quel backend utilise mon projet ?"
+        "message": "/home/malangafabrice/dev/jarvis/.venv/bin/python /home/malangafabrice/dev/jarvis/main.py"
     },
     {
         "role": "assistant",
-        "message": "Le backend du projet utilise FastAPI."
+        "message": "Désolé Fabrice, le modèle demandé n'est pas disponible ou tu n'y as pas accès. Vérifie la variable d'environnement `MODEL` dans ton fichier .env (par ex. MODEL=gpt-3.5-turbo) ou demande l'accès au modèle auprès du fournisseur."
     },
     {
         "role": "user",
-        "message": "Mon backend utilise FastAPI"
+        "message": "c'est quoi python ?"
     },
     {
         "role": "assistant",
-        "message": "Cette information est déjà enregistrée : FastAPI."
+        "message": "Désolé Fabrice, le modèle demandé n'est pas disponible ou tu n'y as pas accès. Vérifie la variable d'environnement `MODEL` dans ton fichier .env (par ex. MODEL=gpt-3.5-turbo) ou demande l'accès au modèle auprès du fournisseur."
     },
     {
         "role": "user",
-        "message": "Quel backend utilise mon projet ?"
+        "message": "/home/malangafabrice/dev/jarvis/.venv/bin/python /home/malangafabrice/dev/jarvis/main.py"
     },
     {
         "role": "assistant",
-        "message": "Le backend du projet utilise FastAPI."
+        "message": "Désolé Fabrice, le modèle demandé n'est pas disponible ou tu n'y as pas accès. Vérifie la variable d'environnement `MODEL` dans ton fichier .env (par ex. MODEL=gpt-3.5-turbo) ou demande l'accès au modèle auprès du fournisseur."
     },
     {
         "role": "user",
-        "message": "Pourquoi Python est-il populaire ?"
+        "message": "c'est quoi python ?"
     },
     {
         "role": "assistant",
-        "message": "Python est populaire pour plusieurs raisons :\n\n1. **Facilité d'utilisation** : Python a une syntaxe simple et lisible, ce qui le rend facile à apprendre et à utiliser, même pour les débutants.\n2. **Polyvalence** : Python peut être utilisé pour une large gamme de tâches, telles que le développement web, l'analyse de données, l'intelligence artificielle, l'automatisation de tâches, etc.\n3. **Bibliothèques et frameworks** : Python dispose d'une grande collection de bibliothèques et de frameworks qui facilitent le développement de projets, tels que NumPy, pandas, Flask, Django, etc.\n4. **Communauté active** : La communauté Python est très active et contribue régulièrement à l'amélioration du langage et à la création de nouvelles bibliothèques et outils.\n5. **Compatibilité** : Python est compatible avec la plupart des systèmes d'exploitation, ce qui le rend facile à utiliser sur différents environnements.\n\nCes facteurs contribuent à la popularité de Python et en font un langage de programmation très utilisé dans de nombreux domaines. Et, comme vous utilisez FastAPI, c'est probablement que vous appréciez la rapidité et la facilité d'utilisation de Python pour le développement web !"
+        "message": "Désolé Fabrice, le modèle demandé n'est pas disponible ou tu n'y as pas accès. Vérifie la variable d'environnement `MODEL` dans ton fichier .env (par ex. MODEL=gpt-3.5-turbo) ou demande l'accès au modèle auprès du fournisseur."
     },
     {
         "role": "user",
-        "message": "Ouvre Spotify"
+        "message": "c'est quoi python ?"
     },
     {
         "role": "assistant",
-        "message": "J'ouvre Spotify."
+        "message": "Python est un langage de programmation :  \n\n- **Haut‑niveau** et très lisible, avec une syntaxe proche du langage naturel (ex. : `if x > 0:`).  \n- **Interprété** : le code est exécuté ligne par ligne par l’interpréteur, pas besoin de compilation préalable.  \n- **Multi‑paradigme** : il supporte la programmation procédurale, orientée objet et fonctionnelle.  \n- **Créé en 1991** par **Guido van Rossum**, qui voulait un langage simple, puissant et extensible.  \n- **Portabilité** : fonctionne sur Windows, macOS, Linux, et même sur des appareils embarqués.  \n- **Écosystème riche** : des milliers de bibliothèques (NumPy, pandas, Django, Flask, TensorFlow, etc.) permettent de faire du calcul scientifique, du développement web, de l’automatisation, de l’intelligence artificielle, etc.  \n\nEn résumé, Python est un outil polyvalent, apprécié pour sa facilité d’apprentissage et sa capacité à résoudre rapidement des problèmes dans de nombreux domaines."
     }
 ]

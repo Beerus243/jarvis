@@ -291,7 +291,7 @@ def recall_memory(message):
             f"{souvenir['contenu']}."
         )
     user = load_memory()    
-
+    souvenirs = user.get("souvenirs", [])
     # ========================================================
     # PROJET
     # ========================================================
@@ -674,7 +674,7 @@ def find_semantic_memory(message):
             meilleur_score = score
             meilleur_souvenir = souvenir
 
-    if meilleur_score < 0.45:
+    if meilleur_score < 0.50:
         return None
 
     return meilleur_souvenir
