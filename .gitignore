@@ -40,6 +40,10 @@ wget-log
 # User data
 user.json
 history.json
+!data/
+!data/user.json
+!data/history.json
+!data/conversation.json
 
 # Backups / temporary
 *.backup

@@ -8,20 +8,21 @@
 # ============================================================
 
 # Cerveau principal
-from brain import think
+from core.brain import think
 
 # Mémoire utilisateur
 import json
+from config.settings import MEMORY_FILE
 
 # Modules conservés pour l'architecture de JARVIS
-from habits import analyze_habit
-from history import save_message
-from tools import open_browser, get_time, open_musique
-from personality import speak
-from intent import detect_intent
-from dispatcher import dispatch
-from user_profile import analyze_profile
-from ai import ask_ai
+from core.habits import analyze_habit
+from core.history import save_message
+from tools.tools import open_browser, get_time, open_musique
+from personality.personality import speak
+from core.intent import detect_intent
+from core.dispatcher import dispatch
+from core.user_profile import analyze_profile
+from ai.ai import ask_ai
 
 
 # ============================================================
@@ -30,7 +31,7 @@ from ai import ask_ai
 
 def load_memory():
 
-    with open("user.json", "r") as f:
+    with open(MEMORY_FILE, "r", encoding="utf-8") as f:
 
         user = json.load(f)
 
@@ -42,7 +43,7 @@ user = load_memory()
 
 def save_memory():
 
-    with open("user.json", "w") as f:
+    with open(MEMORY_FILE, "w", encoding="utf-8") as f:
 
         json.dump(user, f, indent=4)
 
