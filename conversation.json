@@ -1,14 +1,6 @@
 [
     {
         "role": "user",
-        "message": "/home/malangafabrice/dev/jarvis/.venv/bin/python /home/malangafabrice/dev/jarvis/main.py"
-    },
-    {
-        "role": "assistant",
-        "message": "Désolé Fabrice, le modèle demandé n'est pas disponible ou tu n'y as pas accès. Vérifie la variable d'environnement `MODEL` dans ton fichier .env (par ex. MODEL=gpt-3.5-turbo) ou demande l'accès au modèle auprès du fournisseur."
-    },
-    {
-        "role": "user",
         "message": "c'est quoi python ?"
     },
     {
@@ -38,5 +30,13 @@
     {
         "role": "assistant",
         "message": "Python est un langage de programmation :  \n\n- **Haut‑niveau** et très lisible, avec une syntaxe proche du langage naturel (ex. : `if x > 0:`).  \n- **Interprété** : le code est exécuté ligne par ligne par l’interpréteur, pas besoin de compilation préalable.  \n- **Multi‑paradigme** : il supporte la programmation procédurale, orientée objet et fonctionnelle.  \n- **Créé en 1991** par **Guido van Rossum**, qui voulait un langage simple, puissant et extensible.  \n- **Portabilité** : fonctionne sur Windows, macOS, Linux, et même sur des appareils embarqués.  \n- **Écosystème riche** : des milliers de bibliothèques (NumPy, pandas, Django, Flask, TensorFlow, etc.) permettent de faire du calcul scientifique, du développement web, de l’automatisation, de l’intelligence artificielle, etc.  \n\nEn résumé, Python est un outil polyvalent, apprécié pour sa facilité d’apprentissage et sa capacité à résoudre rapidement des problèmes dans de nombreux domaines."
+    },
+    {
+        "role": "user",
+        "message": "J'aime regarder des films et des animés"
+    },
+    {
+        "role": "assistant",
+        "message": "Super ! Quels sont tes genres ou titres préférés ? 🎬🍿 Ça m’aidera à te proposer des films ou des animés qui correspondent à tes goûts."
     }
 ]

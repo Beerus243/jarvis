@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import datetime
 
 from semantic_memory import (
@@ -6,6 +7,7 @@ from semantic_memory import (
     create_memory_embedding,
     search_semantic_memory
 )
+
 
 MEMORY_FILE = "user.json"
 
@@ -18,10 +20,18 @@ def load_memory():
 
     try:
 
-        with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+        with open(
+            MEMORY_FILE,
+            "r",
+            encoding="utf-8"
+        ) as f:
+
             return json.load(f)
 
-    except (FileNotFoundError, json.JSONDecodeError):
+    except (
+        FileNotFoundError,
+        json.JSONDecodeError
+    ):
 
         return {}
 
@@ -32,7 +42,11 @@ def load_memory():
 
 def save_memory(user):
 
-    with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+    with open(
+        MEMORY_FILE,
+        "w",
+        encoding="utf-8"
+    ) as f:
 
         json.dump(
             user,
@@ -43,73 +57,794 @@ def save_memory(user):
 
 
 # ============================================================
-# GÉNÉRER UN ID DE SOUVENIR
+# ID MÉMOIRE
 # ============================================================
 
 def generate_memory_id(user):
 
-    souvenirs = user.get("souvenirs", [])
+    souvenirs = user.get(
+        "souvenirs",
+        []
+    )
 
     if not souvenirs:
+
         return "s001"
 
     numbers = []
 
     for souvenir in souvenirs:
 
-        identifiant = souvenir.get("id", "")
+        identifiant = souvenir.get(
+            "id",
+            ""
+        )
 
         if identifiant.startswith("s"):
 
             try:
+
                 numbers.append(
                     int(identifiant[1:])
                 )
 
             except ValueError:
+
                 pass
 
     if not numbers:
+
         return "s001"
 
     return f"s{max(numbers) + 1:03d}"
 
 
 # ============================================================
-# MÉMORISER UNE INFORMATION
+# MÉMORISER
 # ============================================================
 
-def remember(contenu, categorie, importance="moyenne"):
+def remember(
+    contenu,
+    categorie,
+    importance="moyenne"
+):
 
     user = load_memory()
 
     if "souvenirs" not in user:
+
         user["souvenirs"] = []
 
-    # ========================================================
-    # CRÉER L'EMBEDDING DU SOUVENIR
-    # ========================================================
+    # --------------------------------------------------------
+    # ÉVITER LES DOUBLONS EXACTS
+    # --------------------------------------------------------
 
-    embedding = create_memory_embedding(contenu)
+    contenu_normalise = contenu.strip().lower()
 
-    # ========================================================
-    # CRÉER LE SOUVENIR
-    # ========================================================
+    for souvenir in user["souvenirs"]:
+
+        ancien = souvenir.get(
+            "contenu",
+            ""
+        ).strip().lower()
+
+        if ancien == contenu_normalise:
+
+            return souvenir
+
+    # --------------------------------------------------------
+    # EMBEDDING
+    # --------------------------------------------------------
+
+    embedding = create_memory_embedding(
+        contenu
+    )
+
+    # --------------------------------------------------------
+    # SOUVENIR
+    # --------------------------------------------------------
 
     souvenir = {
-        "id": f"s{len(user['souvenirs']) + 1:03d}",
+
+        "id": generate_memory_id(user),
+
         "contenu": contenu,
+
         "categorie": categorie,
+
         "date": datetime.now().isoformat(),
+
         "importance": importance,
+
         "embedding": embedding
+
     }
 
-    user["souvenirs"].append(souvenir)
+    user["souvenirs"].append(
+        souvenir
+    )
 
     save_memory(user)
 
     return souvenir
+
+
+# ============================================================
+# NORMALISATION
+# ============================================================
+
+def normalize_text(text):
+
+    text = text.lower()
+
+    text = text.replace(
+        "’",
+        "'"
+    )
+
+    text = re.sub(
+        r"[^\w\sàâäéèêëîïôöùûüÿç]",
+        " ",
+        text
+    )
+
+    text = re.sub(
+        r"\s+",
+        " ",
+        text
+    )
+
+    return text.strip()
+
+
+# ============================================================
+# CONCEPTS
+# ============================================================
+
+CONCEPTS = {
+
+    "backend": {
+        "mots": [
+            "backend",
+            "back end",
+            "serveur",
+            "api",
+            "service",
+            "fastapi",
+            "django",
+            "flask",
+            "nestjs",
+            "node"
+        ]
+    },
+
+    "frontend": {
+        "mots": [
+            "frontend",
+            "front end",
+            "interface",
+            "ui",
+            "client",
+            "react",
+            "vue",
+            "angular",
+            "nextjs",
+            "next js"
+        ]
+    },
+
+    "langage": {
+        "mots": [
+            "langage",
+            "langage de programmation",
+            "programmé",
+            "programme",
+            "programmer",
+            "code",
+            "codé",
+            "python",
+            "javascript",
+            "typescript",
+            "java",
+            "c++"
+        ]
+    },
+
+    "database": {
+        "mots": [
+            "base de données",
+            "base",
+            "données",
+            "stockées",
+            "stockage",
+            "database",
+            "db",
+            "postgresql",
+            "mysql",
+            "mongodb",
+            "sqlite"
+        ]
+    },
+
+    "preference": {
+        "mots": [
+            "préfère",
+            "préférée",
+            "préféré",
+            "aime",
+            "j'aime",
+            "goût",
+            "couleur",
+            "musique",
+            "film",
+            "anime"
+        ]
+    }
+
+}
+
+
+# ============================================================
+# DÉTECTER LES CONCEPTS DE LA QUESTION
+# ============================================================
+
+def detect_concepts(message):
+
+    message = normalize_text(
+        message
+    )
+
+    concepts_detectes = []
+
+    for concept, data in CONCEPTS.items():
+
+        for mot in data["mots"]:
+
+            if mot in message:
+
+                concepts_detectes.append(
+                    concept
+                )
+
+                break
+
+    return concepts_detectes
+
+
+# ============================================================
+# BONUS CONCEPT
+# ============================================================
+
+def concept_bonus(
+    question,
+    souvenir
+):
+
+    concepts = detect_concepts(
+        question
+    )
+
+    if not concepts:
+
+        return 0.0
+
+    categorie = souvenir.get(
+        "categorie",
+        ""
+    )
+
+    contenu = normalize_text(
+        souvenir.get(
+            "contenu",
+            ""
+        )
+    )
+
+    bonus = 0.0
+
+    for concept in concepts:
+
+        # ----------------------------------------------------
+        # BACKEND
+        # ----------------------------------------------------
+
+        if concept == "backend":
+
+            if categorie == "projet":
+
+                if any(
+                    mot in contenu
+                    for mot in [
+                        "backend",
+                        "serveur",
+                        "api",
+                        "fastapi",
+                        "django",
+                        "flask",
+                        "nestjs"
+                    ]
+                ):
+
+                    bonus += 0.25
+
+        # ----------------------------------------------------
+        # FRONTEND
+        # ----------------------------------------------------
+
+        elif concept == "frontend":
+
+            if categorie == "projet":
+
+                if any(
+                    mot in contenu
+                    for mot in [
+                        "frontend",
+                        "interface",
+                        "react",
+                        "vue",
+                        "angular",
+                        "next"
+                    ]
+                ):
+
+                    bonus += 0.30
+
+        # ----------------------------------------------------
+        # LANGAGE
+        # ----------------------------------------------------
+
+        elif concept == "langage":
+
+            if any(
+                mot in contenu
+                for mot in [
+                    "python",
+                    "javascript",
+                    "typescript",
+                    "java",
+                    "c++"
+                ]
+            ):
+
+                bonus += 0.30
+
+        # ----------------------------------------------------
+        # DATABASE
+        # ----------------------------------------------------
+
+        elif concept == "database":
+
+            if any(
+                mot in contenu
+                for mot in [
+                    "postgresql",
+                    "mysql",
+                    "mongodb",
+                    "sqlite",
+                    "base de données",
+                    "stock"
+                ]
+            ):
+
+                bonus += 0.30
+
+        # ----------------------------------------------------
+        # PRÉFÉRENCE
+        # ----------------------------------------------------
+
+        elif concept == "preference":
+
+            if categorie == "preference":
+
+                bonus += 0.30
+
+    return min(
+        bonus,
+        0.50
+    )
+
+
+# ============================================================
+# SCORE LEXICAL
+# ============================================================
+
+def lexical_score(
+    question,
+    contenu
+):
+
+    question = normalize_text(
+        question
+    )
+
+    contenu = normalize_text(
+        contenu
+    )
+
+    question_words = set(
+        question.split()
+    )
+
+    contenu_words = set(
+        contenu.split()
+    )
+
+    if not question_words:
+
+        return 0.0
+
+    mots_communs = (
+        question_words
+        & contenu_words
+    )
+
+    return (
+        len(mots_communs)
+        / len(question_words)
+    )
+
+
+# ============================================================
+# SCORE HYBRIDE
+# ============================================================
+
+def calculate_hybrid_score(
+    question,
+    souvenir
+):
+
+    embedding = souvenir.get(
+        "embedding"
+    )
+
+    if not embedding:
+
+        return 0.0
+
+    question_embedding = (
+        create_memory_embedding(
+            question
+        )
+    )
+
+    semantic = similarity(
+        question_embedding,
+        embedding
+    )
+
+    lexical = lexical_score(
+        question,
+        souvenir.get(
+            "contenu",
+            ""
+        )
+    )
+
+    bonus = concept_bonus(
+        question,
+        souvenir
+    )
+
+    # --------------------------------------------------------
+    # SCORE FINAL
+    # --------------------------------------------------------
+
+    score = (
+        semantic * 0.55
+        + lexical * 0.20
+        + bonus
+    )
+
+    return min(
+        score,
+        1.0
+    )
+
+
+def detect_memory_category(message):
+
+    message = message.lower()
+
+    # --------------------------------------------------------
+    # PRÉFÉRENCES
+    # --------------------------------------------------------
+
+    if any(
+        mot in message
+        for mot in [
+            "j'aime",
+            "j’adore",
+            "préféré",
+            "préférée",
+            "aime regarder",
+            "aimes regarder",
+            "musique",
+            "film",
+            "films",
+            "anime",
+            "animés",
+            "couleur"
+        ]
+    ):
+        return "preference"
+
+    # --------------------------------------------------------
+    # PROJET
+    # --------------------------------------------------------
+
+    if any(
+        mot in message
+        for mot in [
+            "projet",
+            "backend",
+            "frontend",
+            "serveur",
+            "interface",
+            "technologie",
+            "framework",
+            "base de données",
+            "données"
+        ]
+    ):
+        return "projet"
+
+    # --------------------------------------------------------
+    # COMPÉTENCE
+    # --------------------------------------------------------
+
+    if any(
+        mot in message
+        for mot in [
+            "apprends",
+            "apprendre",
+            "apprentissage",
+            "étudie",
+            "étudier",
+            "langage",
+            "programmer",
+            "programmation"
+        ]
+    ):
+        return "competence"
+
+    # --------------------------------------------------------
+    # OBJECTIF
+    # --------------------------------------------------------
+
+    if any(
+        mot in message
+        for mot in [
+            "objectif",
+            "but",
+            "ambition",
+            "rêve",
+            "veux devenir",
+            "veux faire"
+        ]
+    ):
+        return "objectif"
+
+    return None
+
+
+
+# ============================================================
+# RECHERCHE INTELLIGENTE
+# ============================================================
+
+def find_semantic_memory(message):
+
+    user = load_memory()
+
+    souvenirs = user.get(
+        "souvenirs",
+        []
+    )
+
+    if not souvenirs:
+        return None
+
+    # --------------------------------------------------------
+    # Catégorie recherchée
+    # --------------------------------------------------------
+
+    categorie = detect_memory_category(message)
+
+    print(
+        f"[MEMORY] Catégorie détectée : {categorie}"
+    )
+
+    # --------------------------------------------------------
+    # Embedding de la question
+    # --------------------------------------------------------
+
+    query_embedding = create_memory_embedding(
+        message
+    )
+
+    # --------------------------------------------------------
+    # Mots importants de la question
+    # --------------------------------------------------------
+
+    question_words = set(
+        mot.lower().strip("?!.,:;")
+        for mot in message.split()
+        if len(mot) > 2
+    )
+
+    resultats = []
+
+    # --------------------------------------------------------
+    # Analyse des souvenirs
+    # --------------------------------------------------------
+
+    for souvenir in souvenirs:
+
+        contenu = souvenir.get(
+            "contenu",
+            ""
+        )
+
+        embedding = souvenir.get(
+            "embedding"
+        )
+
+        if not embedding:
+            continue
+
+        contenu_lower = contenu.lower()
+
+        # ----------------------------------------------------
+        # SCORE SÉMANTIQUE
+        # ----------------------------------------------------
+
+        semantic_score = similarity(
+            query_embedding,
+            embedding
+        )
+
+        # ----------------------------------------------------
+        # SCORE LEXICAL
+        # ----------------------------------------------------
+
+        mots_contenu = set(
+            mot.lower().strip("?!.,:;")
+            for mot in contenu.split()
+            if len(mot) > 2
+        )
+
+        correspondances = (
+            question_words
+            & mots_contenu
+        )
+
+        if question_words:
+
+            lexical_score = (
+                len(correspondances)
+                / len(question_words)
+            )
+
+        else:
+
+            lexical_score = 0
+
+        # ----------------------------------------------------
+        # BONUS CATÉGORIE
+        # ----------------------------------------------------
+
+        category_bonus = 0
+
+        if (
+            categorie
+            and souvenir.get("categorie")
+            == categorie
+        ):
+
+            category_bonus = 0.10
+
+        # ----------------------------------------------------
+        # BONUS IMPORTANCE
+        # ----------------------------------------------------
+
+        importance_bonus = 0
+
+        importance = souvenir.get(
+            "importance",
+            "moyenne"
+        )
+
+        if importance == "haute":
+
+            importance_bonus = 0.03
+
+        elif importance == "moyenne":
+
+            importance_bonus = 0.01
+
+        # ----------------------------------------------------
+        # SCORE FINAL
+        # ----------------------------------------------------
+
+        final_score = (
+            semantic_score * 0.65
+            +
+            lexical_score * 0.25
+            +
+            category_bonus
+            +
+            importance_bonus
+        )
+
+        resultats.append({
+
+            "souvenir": souvenir,
+
+            "semantic_score":
+                semantic_score,
+
+            "lexical_score":
+                lexical_score,
+
+            "category_bonus":
+                category_bonus,
+
+            "importance_bonus":
+                importance_bonus,
+
+            "final_score":
+                final_score
+        })
+
+    # --------------------------------------------------------
+    # Trier
+    # --------------------------------------------------------
+
+    resultats.sort(
+        key=lambda x: x["final_score"],
+        reverse=True
+    )
+
+    # --------------------------------------------------------
+    # Afficher les meilleurs
+    # --------------------------------------------------------
+
+    for resultat in resultats[:5]:
+
+        souvenir = resultat["souvenir"]
+
+        print(
+            f"[MEMORY] "
+            f"{resultat['semantic_score']:.3f} semantic | "
+            f"{resultat['lexical_score']:.3f} lexical | "
+            f"{resultat['final_score']:.3f} final | "
+            f"{souvenir.get('contenu', '')}"
+        )
+
+    # --------------------------------------------------------
+    # Aucun résultat
+    # --------------------------------------------------------
+
+    if not resultats:
+
+        return None
+
+    meilleur = resultats[0]
+
+    # --------------------------------------------------------
+    # SEUIL
+    # --------------------------------------------------------
+
+    if meilleur["final_score"] < 0.40:
+
+        print(
+            "[MEMORY] "
+            "Aucun souvenir suffisamment pertinent"
+        )
+
+        return None
+
+    return meilleur["souvenir"]
 
 
 # ============================================================
@@ -120,14 +855,15 @@ def analyze_memory(message):
 
     original_message = message.strip()
 
-    message = original_message.lower()
-
+    message_lower = (
+        original_message.lower()
+    )
 
     # --------------------------------------------------------
-    # COULEUR PRÉFÉRÉE
+    # COULEUR
     # --------------------------------------------------------
 
-    if "ma couleur préférée est" in message:
+    if "ma couleur préférée est" in message_lower:
 
         value = original_message.split(
             "est",
@@ -143,16 +879,15 @@ def analyze_memory(message):
             )
 
             return (
-                f"J'ai retenu que votre couleur "
-                f"préférée est {value}."
+                f"J'ai retenu que votre "
+                f"couleur préférée est {value}."
             )
 
-
     # --------------------------------------------------------
-    # MUSIQUE PRÉFÉRÉE
+    # MUSIQUE
     # --------------------------------------------------------
 
-    if "ma musique préférée est" in message:
+    if "ma musique préférée est" in message_lower:
 
         value = original_message.split(
             "est",
@@ -168,16 +903,15 @@ def analyze_memory(message):
             )
 
             return (
-                f"J'ai retenu que votre musique "
-                f"préférée est {value}."
+                f"J'ai retenu que votre "
+                f"musique préférée est {value}."
             )
-
 
     # --------------------------------------------------------
     # PROJET
     # --------------------------------------------------------
 
-    if "je travaille sur" in message:
+    if "je travaille sur" in message_lower:
 
         value = original_message.split(
             "sur",
@@ -193,16 +927,15 @@ def analyze_memory(message):
             )
 
             return (
-                f"Compris. Je retiens que vous "
-                f"travaillez sur {value}."
+                f"Compris. Je retiens que "
+                f"vous travaillez sur {value}."
             )
-
 
     # --------------------------------------------------------
     # NOM
     # --------------------------------------------------------
 
-    if "je m'appelle" in message:
+    if "je m'appelle" in message_lower:
 
         value = original_message.split(
             "je m'appelle",
@@ -222,12 +955,11 @@ def analyze_memory(message):
                 f"vous vous appelez {value}."
             )
 
-
     # --------------------------------------------------------
     # OBJECTIF
     # --------------------------------------------------------
 
-    if "mon objectif est" in message:
+    if "mon objectif est" in message_lower:
 
         value = original_message.split(
             "mon objectif est",
@@ -246,12 +978,11 @@ def analyze_memory(message):
                 f"Je retiens votre objectif : {value}."
             )
 
-
     # --------------------------------------------------------
     # APPRENTISSAGE
     # --------------------------------------------------------
 
-    if "j'apprends" in message:
+    if "j'apprends" in message_lower:
 
         value = original_message.split(
             "j'apprends",
@@ -270,306 +1001,111 @@ def analyze_memory(message):
                 f"Je retiens que vous apprenez {value}."
             )
 
-
     return None
 
 
 # ============================================================
-# RECHERCHE DANS LA MÉMOIRE
+# RECHERCHE MÉMOIRE
 # ============================================================
+
 def recall_memory(message):
 
-    message = message.lower().strip()
-
-    
-
-    souvenir = find_best_memory(message)
-
-    if souvenir : 
-        return (
-            f"D'après ma mémoire, "
-            f"{souvenir['contenu']}."
-        )
-    user = load_memory()    
-    souvenirs = user.get("souvenirs", [])
-    # ========================================================
-    # PROJET
-    # ========================================================
-
-    mots_projet = [
-        "projet",
-        "travaille",
-        "travail",
-        "développe",
-        "développer",
-        "projet actuel"
-    ]
-
-    if any(mot in message for mot in mots_projet):
-
-        resultats = [
-            souvenir
-            for souvenir in souvenirs
-            if souvenir.get("categorie") == "projet"
-        ]
-
-        if resultats:
-
-            souvenir = resultats[-1]
-
-            contenu = souvenir["contenu"]
-
-            return (
-                f"D'après ma mémoire, {contenu}."
-            )
-
-
-        return "Je ne connais pas encore votre projet."
-
-
-    # ========================================================
-    # OBJECTIF
-    # ========================================================
-
-    mots_objectif = [
-        "objectif",
-        "but",
-        "veux devenir",
-        "veux faire"
-    ]
-
-    if any(mot in message for mot in mots_objectif):
-
-        resultats = [
-            souvenir
-            for souvenir in souvenirs
-            if souvenir.get("categorie") == "objectif"
-        ]
-
-        if resultats:
-
-            souvenir = resultats[-1]
-
-            return (
-                f"D'après ma mémoire, "
-                f"{souvenir['contenu']}."
-            )
-
-
-        return "Je ne connais pas encore votre objectif."
-
-
-    # ========================================================
-    # APPRENTISSAGE
-    # ========================================================
-
-    mots_competence = [
-        "apprends",
-        "apprentissage",
-        "j'étudie",
-        "j'étudie",
-        "compétence",
-        "apprendre"
-    ]
-
-    if any(
-        mot in message
-        for mot in mots_competence
-    ):
-
-        resultats = [
-            souvenir
-            for souvenir in souvenirs
-            if souvenir.get("categorie") == "competence"
-        ]
-
-        if resultats:
-
-            textes = [
-                souvenir["contenu"]
-                for souvenir in resultats
-            ]
-
-            return (
-                "D'après ma mémoire, vous apprenez : "
-                + ", ".join(textes)
-                + "."
-            )
-
-
-        return (
-            "Je ne connais pas encore "
-            "ce que vous apprenez."
-        )
-
-
-    # ========================================================
-    # PRÉFÉRENCE
-    # ========================================================
-
-    if "couleur" in message:
-
-        resultats = [
-            souvenir
-            for souvenir in souvenirs
-            if (
-                souvenir.get("categorie") == "preference"
-                and "couleur" in souvenir.get(
-                    "contenu",
-                    ""
-                ).lower()
-            )
-        ]
-
-        if resultats:
-
-            return (
-                f"D'après ma mémoire, "
-                f"{resultats[-1]['contenu']}."
-            )
-
-        return (
-            "Je ne connais pas encore "
-            "votre couleur préférée."
-        )
-
-
-    if "musique" in message:
-
-        resultats = [
-            souvenir
-            for souvenir in souvenirs
-            if (
-                souvenir.get("categorie") == "preference"
-                and "musique" in souvenir.get(
-                    "contenu",
-                    ""
-                ).lower()
-            )
-        ]
-
-        if resultats:
-
-            return (
-                f"D'après ma mémoire, "
-                f"{resultats[-1]['contenu']}."
-            )
-
-        return (
-            "Je ne connais pas encore "
-            "votre musique préférée."
-        )
-
-
-    # ========================================================
-    # IDENTITÉ
-    # ========================================================
-
-    if (
-        "qui suis-je" in message
-        or "mon nom" in message
-        or "comment je m'appelle" in message
-    ):
-
-        resultats = [
-            souvenir
-            for souvenir in souvenirs
-            if souvenir.get("categorie") == "identite"
-        ]
-
-        if resultats:
-
-            return (
-                f"D'après ma mémoire, "
-                f"{resultats[-1]['contenu']}."
-            )
-
-        return (
-            "Je ne connais pas encore "
-            "votre identité."
-        )
-
-
-    return None
+    return find_semantic_memory(
+        message
+    )
 
 
 # ============================================================
-# CALCUL DE PERTINENCE
+# EMBEDDINGS MANQUANTS
 # ============================================================
-def find_best_memory(message):
+
+def update_missing_embeddings():
 
     user = load_memory()
 
-    souvenirs = user.get("souvenirs", [])
+    souvenirs = user.get(
+        "souvenirs",
+        []
+    )
 
     if not souvenirs:
-        return None
 
-    mots_question = [
-        mot
-        for mot in message.split()
-        if mot not in STOP_WORDS
-    ]
+        print(
+            "Aucun souvenir à traiter."
+        )
 
-    meilleur_score = 0
-    meilleur_souvenir = None
+        return False
+
+    modified = False
 
     for souvenir in souvenirs:
 
-        contenu = souvenir.get(
-            "contenu",
-            ""
-        ).lower()
+        if "embedding" not in souvenir:
 
-        score = 0
+            contenu = souvenir.get(
+                "contenu",
+                ""
+            )
 
-        for mot in mots_question:
+            if contenu:
 
-            # ------------------------------------------------
-            # Correspondance directe
-            # ------------------------------------------------
+                souvenir[
+                    "embedding"
+                ] = create_memory_embedding(
+                    contenu
+                )
 
-            if mot in contenu:
+                modified = True
 
-                score += 1
+    if modified:
 
+        save_memory(
+            user
+        )
 
-            # ------------------------------------------------
-            # Correspondance par synonymes
-            # ------------------------------------------------
+        print(
+            "Embeddings ajoutés."
+        )
 
-            for mot_principal, synonymes in SYNONYMES.items():
+    else:
 
-                if mot == mot_principal:
+        print(
+            "Tous les souvenirs possèdent "
+            "déjà un embedding."
+        )
 
-                    for synonyme in synonymes:
-
-                        if synonyme in contenu:
-
-                            score += 1
-
-
-                elif mot in synonymes:
-
-                    if mot_principal in contenu:
-
-                        score += 1
+    return modified
 
 
-        # ----------------------------------------------------
-        # Garder le meilleur souvenir
-        # ----------------------------------------------------
-
-        if score > meilleur_score:
-
-            meilleur_score = score
-
-            meilleur_souvenir = souvenir
-
-
-    return meilleur_souvenir
 # ============================================================
-# SYNONYMES
+# RECHERCHE SÉMANTIQUE BRUTE
+# ============================================================
+
+def search_memory(
+    query,
+    limit=3
+):
+
+    user = load_memory()
+
+    souvenirs = user.get(
+        "souvenirs",
+        []
+    )
+
+    if not souvenirs:
+
+        return []
+
+    return search_semantic_memory(
+        query,
+        souvenirs,
+        limit
+    )
+
+
+# ============================================================
+# SYNONYMES CLASSIQUES
 # ============================================================
 
 SYNONYMES = {
@@ -604,9 +1140,16 @@ SYNONYMES = {
         "rêve",
         "reve"
     ]
+
 }
 
+
+# ============================================================
+# STOP WORDS
+# ============================================================
+
 STOP_WORDS = {
+
     "je",
     "j",
     "mon",
@@ -632,219 +1175,6 @@ STOP_WORDS = {
     "qui",
     "me",
     "tu",
-    "te",
-    "mon"
+    "te"
+
 }
-
-# ============================================================
-# RECHERCHE SÉMANTIQUE
-# ============================================================
-def find_semantic_memory(message):
-
-    user = load_memory()
-
-    souvenirs = user.get(
-        "souvenirs",
-        []
-    )
-
-    if not souvenirs:
-        return None
-
-    # ========================================================
-    # EMBEDDING DE LA QUESTION
-    # ========================================================
-
-    query_embedding = create_memory_embedding(message)
-
-    # ========================================================
-    # MOTS DE LA QUESTION
-    # ========================================================
-
-    mots_question = [
-        mot
-        for mot in message.lower().split()
-        if mot not in STOP_WORDS
-    ]
-
-    meilleur_score = 0
-    meilleur_souvenir = None
-
-    # ========================================================
-    # ANALYSE DE CHAQUE SOUVENIR
-    # ========================================================
-
-    for souvenir in souvenirs:
-
-        contenu = souvenir.get(
-            "contenu",
-            ""
-        ).lower()
-
-        embedding = souvenir.get(
-            "embedding"
-        )
-
-        if not embedding:
-            continue
-
-        # ----------------------------------------------------
-        # SCORE SÉMANTIQUE
-        # ----------------------------------------------------
-
-        score_semantique = similarity(
-            query_embedding,
-            embedding
-        )
-
-        # ----------------------------------------------------
-        # SCORE LEXICAL
-        # ----------------------------------------------------
-
-        score_lexical = 0
-
-        for mot in mots_question:
-
-            if mot in contenu:
-
-                score_lexical += 1
-
-            # ------------------------------------------------
-            # SYNONYMES
-            # ------------------------------------------------
-
-            for mot_principal, synonymes in SYNONYMES.items():
-
-                if mot == mot_principal:
-
-                    for synonyme in synonymes:
-
-                        if synonyme in contenu:
-                            score_lexical += 1
-
-                elif mot in synonymes:
-
-                    if mot_principal in contenu:
-                        score_lexical += 1
-
-        # ----------------------------------------------------
-        # NORMALISATION DU SCORE LEXICAL
-        # ----------------------------------------------------
-
-        if mots_question:
-
-            score_lexical = min(
-                score_lexical / len(mots_question),
-                1
-            )
-
-        # ----------------------------------------------------
-        # SCORE FINAL
-        # ----------------------------------------------------
-
-        score_final = (
-            score_semantique * 0.65
-            +
-            score_lexical * 0.35
-        )
-
-        print(
-            f"[MEMORY] "
-            f"{score_semantique:.3f} semantic | "
-            f"{score_lexical:.3f} lexical | "
-            f"{score_final:.3f} final | "
-            f"{contenu}"
-        )
-
-        # ----------------------------------------------------
-        # MEILLEUR SOUVENIR
-        # ----------------------------------------------------
-
-        if score_final > meilleur_score:
-
-            meilleur_score = score_final
-            meilleur_souvenir = souvenir
-
-    # ========================================================
-    # SEUIL DE CONFIANCE
-    # ========================================================
-
-    if meilleur_score < 0.45:
-
-        return None
-
-    return meilleur_souvenir
-
-# ============================================================
-# METTRE À JOUR LES EMBEDDINGS DES SOUVENIRS
-# ============================================================
-# ============================================================
-# METTRE À JOUR LES EMBEDDINGS DES SOUVENIRS
-# ============================================================
-
-def update_missing_embeddings():
-
-    from semantic_memory import create_memory_embedding
-
-    user = load_memory()
-
-    souvenirs = user.get("souvenirs", [])
-
-    if not souvenirs:
-        print("Aucun souvenir à traiter.")
-        return False
-
-    modified = False
-
-    for souvenir in souvenirs:
-
-        if "embedding" not in souvenir:
-
-            contenu = souvenir.get("contenu", "")
-
-            if contenu:
-
-                souvenir["embedding"] = create_memory_embedding(
-                    contenu
-                )
-
-                modified = True
-
-    if modified:
-
-        save_memory(user)
-
-        print("Embeddings ajoutés aux souvenirs.")
-
-    else:
-
-        print("Tous les souvenirs possèdent déjà un embedding.")
-
-    return modified
-
-
-# ============================================================
-# RECHERCHER DANS LA MÉMOIRE SÉMANTIQUE
-# ============================================================
-
-def search_memory(query, limit=3):
-
-    user = load_memory()
-
-    souvenirs = user.get(
-        "souvenirs",
-        []
-    )
-
-    if not souvenirs:
-        return []
-
-
-    results = search_semantic_memory(
-        query,
-        souvenirs,
-        limit
-    )
-
-
-    return results
