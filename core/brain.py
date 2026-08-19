@@ -1,5 +1,7 @@
 from core.intent import detect_intent
 from core.dispatcher import dispatch
+from core.conversation_context import set_context
+from core.conversation import add_message
 
 from core.operation_router import (
     detect_operation,
@@ -66,6 +68,29 @@ def think(message):
             response = dispatch(intent)
 
             if response:
+
+                application = None
+
+                if intent in ("OPEN_BROWSER", "OPEN_CHROME"):
+                    application = "chrome"
+
+                elif intent == "OPEN_SPOTIFY":
+                    application = "spotify"
+
+                elif intent == "OPEN_FIREFOX":
+                    application = "firefox"
+
+                elif intent == "OPEN_VSCODE":
+                    application = "vscode"
+
+                elif intent == "OPEN_TERMINAL":
+                    application = "terminal"
+
+                set_context(
+                    intent=intent,
+                    application=application,
+                    response=response
+                )
 
                 add_message(
                     "assistant",

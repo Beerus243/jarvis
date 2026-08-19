@@ -1,35 +1,19 @@
 [
     {
         "role": "user",
-        "message": "ouvre firefox"
+        "message": "bonjour"
     },
     {
         "role": "assistant",
-        "message": "Voici comment lancer Firefox selon votre système d’exploitation :\n\n**Sous Windows**  \n1. Cliquez sur le bouton **Démarrer** (ou appuyez sur la touche Windows).  \n2. Tapez **Firefox** dans la barre de recherche.  \n3. Sélectionnez **Mozilla Firefox** dans les résultats.\n\n**Sous macOS**  \n1. Ouvrez le **Launchpad** (icône fusée dans le Dock) ou utilisez Spotlight (`Cmd + Espace`).  \n2. Tapez **Firefox**.  \n3. Cliquez sur l’icône **Firefox** qui apparaît.\n\n**Sous Linux** (Ubuntu/Debian, etc.)  \n- En ligne de commande :  \n  ```bash\n  firefox &\n  ```  \n- Ou via le menu des applications : cherchez **Firefox** et cliquez dessus.\n\nSi vous avez besoin d’une aide plus précise (par ex. créer un raccourci, vérifier que le programme est installé, etc.), dites‑moi simplement sur quel ordinateur vous êtes."
+        "message": "Bonjour Fabrice. Je suis heureux de vous voir."
     },
     {
         "role": "user",
-        "message": "python -c \"from core.intent import detect_intent; print(detect_intent('ouvre mon terminal')); print(detect_intent('lance le terminal')); print(detect_intent('ouvre mon IDE')); print(detect_intent('ouvre VS Code'));\""
+        "message": "quel heure il est"
     },
     {
         "role": "assistant",
-        "message": "J'ouvre Terminal."
-    },
-    {
-        "role": "user",
-        "message": "python -c \"from core.dispatcher import dispatch; print(dispatch('OPEN_TERMINAL')); print(dispatch('OPEN_VSCODE'))\""
-    },
-    {
-        "role": "assistant",
-        "message": "J'ouvre Terminal."
-    },
-    {
-        "role": "user",
-        "message": "ouvre firefox"
-    },
-    {
-        "role": "assistant",
-        "message": "J'ouvre Firefox."
+        "message": "Il est actuellement 14:21:48"
     },
     {
         "role": "user",
@@ -38,5 +22,21 @@
     {
         "role": "assistant",
         "message": "J'ouvre Terminal."
+    },
+    {
+        "role": "user",
+        "message": "ferme le"
+    },
+    {
+        "role": "assistant",
+        "message": "Très bien, je mets fin à notre échange. N'hésitez pas à me solliciter de nouveau si besoin. Bonne continuation !"
+    },
+    {
+        "role": "user",
+        "message": "ouvre le"
+    },
+    {
+        "role": "assistant",
+        "message": "Quel élément souhaites‑tu que j’ouvre exactement ?"
     }
 ]

@@ -41,6 +41,10 @@ def detect_intent(message):
         "lance google chrome",
         "demarre chrome",
         "demarre google chrome",
+        "ouvre internet",
+        "open chrome",
+        "open browser",
+        "launch chrome",
         "ouvre le navigateur",
         "ouvre mon navigateur",
         "lance le navigateur",
@@ -51,7 +55,7 @@ def detect_intent(message):
         phrase in message
         for phrase in chrome_phrases
     ):
-        return "OPEN_CHROME"
+        return "OPEN_BROWSER"
 
     # ========================================================
     # SPOTIFY
@@ -173,7 +177,7 @@ def detect_intent(message):
             "browser",
         ]
     ):
-        return "OPEN_CHROME"
+        return "OPEN_BROWSER"
 
     if any(
         mot in message.split()
