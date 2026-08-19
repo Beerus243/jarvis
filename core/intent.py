@@ -1,74 +1,187 @@
-from personality.personality import speak
 import unicodedata
 import re
 
 
 def _normalize_text(text: str) -> str:
-    # Lowercase, remove accents, and strip punctuation to avoid substring collisions (e.g. 'bro' in 'browser')
     text = text.lower()
-    text = unicodedata.normalize('NFD', text)
-    text = ''.join(ch for ch in text if not unicodedata.combining(ch))
-    # Replace non-word characters (keep spaces) with single space
-    text = re.sub(r"[^\w\s]", ' ', text)
-    # Collapse whitespace
-    text = re.sub(r"\s+", ' ', text).strip()
+
+    text = unicodedata.normalize("NFD", text)
+    text = "".join(
+        ch for ch in text
+        if not unicodedata.combining(ch)
+    )
+
+    text = re.sub(
+        r"[^\w\s]",
+        " ",
+        text
+    )
+
+    text = re.sub(
+        r"\s+",
+        " ",
+        text
+    ).strip()
+
     return text
 
 
 def detect_intent(message):
+
     message = _normalize_text(message)
 
-    # Explicit browser launch phrases (French + English) — check first to avoid "bro" -> GREETINGS collisions
-    browser_phrases = [
+    # ========================================================
+    # CHROME / NAVIGATEUR
+    # ========================================================
+
+    chrome_phrases = [
         "ouvre chrome",
         "ouvre google chrome",
-        "ouvre le navigateur",
-        "ouvre mon navigateur",
         "lance chrome",
         "lance google chrome",
         "demarre chrome",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
-        "demarre le navigateur",
+        "demarre google chrome",
+        "ouvre le navigateur",
+        "ouvre mon navigateur",
+        "lance le navigateur",
+        "lance mon navigateur",
     ]
 
-    # The above list intentionally kept concise; also check single keywords
-    browser_keywords = ["navigateur", "internet", "browser", "chrome", "open browser", "open chrome", "launch chrome", "launch browser"]
+    if any(
+        phrase in message
+        for phrase in chrome_phrases
+    ):
+        return "OPEN_CHROME"
 
-    # Check phrases first
-    if any(phrase in message for phrase in browser_phrases):
-        return "OPEN_BROWSER"
+    # ========================================================
+    # SPOTIFY
+    # ========================================================
 
-    # Check keywords (single words) next
-    if any(kw in message for kw in browser_keywords):
-        return "OPEN_BROWSER"
+    spotify_phrases = [
+        "ouvre spotify",
+        "lance spotify",
+        "demarre spotify",
+        "ouvre la musique",
+        "lance la musique",
+    ]
 
-    # Greetings
-    if any(mot in message for mot in ["bonjour", "salut", "hey", "bro", "coucou"]):
+    if any(
+        phrase in message
+        for phrase in spotify_phrases
+    ):
+        return "OPEN_SPOTIFY"
+
+    # ========================================================
+    # FIREFOX
+    # ========================================================
+
+    firefox_phrases = [
+        "ouvre firefox",
+        "lance firefox",
+        "demarre firefox",
+    ]
+
+    if any(
+        phrase in message
+        for phrase in firefox_phrases
+    ):
+        return "OPEN_FIREFOX"
+
+    # ========================================================
+    # VISUAL STUDIO CODE
+    # ========================================================
+
+    vscode_phrases = [
+        "ouvre visual studio code",
+        "lance visual studio code",
+        "demarre visual studio code",
+        "ouvre vscode",
+        "lance vscode",
+        "demarre vscode",
+        "ouvre vs code",
+        "lance vs code",
+    ]
+
+    if any(
+        phrase in message
+        for phrase in vscode_phrases
+    ):
+        return "OPEN_VSCODE"
+
+    # ========================================================
+    # TERMINAL
+    # ========================================================
+
+    terminal_phrases = [
+        "ouvre le terminal",
+        "ouvre terminal",
+        "lance le terminal",
+        "lance terminal",
+        "demarre le terminal",
+        "demarre terminal",
+        "ouvre konsole",
+        "lance konsole",
+    ]
+
+    if any(
+        phrase in message
+        for phrase in terminal_phrases
+    ):
+        return "OPEN_TERMINAL"
+
+    # ========================================================
+    # SALUTATIONS
+    # ========================================================
+
+    greetings = [
+        "bonjour",
+        "salut",
+        "hey",
+        "bro",
+        "coucou",
+    ]
+
+    if any(
+        mot in message.split()
+        for mot in greetings
+    ):
         return "GREETINGS"
 
-    # Music
-    if any(mot in message for mot in ["musique", "play", "spotify", "jouer"]):
-        return "PLAY_MUSIC"
+    # ========================================================
+    # HEURE
+    # ========================================================
 
-    # Time
-    if any(mot in message for mot in ["heure", "time", "horloge"]):
+    if any(
+        mot in message.split()
+        for mot in [
+            "heure",
+            "time",
+            "horloge",
+        ]
+    ):
         return "GET_TIME"
+
+    # ========================================================
+    # COMPATIBILITÉ ANCIEN SYSTÈME
+    # ========================================================
+
+    if any(
+        mot in message.split()
+        for mot in [
+            "navigateur",
+            "internet",
+            "browser",
+        ]
+    ):
+        return "OPEN_CHROME"
+
+    if any(
+        mot in message.split()
+        for mot in [
+            "musique",
+            "spotify",
+        ]
+    ):
+        return "OPEN_SPOTIFY"
 
     return None

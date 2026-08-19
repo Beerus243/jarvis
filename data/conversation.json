@@ -1,42 +1,42 @@
 [
     {
         "role": "user",
-        "message": "ouvre spotify"
-    },
-    {
-        "role": "user",
-        "message": "ouvre spotify"
-    },
-    {
-        "role": "user",
-        "message": "ouvre chrome"
-    },
-    {
-        "role": "user",
-        "message": "quel heure il est ?"
+        "message": "ouvre firefox"
     },
     {
         "role": "assistant",
-        "message": "Il est actuellement 01:42:02"
+        "message": "Voici comment lancer Firefox selon votre système d’exploitation :\n\n**Sous Windows**  \n1. Cliquez sur le bouton **Démarrer** (ou appuyez sur la touche Windows).  \n2. Tapez **Firefox** dans la barre de recherche.  \n3. Sélectionnez **Mozilla Firefox** dans les résultats.\n\n**Sous macOS**  \n1. Ouvrez le **Launchpad** (icône fusée dans le Dock) ou utilisez Spotlight (`Cmd + Espace`).  \n2. Tapez **Firefox**.  \n3. Cliquez sur l’icône **Firefox** qui apparaît.\n\n**Sous Linux** (Ubuntu/Debian, etc.)  \n- En ligne de commande :  \n  ```bash\n  firefox &\n  ```  \n- Ou via le menu des applications : cherchez **Firefox** et cliquez dessus.\n\nSi vous avez besoin d’une aide plus précise (par ex. créer un raccourci, vérifier que le programme est installé, etc.), dites‑moi simplement sur quel ordinateur vous êtes."
     },
     {
         "role": "user",
-        "message": "ouvre chrome"
+        "message": "python -c \"from core.intent import detect_intent; print(detect_intent('ouvre mon terminal')); print(detect_intent('lance le terminal')); print(detect_intent('ouvre mon IDE')); print(detect_intent('ouvre VS Code'));\""
     },
     {
         "role": "assistant",
-        "message": "J'ouvre ton navigateur."
+        "message": "J'ouvre Terminal."
     },
     {
         "role": "user",
-        "message": "ouvre spotify"
-    },
-    {
-        "role": "user",
-        "message": "ouvre spotify"
+        "message": "python -c \"from core.dispatcher import dispatch; print(dispatch('OPEN_TERMINAL')); print(dispatch('OPEN_VSCODE'))\""
     },
     {
         "role": "assistant",
-        "message": "J'ouvre Spotify."
+        "message": "J'ouvre Terminal."
+    },
+    {
+        "role": "user",
+        "message": "ouvre firefox"
+    },
+    {
+        "role": "assistant",
+        "message": "J'ouvre Firefox."
+    },
+    {
+        "role": "user",
+        "message": "ouvre le terminal"
+    },
+    {
+        "role": "assistant",
+        "message": "J'ouvre Terminal."
     }
 ]
