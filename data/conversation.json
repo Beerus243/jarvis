@@ -1,42 +1,42 @@
 [
     {
         "role": "user",
-        "message": "qu'est-ce que j'aime regarder"
-    },
-    {
-        "role": "assistant",
-        "message": "Tu aimes regarder dragon ball."
+        "message": "ouvre spotify"
     },
     {
         "role": "user",
-        "message": "quelle technologie utilise mon interface"
-    },
-    {
-        "role": "assistant",
-        "message": "Le frontend du projet utilise React."
+        "message": "ouvre spotify"
     },
     {
         "role": "user",
-        "message": "quelle technologie gère mon serveur"
-    },
-    {
-        "role": "assistant",
-        "message": "Le backend du projet utilise FastAPI."
+        "message": "ouvre chrome"
     },
     {
         "role": "user",
-        "message": "avec quel langage ai-je développé le projet"
+        "message": "quel heure il est ?"
     },
     {
         "role": "assistant",
-        "message": "Le projet est développé en Python."
+        "message": "Il est actuellement 01:42:02"
     },
     {
         "role": "user",
-        "message": "où sont stockées les donnéesquitter"
+        "message": "ouvre chrome"
     },
     {
         "role": "assistant",
-        "message": "Le projet utilise PostgreSQL comme base de données."
+        "message": "J'ouvre ton navigateur."
+    },
+    {
+        "role": "user",
+        "message": "ouvre spotify"
+    },
+    {
+        "role": "user",
+        "message": "ouvre spotify"
+    },
+    {
+        "role": "assistant",
+        "message": "J'ouvre Spotify."
     }
 ]

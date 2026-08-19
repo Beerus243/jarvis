@@ -9,11 +9,10 @@ def open_browser():
 
 def open_musique():
     subprocess.Popen([
-    "/usr/bin/flatpak",
-    "--user",
-    "run",
-    "com.spotify.Client"
-])
+        "flatpak",
+        "run",
+        "com.spotify.Client"
+    ])
     return "J'ouvre Spotify."
 
 

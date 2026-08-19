@@ -53,6 +53,34 @@ def save_memory():
 # ============================================================
 
 VERSION = "V1.1"
+EXIT_COMMANDS = {
+    "quitter",
+    "quit",
+    "exit",
+    "stop",
+    "au revoir",
+    "bye",
+    "adieu",
+    "arrete",
+    "q",
+}
+
+
+def is_exit_command(message):
+    """Reconnaît une commande d'arrêt malgré casse, accents ou ponctuation."""
+
+    import re
+    import unicodedata
+
+    normalized = unicodedata.normalize("NFD", message.casefold())
+    normalized = "".join(
+        character
+        for character in normalized
+        if unicodedata.category(character) != "Mn"
+    )
+    normalized = re.sub(r"[^\w\s]", " ", normalized)
+    normalized = " ".join(normalized.split())
+    return normalized in EXIT_COMMANDS
 
 
 # ============================================================
@@ -90,14 +118,7 @@ def main():
                 continue
 
             # Commandes d'arrêt
-            if message.lower() in [
-                "quitter",
-                "exit",
-                "stop",
-                "au revoir",
-                "bye",
-                "adieu"
-            ]:
+            if is_exit_command(message):
 
                 print("JARVIS > Au revoir Fabrice. À bientôt.")
                 break
