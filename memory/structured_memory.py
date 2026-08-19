@@ -132,24 +132,6 @@ def get_project_stack():
     if not project:
         return None
 
-    return {
-        "nom": project.get("nom"),
-        "langage": project.get("langage"),
-        "type": project.get("type"),
-        "backend": project.get("backend"),
-        "frontend": project.get("frontend"),
-        "base_de_donnees": project.get(
-            "base_de_donnees"
-        )
-    }
-
-def get_project_stack():
-
-    project = get_project()
-
-    if not project:
-        return None
-
     langage = project.get("langage")
     backend = project.get("backend")
     frontend = project.get("frontend")
@@ -161,44 +143,6 @@ def get_project_stack():
         "frontend": frontend,
         "base_de_donnees": database
     }
-
-def answer_project_stack():
-
-    stack = get_project_stack()
-
-    if not stack:
-        return None
-
-    parts = []
-
-    if stack["langage"]:
-        parts.append(
-            f"{stack['langage']}"
-        )
-
-    if stack["backend"]:
-        parts.append(
-            f"{stack['backend']} en backend"
-        )
-
-    if stack["frontend"]:
-        parts.append(
-            f"{stack['frontend']} en frontend"
-        )
-
-    if stack["base_de_donnees"]:
-        parts.append(
-            f"{stack['base_de_donnees']} comme base de données"
-        )
-
-    if not parts:
-        return None
-
-    return (
-        "La stack actuelle de JARVIS est : "
-        + ", ".join(parts)
-        + "."
-    )
 
 def answer_project_stack():
 

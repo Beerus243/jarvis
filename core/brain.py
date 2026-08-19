@@ -6,7 +6,8 @@ from core.operation_router import (
     READ_MEMORY,
     UPDATE_MEMORY,
     ACTION,
-    ASK_AI
+    ASK_AI,
+    PERSONAL_MEMORY,
 )
 
 from memory.structured_memory import (
@@ -20,6 +21,7 @@ from memory import (
     analyze_memory,
     find_semantic_memory
 )
+from memory.personal_memory import answer_personal_question
 
 from personality.personality import speak
 
@@ -111,7 +113,24 @@ def think(message):
             return response
 
     # ========================================================
-    # 7. MÉMOIRE LONGUE CLASSIQUE
+    # 7. MÉMOIRE PERSONNELLE LOCALE
+    # ========================================================
+
+    if operation == PERSONAL_MEMORY:
+
+        personal_response = answer_personal_question(message)
+
+        if personal_response:
+
+            add_message(
+                "assistant",
+                personal_response
+            )
+
+            return personal_response
+
+    # ========================================================
+    # 8. MÉMOIRE LONGUE CLASSIQUE
     # ========================================================
 
     memory_response = analyze_memory(
@@ -128,7 +147,7 @@ def think(message):
         return memory_response
 
     # ========================================================
-    # 8. RECHERCHE SÉMANTIQUE
+    # 9. RECHERCHE SÉMANTIQUE
     # ========================================================
 
     memory_context = ""
@@ -140,7 +159,7 @@ def think(message):
         memory_context = f"- {relevant_memory.get('contenu', '')}\n"
 
     # ========================================================
-    # 9. PERSONNALITÉ
+    # 10. PERSONNALITÉ
     # ========================================================
 
     personality_response = speak(
@@ -157,7 +176,7 @@ def think(message):
         return personality_response
 
     # ========================================================
-    # 10. INTELLIGENCE ARTIFICIELLE
+    # 11. INTELLIGENCE ARTIFICIELLE
     # ========================================================
 
     response = ask_ai(

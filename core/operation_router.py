@@ -2,6 +2,7 @@ from memory.text_normalizer import normalize_text
 from memory.project_parser import parse_project_information
 from memory.project_questions import detect_project_question
 from core.intent import detect_intent
+from memory.personal_memory import detect_personal_question
 
 
 # ============================================================
@@ -12,6 +13,7 @@ READ_MEMORY = "READ_MEMORY"
 UPDATE_MEMORY = "UPDATE_MEMORY"
 ACTION = "ACTION"
 ASK_AI = "ASK_AI"
+PERSONAL_MEMORY = "PERSONAL_MEMORY"
 
 
 # ============================================================
@@ -58,9 +60,16 @@ def detect_operation(message):
 
         return READ_MEMORY
 
+    # ========================================================
+    # 4. QUESTION OU MISE À JOUR PERSONNELLE LOCALE
+    # ========================================================
+
+    if detect_personal_question(message):
+
+        return PERSONAL_MEMORY
 
     # ========================================================
-    # 4. QUESTION GÉNÉRALE
+    # 5. QUESTION GÉNÉRALE
     # ========================================================
 
     if (
@@ -75,7 +84,7 @@ def detect_operation(message):
 
 
     # ========================================================
-    # 5. PAR DÉFAUT
+    # 6. PAR DÉFAUT
     # ========================================================
 
     return ASK_AI

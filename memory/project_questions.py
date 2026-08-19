@@ -1,3 +1,5 @@
+import re
+
 from memory.text_normalizer import normalize_text
 
 
@@ -55,7 +57,6 @@ def detect_project_question(message):
         "front end",
         "interface",
         "interface utilisateur",
-        "ui",
         "partie visuelle",
         "cote client",
         "côté client",
@@ -65,6 +66,10 @@ def detect_project_question(message):
         keyword in text
         for keyword in frontend_keywords
     ):
+
+        return "frontend"
+
+    if re.search(r"\bui\b", text):
 
         return "frontend"
 
