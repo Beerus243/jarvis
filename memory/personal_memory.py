@@ -37,6 +37,7 @@ def detect_personal_question(message):
         "qui suis je",
         "quel est mon nom",
         "comment je m appelle",
+        "prenom",
         "tu sais qui je suis",
         "couleur preferee",
         "couleur j aime",
@@ -111,6 +112,7 @@ def answer_personal_question(message):
         "qui suis je",
         "quel est mon nom",
         "comment je m appelle",
+        "prenom",
         "tu sais qui je suis",
     )):
         return _identity_answer(user)
