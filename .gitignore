@@ -56,3 +56,28 @@ history.json
 __pycache__/
 *.pyc.env
 .env
+
+
+# Environnements Python
+.venv/
+.venv-*/
+venv/
+
+# Modèles IA / TTS
+models/
+*.onnx
+*.bin
+*.safetensors
+*.pt
+*.pth
+
+# Audio généré
+*.wav
+*.mp3
+*.ogg
+*.flac
+
+# Cache
+__pycache__/
+*.pyc
+.cache/
