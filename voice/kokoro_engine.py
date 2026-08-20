@@ -1,6 +1,5 @@
 import os
 import time
-import subprocess
 import tempfile
 
 import torch
@@ -79,47 +78,9 @@ class KokoroEngine:
 
         return output_path
 
-    def speak(self, text):
-        output_path = self.synthesize(text)
-
-        if not output_path:
-            return False
-
-        try:
-            # PipeWire / PulseAudio
-            subprocess.run(
-                ["paplay", output_path],
-                check=True
-            )
-
-        except FileNotFoundError:
-
-            try:
-                subprocess.run(
-                    ["aplay", output_path],
-                    check=True
-                )
-
-            except FileNotFoundError:
-                print(
-                    "⚠️ Aucun lecteur audio trouvé "
-                    "(paplay/aplay)."
-                )
-                print(f"Audio disponible : {output_path}")
-                return False
-
-        except subprocess.CalledProcessError as error:
-            print(f"⚠️ Erreur lecture audio : {error}")
-            print(f"Audio disponible : {output_path}")
-            return False
-
-        finally:
-            try:
-                os.remove(output_path)
-            except OSError:
-                pass
-
-        return True
+    def generate(self, text, output_path=None):
+        """Génère un fichier audio sans connaître le lecteur utilisé."""
+        return self.synthesize(text, output_path)
 
 
 # Singleton :
@@ -137,4 +98,7 @@ def get_engine():
 
 
 def speak(text):
-    return get_engine().speak(text)
+    """Compatibilité historique : la lecture est orchestrée par voice_manager."""
+    from voice.voice_manager import speak as manager_speak
+
+    return manager_speak(text)

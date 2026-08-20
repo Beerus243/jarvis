@@ -23,6 +23,7 @@ from core.intent import detect_intent
 from core.dispatcher import dispatch
 from core.user_profile import analyze_profile
 from ai.ai import ask_ai
+from voice.voice_manager import speak as speak_response
 
 
 # ============================================================
@@ -136,6 +137,7 @@ def main():
             if response:
 
                 print(f"JARVIS > {response}")
+                speak_response(response)
 
             else:
 
