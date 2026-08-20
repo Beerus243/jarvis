@@ -14,6 +14,9 @@ def dispatch(intent):
     elif intent == "OPEN_BROWSER":
         return open_browser()
 
+    elif intent == "OPEN_SPOTIFY":
+        return open_musique()
+
     elif intent == "PLAY_MUSIC":
         return open_musique()
 

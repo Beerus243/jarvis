@@ -33,3 +33,16 @@ def test_dispatch_open_browser_calls_tool():
         result = dispatcher.dispatch("OPEN_BROWSER")
         mock_open.assert_called_once()
         assert result == "mocked"
+
+
+def test_detect_spotify_and_terminal_phrases():
+    assert detect_intent("ouvre spotify") == "OPEN_SPOTIFY"
+    assert detect_intent("lance spotify") == "OPEN_SPOTIFY"
+    assert detect_intent("ouvre le terminal") == "OPEN_TERMINAL"
+    assert detect_intent("ouvre terminal") == "OPEN_TERMINAL"
+
+
+def test_dispatch_spotify_calls_tool():
+    with patch("core.dispatcher.open_musique", return_value="mocked") as mock_open:
+        assert dispatcher.dispatch("OPEN_SPOTIFY") == "mocked"
+        mock_open.assert_called_once()

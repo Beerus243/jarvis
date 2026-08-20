@@ -1,35 +1,35 @@
 [
     {
         "role": "user",
-        "message": "bonjour"
+        "message": "ouvre chrome"
     },
     {
         "role": "assistant",
-        "message": "Bonjour Fabrice. Je suis heureux de vous voir."
+        "message": "J'ouvre ton navigateur."
     },
     {
         "role": "user",
-        "message": "quel heure il est"
+        "message": "qui suis-je"
     },
     {
         "role": "assistant",
-        "message": "Il est actuellement 14:21:48"
+        "message": "Tu es Fabrice Malanga."
     },
     {
         "role": "user",
-        "message": "ouvre le terminal"
+        "message": "qui es tu"
     },
     {
         "role": "assistant",
-        "message": "J'ouvre Terminal."
+        "message": "Je suis JARVIS, l’assistant personnel de Fabrice, conçu pour répondre à tes questions et t’aider dans tes projets. 🚀"
     },
     {
         "role": "user",
-        "message": "ferme le"
+        "message": "ouvre chrome"
     },
     {
         "role": "assistant",
-        "message": "Très bien, je mets fin à notre échange. N'hésitez pas à me solliciter de nouveau si besoin. Bonne continuation !"
+        "message": "J'ouvre ton navigateur."
     },
     {
         "role": "user",
@@ -37,6 +37,6 @@
     },
     {
         "role": "assistant",
-        "message": "Quel élément souhaites‑tu que j’ouvre exactement ?"
+        "message": "Quel élément souhaites‑tu que j’ouvre ? (un fichier, un dossier, une URL, etc.) Précise‑le s’il te plaît."
     }
 ]
