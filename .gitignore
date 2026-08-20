@@ -1,83 +1,27 @@
-# Byte-compiled / cache
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.pyo
 
 # Virtual environments
 .venv/
-venv/
-env/
-ENV/
-
-# Distribution / packaging
-build/
-dist/
-*.egg-info/
-pip-wheel-metadata/
-
-# Editor / IDE
-.vscode/
-.idea/
-*.swp
-
-# OS files
-.DS_Store
-
-# Logs
-*.log
-wget-log
-
-# Environment / secrets
-.env
-.env.*
-*.key
-*.pem
-
-# Test / cache
-.pytest_cache/
-.mypy_cache/
-
-# User data
-user.json
-history.json
-!data/
-!data/user.json
-!data/history.json
-!data/conversation.json
-
-# Backups / temporary
-*.backup
-*~
-
-# Jupyter
-.ipynb_checkpoints/
-.venv/
-.env
-__pycache__/
-*.pyc.env
-.env
-
-
-# Environnements Python
-.venv/
 .venv-*/
 venv/
+env/
 
-# Modèles IA / TTS
-models/
-*.onnx
-*.bin
-*.safetensors
-*.pt
-*.pth
+# Environment variables
+.env
+.env.*
 
-# Audio généré
+# Audio generated during tests
 *.wav
 *.mp3
 *.ogg
-*.flac
 
-# Cache
-__pycache__/
-*.pyc
-.cache/
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
