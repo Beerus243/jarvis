@@ -29,7 +29,7 @@ def process(message):
     context = build_decision_context(message)
     decision = intelligence.analyze(message, context=context)
     response_plan = plan(decision)
-    response = execute(
+    result = execute(
         response_plan,
         message,
         context,
@@ -41,8 +41,11 @@ def process(message):
             "ai": lambda query: _ai_fallback(message, query),
         },
     )
-    if response:
-        return response
+    if result.success:
+        return result.response
+
+    if not result.fallback_allowed:
+        return None
 
     # Une source locale absente autorise uniquement le fallback contrôlé.
     resolved_reference = context["reference"]

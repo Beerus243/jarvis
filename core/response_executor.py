@@ -1,6 +1,7 @@
 """Exécution d'un plan de réponse, sans nouvelle décision."""
 
 from core.dispatcher import dispatch
+from core.execution_result import ExecutionResult
 from memory.personal_memory import answer_personal_question
 from memory.structured_memory import answer_project_question
 
@@ -29,33 +30,48 @@ def execute(response_plan, message, context=None, handlers=None):
     handlers = handlers or {}
     source = response_plan.get("source")
 
-    if source == "ACTION":
-        return handlers.get("dispatch", dispatch)(response_plan.get("intent"))
+    def success(response):
+        if response is None:
+            return ExecutionResult(False, source or "UNKNOWN", error="Aucune réponse", fallback_allowed=True)
+        return ExecutionResult(True, source or "UNKNOWN", response=response)
 
-    if source == "PERSONAL_MEMORY":
-        return handlers.get("personal", answer_personal_question)(message)
+    def failure(error, fallback_allowed=True):
+        return ExecutionResult(False, source or "UNKNOWN", error=str(error), fallback_allowed=fallback_allowed)
 
-    if source == "PROJECT_MEMORY":
-        if response_plan.get("intent") == "UPDATE":
-            from memory.structured_memory import analyze_project_update
+    try:
+        if source == "ACTION":
+            return success(handlers.get("dispatch", dispatch)(response_plan.get("intent")))
 
-            return analyze_project_update(message)
-        return handlers.get("project", answer_project_question)(_project_query(message, context))
+        if source == "PERSONAL_MEMORY":
+            return success(handlers.get("personal", answer_personal_question)(message))
 
-    if source == "CONTEXT":
-        query = _project_query(message, context)
-        if query != message:
-            return handlers.get("project", answer_project_question)(query)
-        return None
+        if source == "PROJECT_MEMORY":
+            if response_plan.get("intent") == "UPDATE":
+                from memory.structured_memory import analyze_project_update
 
-    if source == "SEMANTIC_MEMORY":
-        result = handlers.get("semantic", _semantic_search)(_project_query(message, context))
-        return result.get("contenu", "") if result else None
+                return success(analyze_project_update(message))
+            return success(handlers.get("project", answer_project_question)(_project_query(message, context)))
 
-    if source == "AI":
-        return handlers.get("ai", _ask_ai)(_project_query(message, context))
+        if source == "CONTEXT":
+            query = _project_query(message, context)
+            if query != message:
+                return success(handlers.get("project", answer_project_question)(query))
+            return failure("Contexte insuffisant")
 
-    if source == "CLARIFICATION":
-        return "Je ne suis pas certain de ce que tu veux dire. Peux-tu préciser ?"
+        if source == "SEMANTIC_MEMORY":
+            result = handlers.get("semantic", _semantic_search)(_project_query(message, context))
+            return success(result.get("contenu", "") if result else None)
 
-    return None
+        if source == "AI":
+            return success(handlers.get("ai", _ask_ai)(_project_query(message, context)))
+
+        if source == "CLARIFICATION":
+            return ExecutionResult(
+                True,
+                "CLARIFICATION",
+                response="Je ne suis pas certain de ce que tu veux dire.",
+            )
+
+        return failure("Source inconnue", fallback_allowed=False)
+    except Exception as error:
+        return failure(error, fallback_allowed=source != "AI")

@@ -1,42 +1,42 @@
 [
     {
         "role": "user",
-        "message": "ouvre chrome"
+        "message": "Quel backend utilise mon projet ?"
     },
     {
         "role": "assistant",
-        "message": "J'ouvre ton navigateur."
+        "message": "Le backend du projet utilise FastAPI."
     },
     {
         "role": "user",
-        "message": "qui suis-je"
+        "message": "Maintenant mon backend utilise Django"
     },
     {
         "role": "assistant",
-        "message": "Tu es Fabrice Malanga."
+        "message": "J'ai mis à jour le backend : FastAPI → Django."
     },
     {
         "role": "user",
-        "message": "qui es tu"
+        "message": "Quel backend utilise mon projet ?"
     },
     {
         "role": "assistant",
-        "message": "Je suis JARVIS, l’assistant personnel de Fabrice, conçu pour répondre à tes questions et t’aider dans tes projets. 🚀"
+        "message": "Le backend du projet utilise Django."
     },
     {
         "role": "user",
-        "message": "ouvre chrome"
+        "message": "Ouvre Spotify"
     },
     {
         "role": "assistant",
-        "message": "J'ouvre ton navigateur."
+        "message": "J'ouvre Spotify."
     },
     {
         "role": "user",
-        "message": "ouvre le"
+        "message": "Mets ma musique préférée"
     },
     {
         "role": "assistant",
-        "message": "Quel élément souhaites‑tu que j’ouvre ? (un fichier, un dossier, une URL, etc.) Précise‑le s’il te plaît."
+        "message": "Je vais lancer votre musique préférée."
     }
 ]
