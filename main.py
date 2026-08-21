@@ -21,8 +21,6 @@ from tools.tools import open_browser, get_time, open_musique
 from personality.personality import speak
 from core.intent import detect_intent
 from core.dispatcher import dispatch
-from core.user_profile import analyze_profile
-from ai.ai import ask_ai
 from voice.voice_manager import speak as speak_response
 
 

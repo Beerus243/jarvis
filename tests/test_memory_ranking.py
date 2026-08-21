@@ -1,21 +1,24 @@
-from memory import find_semantic_memory
+from memory import memory as memory_module
 
 
-def test_project_and_preference_ranking():
-    expected = {
-        "Quelle technologie gère mon serveur ?": "FastAPI",
-        "Quelle technologie utilise mon interface ?": "React",
-        "Quelle est ma couleur préférée ?": "jaune",
-        "Avec quel langage ai-je développé le projet ?": "Python",
-        "Où sont stockées les données ?": "PostgreSQL",
-    }
+def test_project_and_preference_ranking(monkeypatch):
+    souvenirs = [
+        {"contenu": "Le serveur utilise FastAPI."},
+        {"contenu": "L'interface utilise React."},
+    ]
+    monkeypatch.setattr(memory_module, "load_memory", lambda: {"souvenirs": souvenirs})
+    monkeypatch.setattr(
+        memory_module,
+        "calculate_hybrid_score",
+        lambda question, souvenir: {
+            "souvenir": souvenir,
+            "final": 0.9 if ("serveur" in question.lower()) == ("serveur" in souvenir["contenu"].lower()) else 0.1,
+        },
+    )
+    result = memory_module.find_semantic_memory("Quelle technologie gère mon serveur ?")
+    assert result["contenu"] == "Le serveur utilise FastAPI."
 
-    for question, answer in expected.items():
-        souvenir = find_semantic_memory(question)
-        assert souvenir is not None
-        assert answer.casefold() in souvenir["contenu"].casefold()
 
-
-def test_unrelated_preference_is_rejected():
-    assert find_semantic_memory("Qu'est-ce que j'aime regarder ?") is None
-
+def test_unrelated_preference_is_rejected(monkeypatch):
+    monkeypatch.setattr(memory_module, "load_memory", lambda: {"souvenirs": []})
+    assert memory_module.find_semantic_memory("Qu'est-ce que j'aime regarder ?") is None

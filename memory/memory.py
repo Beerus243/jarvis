@@ -3,11 +3,6 @@ import re
 import unicodedata
 from datetime import datetime
 
-from memory.semantic_memory import (
-    similarity,
-    create_memory_embedding,
-    search_semantic_memory
-)
 from config.settings import EMBEDDING_DIMENSION, MEMORY_FILE
 
 
@@ -136,6 +131,8 @@ def remember(
     # --------------------------------------------------------
     # EMBEDDING
     # --------------------------------------------------------
+
+    from memory.semantic_memory import create_memory_embedding
 
     embedding = create_memory_embedding(
         contenu
@@ -562,6 +559,8 @@ def calculate_specificity(question, contenu):
 def calculate_hybrid_score(question, souvenir):
     """Calcule le score explicable utilisé par la recherche mémoire."""
 
+    from memory.semantic_memory import create_memory_embedding, similarity
+
     embedding = souvenir.get("embedding")
     contenu = souvenir.get("contenu", "")
     if not isinstance(embedding, list) or not embedding or not contenu:
@@ -797,6 +796,8 @@ def recall_memory(message):
 
 def update_missing_embeddings():
 
+    from memory.semantic_memory import create_memory_embedding
+
     user = load_memory()
 
     souvenirs = user.get(
@@ -869,6 +870,8 @@ def search_memory(
     if not souvenirs:
 
         return []
+
+    from memory.semantic_memory import search_semantic_memory
 
     return search_semantic_memory(
         query,

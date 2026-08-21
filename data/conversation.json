@@ -1,33 +1,5 @@
 [
     {
-        "role": "user",
-        "message": "Quel backend utilise mon projet ?"
-    },
-    {
-        "role": "assistant",
-        "message": "Le backend du projet utilise FastAPI."
-    },
-    {
-        "role": "user",
-        "message": "Maintenant mon backend utilise Django"
-    },
-    {
-        "role": "assistant",
-        "message": "J'ai mis à jour le backend : FastAPI → Django."
-    },
-    {
-        "role": "user",
-        "message": "Quel backend utilise mon projet ?"
-    },
-    {
-        "role": "assistant",
-        "message": "Le backend du projet utilise Django."
-    },
-    {
-        "role": "user",
-        "message": "Ouvre Spotify"
-    },
-    {
         "role": "assistant",
         "message": "J'ouvre Spotify."
     },
@@ -38,5 +10,33 @@
     {
         "role": "assistant",
         "message": "Je vais lancer votre musique préférée."
+    },
+    {
+        "role": "user",
+        "message": "qui suis-je ?"
+    },
+    {
+        "role": "assistant",
+        "message": "Tu es Fabrice Malanga."
+    },
+    {
+        "role": "user",
+        "message": "qui es tu ?"
+    },
+    {
+        "role": "user",
+        "message": "bonjour"
+    },
+    {
+        "role": "assistant",
+        "message": "Bonjour Fabrice. Je suis heureux de vous voir."
+    },
+    {
+        "role": "user",
+        "message": "ouvre spotify"
+    },
+    {
+        "role": "assistant",
+        "message": "J'ouvre Spotify."
     }
 ]

@@ -4,14 +4,6 @@ from config.settings import CONVERSATION_FILE
 history = []
 
 
-def add_message(role, message):
-
-    history.append({
-        "role": role,
-        "message": message
-    })
-
-
 def get_history():
 
     return history
@@ -28,8 +20,9 @@ def get_last_user_message():
 
 
 def get_recent_history(limit=5):
-
-    return history[-limit:]
+    if history:
+        return history[-limit:]
+    return load_conversation()[-limit:]
 
 
 def clear_history():
@@ -60,6 +53,11 @@ def load_conversation():
 
 def add_message(role, message):
 
+    history.append({
+        "role": role,
+        "message": message
+    })
+
     conversation = load_conversation()
 
     conversation.append({
@@ -78,6 +76,11 @@ def add_message(role, message):
             indent=4,
             ensure_ascii=False
         )
+
+
+def get_last_message():
+    recent = get_recent_history(1)
+    return recent[-1] if recent else None
 
 
 # ============================================================

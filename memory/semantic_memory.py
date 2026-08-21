@@ -7,9 +7,14 @@ from config.settings import EMBEDDING_MODEL
 # MODÈLE D'EMBEDDINGS
 # ============================================================
 
-model = SentenceTransformer(
-    EMBEDDING_MODEL
-)
+_model = None
+
+
+def get_model():
+    global _model
+    if _model is None:
+        _model = SentenceTransformer(EMBEDDING_MODEL)
+    return _model
 
 
 # ============================================================
@@ -18,7 +23,7 @@ model = SentenceTransformer(
 
 def encode(text):
 
-    vector = model.encode(
+    vector = get_model().encode(
         text,
         normalize_embeddings=True
     )

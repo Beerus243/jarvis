@@ -11,18 +11,19 @@ load_dotenv()
 
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+client = None
 
 
-if not GROQ_API_KEY:
-    raise RuntimeError(
-        "GROQ_API_KEY introuvable. Vérifie ton fichier .env."
-    )
-
-
-client = OpenAI(
-    api_key=GROQ_API_KEY,
-    base_url="https://api.groq.com/openai/v1"
-)
+def _get_client():
+    global client
+    if client is None:
+        if not GROQ_API_KEY:
+            raise RuntimeError("GROQ_API_KEY introuvable. Vérifie ton fichier .env.")
+        client = OpenAI(
+            api_key=GROQ_API_KEY,
+            base_url="https://api.groq.com/openai/v1"
+        )
+    return client
 
 
 # Modèle récent recommandé par Groq après le retrait de Llama 3.3.
@@ -76,7 +77,7 @@ def ask_ai(message, memory_context=""):
 
     try:
 
-        response = client.chat.completions.create(
+        response = _get_client().chat.completions.create(
             model=MODEL,
             messages=messages,
             temperature=0.7,

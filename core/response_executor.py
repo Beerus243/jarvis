@@ -32,11 +32,14 @@ def execute(response_plan, message, context=None, handlers=None):
 
     def success(response):
         if response is None:
-            return ExecutionResult(False, source or "UNKNOWN", error="Aucune réponse", fallback_allowed=True)
-        return ExecutionResult(True, source or "UNKNOWN", response=response)
+            fallback = source in {"ACTION", "SEMANTIC_MEMORY", "AI"}
+            return ExecutionResult(False, source or "UNKNOWN", error="Aucune réponse",
+                                   fallback_allowed=fallback, error_type="NOT_FOUND")
+        return ExecutionResult(True, source or "UNKNOWN", response=response, error_type="NONE")
 
-    def failure(error, fallback_allowed=True):
-        return ExecutionResult(False, source or "UNKNOWN", error=str(error), fallback_allowed=fallback_allowed)
+    def failure(error, fallback_allowed=False, error_type="INTERNAL_ERROR"):
+        return ExecutionResult(False, source or "UNKNOWN", error=str(error),
+                               fallback_allowed=fallback_allowed, error_type=error_type)
 
     try:
         if source == "ACTION":
@@ -56,7 +59,7 @@ def execute(response_plan, message, context=None, handlers=None):
             query = _project_query(message, context)
             if query != message:
                 return success(handlers.get("project", answer_project_question)(query))
-            return failure("Contexte insuffisant")
+            return failure("Contexte insuffisant", error_type="AMBIGUOUS")
 
         if source == "SEMANTIC_MEMORY":
             result = handlers.get("semantic", _semantic_search)(_project_query(message, context))
@@ -72,6 +75,10 @@ def execute(response_plan, message, context=None, handlers=None):
                 response="Je ne suis pas certain de ce que tu veux dire.",
             )
 
-        return failure("Source inconnue", fallback_allowed=False)
+        return failure("Source inconnue", fallback_allowed=False, error_type="INTERNAL_ERROR")
     except Exception as error:
-        return failure(error, fallback_allowed=source != "AI")
+        if source == "SEMANTIC_MEMORY":
+            return failure(error, fallback_allowed=False, error_type="DEPENDENCY_ERROR")
+        if source == "AI":
+            return failure(error, fallback_allowed=False, error_type="EXTERNAL_ERROR")
+        return failure(error, fallback_allowed=False, error_type="INTERNAL_ERROR")

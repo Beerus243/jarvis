@@ -15,7 +15,7 @@ def play(audio_path, cleanup=True):
         except FileNotFoundError:
             subprocess.run(["aplay", audio_path], check=True)
         return True
-    except (FileNotFoundError, subprocess.CalledProcessError) as error:
+    except (FileNotFoundError, OSError, subprocess.CalledProcessError) as error:
         print(f"⚠️ Lecture audio indisponible : {error}")
         print(f"Audio disponible : {audio_path}")
         return False
