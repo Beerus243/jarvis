@@ -143,6 +143,13 @@ def analyze_reference(message, context=None):
         return {"resolved": True, "type": "project", "target": target,
                 "source": "message", "confidence": 0.95, "query": query}
 
+    if re.search(r"\b(lui|elle|il|ça|cela|ca)\b", text):
+        if previous:
+            return {"resolved": True, "type": "conversation", "target": None,
+                    "source": "conversation", "confidence": 0.35, "query": None}
+        return {"resolved": False, "type": None, "target": None,
+                "source": None, "confidence": 0.30, "query": None}
+
     if not _is_elliptical(message):
         return {"resolved": False, "type": None, "target": None,
                 "source": None, "confidence": 1.0, "query": None}

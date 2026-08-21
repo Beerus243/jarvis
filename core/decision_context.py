@@ -30,4 +30,10 @@ def build_decision_context(message):
         "reference_info": analyze_reference(message, {
             "previous_user_message": previous_user_message,
         }),
+        "previous_subject": {
+            "reference": analyze_reference(message, {
+                "previous_user_message": previous_user_message,
+            }),
+            "value": previous_assistant_message,
+        } if previous_user_message or previous_assistant_message else None,
     }
