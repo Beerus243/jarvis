@@ -8,8 +8,17 @@ class SpeechInput:
         self._listener = listener
 
     def listen(self):
-        if self._listener is None:
-            from voice.listen import listen
+        try:
+            if self._listener is None:
+                from voice.listen import listen
 
-            return listen()
-        return self._listener()
+                result = listen()
+            else:
+                result = self._listener()
+        except Exception as error:
+            print(f"⚠️ Entrée vocale indisponible : {error}")
+            return None
+
+        if result is None or not str(result).strip():
+            return None
+        return str(result).strip()

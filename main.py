@@ -12,6 +12,7 @@ from core.brain import think
 
 # Mémoire utilisateur
 import json
+import sys
 from config.settings import MEMORY_FILE
 
 # Modules conservés pour l'architecture de JARVIS
@@ -157,4 +158,10 @@ def main():
 
 if __name__ == "__main__":
 
-    main()
+    if "--voice" in sys.argv[1:]:
+        from voice.assistant_loop import AssistantLoop
+
+        print("JARVIS en veille...")
+        AssistantLoop().run()
+    else:
+        main()

@@ -1,21 +1,13 @@
-def detect_wake_word(message):
+"""Détection textuelle locale du wake word, sans moteur matériel dédié."""
 
-    if not message:
-        return False
+import re
+import unicodedata
 
-    message = message.lower()
 
-    wake_words = [
-        "jarvis",
-        "hé jarvis",
-        "hey jarvis",
-        "ok jarvis",
-        "jarvis écoute-moi"
-    ]
-
-    for word in wake_words:
-
-        if word in message:
-            return True
-
-    return False
+class WakeWordDetector:
+    def detect(self, text):
+        if not text:
+            return False
+        value = unicodedata.normalize("NFD", str(text).casefold())
+        value = "".join(char for char in value if unicodedata.category(char) != "Mn")
+        return bool(re.search(r"\bjarvis\b", value))
