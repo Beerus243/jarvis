@@ -45,6 +45,16 @@ def execute(response_plan, message, context=None, handlers=None):
         if source == "ACTION":
             return success(handlers.get("dispatch", dispatch)(response_plan.get("intent")))
 
+        if source == "ACTION_COMPOSED":
+            from core.action_executor import execute_plan
+            results = execute_plan(response_plan.get("intent", []), dispatcher=handlers.get("raw_dispatch", dispatch))
+            if not results:
+                return failure("Aucune action reconnue", fallback_allowed=False, error_type="NOT_FOUND")
+            if all(item.success for item in results):
+                return success(f"{len(results)} action(s) exécutée(s) avec succès.")
+            completed = sum(item.success for item in results)
+            return failure(f"{completed} action(s) réussie(s), puis une action a échoué.", fallback_allowed=False, error_type="ACTION_FAILED")
+
         if source == "PERSONAL_MEMORY":
             return success(handlers.get("personal", answer_personal_question)(message))
 

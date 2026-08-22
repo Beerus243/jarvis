@@ -36,17 +36,19 @@ def _log(result):
 
 
 def execute_action(action, confirmation=False, dispatcher=None):
-    policy = classify_action(action)
+    action_id = action.get("action") if isinstance(action, dict) else action
+    policy = classify_action(action_id)
     if policy == BLOCKED_ACTION:
-        result = ActionResult(False, action, "Cette action est bloquée par la politique de sécurité.", policy=policy)
+        result = ActionResult(False, action_id, "Cette action est bloquée par la politique de sécurité.", policy=policy)
     elif policy == CONFIRMATION_REQUIRED and not confirmation:
-        result = ActionResult(False, action, "Cette action nécessite une confirmation explicite.", policy=policy)
+        result = ActionResult(False, action_id, "Cette action nécessite une confirmation explicite.", policy=policy)
     else:
         try:
             response = (dispatcher or dispatch)(action)
-            result = ActionResult(bool(response), action, response or "L'action n'a pas produit de résultat.", error=None if response else "Aucun résultat", policy=policy, confirmation=confirmation)
+            ok, message = response if isinstance(response, tuple) else (bool(response), response)
+            result = ActionResult(bool(ok), action_id, message or "L'action n'a pas produit de résultat.", error=None if ok else "Aucun résultat", policy=policy, confirmation=confirmation)
         except Exception as error:
-            result = ActionResult(False, action, "L'action a échoué.", error=str(error), policy=policy, confirmation=confirmation)
+            result = ActionResult(False, action_id, "L'action a échoué.", error=str(error), policy=policy, confirmation=confirmation)
     _log(result)
     return result
 

@@ -10,6 +10,7 @@ from core.action_policy import detect_sensitive_request
 from memory.text_normalizer import normalize_text
 from core.pc_context import answer_pc_question
 from core.task_engine import get_active_task
+from core.action_parser import parse_actions
 
 CONFIDENCE_HIGH = 0.90
 CONFIDENCE_CONTEXT = 0.70
@@ -72,8 +73,13 @@ def analyze(message, context=None):
     )
 
     intent = detect_intent(message)
+    parsed_actions = parse_actions(message) if not normalized.startswith(("est ce ", "est-ce ", "quelle ", "qu est ce ", "qu'est ce ", "pourquoi ", "comment ")) else []
+    if len(parsed_actions) > 1:
+        return _decision("ACTION_COMPOSED", parsed_actions, 0.99)
     if intent:
         return _decision("ACTION", intent, 0.98)
+    if parsed_actions:
+        return _decision("ACTION", parsed_actions[0], 0.99)
 
     if normalized in {"annule", "annuler", "stop", "arrête", "arrete"} and get_active_task():
         return _decision("TASK", "CANCEL", 0.99)

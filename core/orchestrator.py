@@ -64,7 +64,8 @@ def process(message):
         message,
         context,
         handlers={
-            "dispatch": lambda intent: execute_action(intent, dispatcher=dispatch).message,
+            "dispatch": _dispatch_action,
+            "raw_dispatch": dispatch,
             "personal": answer_personal_question,
             "state": lambda message: (
                 update_personal_state(message)
@@ -120,3 +121,8 @@ def _handle_task(message, intent):
             return f"Tâche terminée : {len(results)} étape(s) exécutée(s)."
         return f"Tâche interrompue à l'étape {task.current_step}."
     return "Tâche planifiée."
+
+
+def _dispatch_action(intent):
+    result = execute_action(intent, dispatcher=dispatch)
+    return result.message
