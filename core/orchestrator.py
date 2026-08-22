@@ -13,6 +13,7 @@ from memory.personal_state import get_personal_context
 from core.action_executor import execute_action
 from memory.structured_memory import answer_project_question
 from core.pc_context import answer_pc_question
+from core.task_engine import create_task, cancel_task, get_active_task, execute_task
 
 
 def _semantic_fallback(message, resolved_reference):
@@ -72,6 +73,7 @@ def process(message):
             ),
             "project": answer_project_question,
             "pc": answer_pc_question,
+            "task": lambda msg, intent: _handle_task(msg, intent),
             "semantic": lambda query: _semantic_fallback(message, query),
             "ai": lambda query: _ai_fallback(message, query),
         },
@@ -103,3 +105,18 @@ def process(message):
     if semantic_response:
         return semantic_response
     return _ai_fallback(message, resolved_reference)
+
+
+def _handle_task(message, intent):
+    if intent == "CANCEL":
+        return "Tâche annulée." if cancel_task() else "Aucune tâche active."
+    task = create_task(message)
+    if not task.steps:
+        return "Je n'ai pas pu construire une tâche sûre."
+    result = execute_task(task, dispatcher=dispatch)
+    if isinstance(result, tuple):
+        task, results = result
+        if task.status == "COMPLETED":
+            return f"Tâche terminée : {len(results)} étape(s) exécutée(s)."
+        return f"Tâche interrompue à l'étape {task.current_step}."
+    return "Tâche planifiée."

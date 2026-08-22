@@ -9,6 +9,7 @@ from memory.project_parser import parse_project_information
 from core.action_policy import detect_sensitive_request
 from memory.text_normalizer import normalize_text
 from core.pc_context import answer_pc_question
+from core.task_engine import get_active_task
 
 CONFIDENCE_HIGH = 0.90
 CONFIDENCE_CONTEXT = 0.70
@@ -73,6 +74,11 @@ def analyze(message, context=None):
     intent = detect_intent(message)
     if intent:
         return _decision("ACTION", intent, 0.98)
+
+    if normalized in {"annule", "annuler", "stop", "arrête", "arrete"} and get_active_task():
+        return _decision("TASK", "CANCEL", 0.99)
+    if "prépare mon environnement de travail" in normalized or "prepare mon environnement de travail" in normalized:
+        return _decision("TASK", "CREATE", 0.99)
 
     sensitive_action = detect_sensitive_request(message)
     if sensitive_action:

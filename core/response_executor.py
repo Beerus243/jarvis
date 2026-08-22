@@ -52,6 +52,9 @@ def execute(response_plan, message, context=None, handlers=None):
             from core.pc_context import answer_pc_question
             return success(handlers.get("pc", answer_pc_question)(message, (context or {}).get("pc_context")))
 
+        if source == "TASK":
+            return success(handlers.get("task", lambda msg, intent: None)(message, response_plan.get("intent")))
+
         if source == "PERSONAL_STATE":
             from memory.personal_state import answer_personal_state_question, update_personal_state
 
