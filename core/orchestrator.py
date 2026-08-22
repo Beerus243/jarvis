@@ -10,6 +10,7 @@ from core.reference import resolve_reference
 from memory.personal_memory import answer_personal_question
 from memory.personal_state import answer_personal_state_question, update_personal_state
 from memory.personal_state import get_personal_context
+from core.action_executor import execute_action
 from memory.structured_memory import answer_project_question
 
 
@@ -61,7 +62,7 @@ def process(message):
         message,
         context,
         handlers={
-            "dispatch": dispatch,
+            "dispatch": lambda intent: execute_action(intent, dispatcher=dispatch).message,
             "personal": answer_personal_question,
             "state": lambda message: (
                 update_personal_state(message)

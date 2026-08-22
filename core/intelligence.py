@@ -6,6 +6,7 @@ from memory.personal_memory import detect_personal_question
 from memory.personal_state import detect_personal_state, detect_personal_state_question
 from memory.project_questions import detect_project_question
 from memory.project_parser import parse_project_information
+from core.action_policy import detect_sensitive_request
 from memory.text_normalizer import normalize_text
 
 CONFIDENCE_HIGH = 0.90
@@ -71,6 +72,10 @@ def analyze(message, context=None):
     intent = detect_intent(message)
     if intent:
         return _decision("ACTION", intent, 0.98)
+
+    sensitive_action = detect_sensitive_request(message)
+    if sensitive_action:
+        return _decision("ACTION", sensitive_action, 0.99)
 
     if parse_project_information(message):
         return _decision(
