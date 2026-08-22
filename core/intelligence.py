@@ -3,6 +3,7 @@
 from core.intent import detect_intent
 from core.reference import has_reference, analyze_reference
 from memory.personal_memory import detect_personal_question
+from memory.personal_state import detect_personal_state, detect_personal_state_question
 from memory.project_questions import detect_project_question
 from memory.project_parser import parse_project_information
 from memory.text_normalizer import normalize_text
@@ -78,6 +79,12 @@ def analyze(message, context=None):
             0.99,
             requires_memory=True,
         )
+
+    if detect_personal_state(message):
+        return _decision("PERSONAL_STATE", "UPDATE", 0.99, requires_memory=True)
+
+    if detect_personal_state_question(message):
+        return _decision("PERSONAL_STATE", "QUESTION", 0.99, requires_memory=True)
 
     if detect_personal_question(message):
         return _decision(

@@ -48,6 +48,12 @@ def execute(response_plan, message, context=None, handlers=None):
         if source == "PERSONAL_MEMORY":
             return success(handlers.get("personal", answer_personal_question)(message))
 
+        if source == "PERSONAL_STATE":
+            from memory.personal_state import answer_personal_state_question, update_personal_state
+
+            handler = update_personal_state if response_plan.get("intent") == "UPDATE" else answer_personal_state_question
+            return success(handlers.get("state", handler)(message))
+
         if source == "PROJECT_MEMORY":
             if response_plan.get("intent") == "UPDATE":
                 from memory.structured_memory import analyze_project_update

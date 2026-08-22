@@ -8,6 +8,7 @@ from core.diagnostics import create_diagnostic_event, record_diagnostic, clear_d
 from core.dispatcher import dispatch
 from core.reference import resolve_reference
 from memory.personal_memory import answer_personal_question
+from memory.personal_state import answer_personal_state_question, update_personal_state
 from memory.structured_memory import answer_project_question
 
 
@@ -60,6 +61,11 @@ def process(message):
         handlers={
             "dispatch": dispatch,
             "personal": answer_personal_question,
+            "state": lambda message: (
+                update_personal_state(message)
+                if response_plan.get("intent") == "UPDATE"
+                else answer_personal_state_question(message)
+            ),
             "project": answer_project_question,
             "semantic": lambda query: _semantic_fallback(message, query),
             "ai": lambda query: _ai_fallback(message, query),
