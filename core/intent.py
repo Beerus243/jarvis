@@ -1,5 +1,6 @@
 import unicodedata
 import re
+from core.command_understanding import normalize_command, resolve_command_terms
 
 
 def _normalize_text(text: str) -> str:
@@ -28,7 +29,11 @@ def _normalize_text(text: str) -> str:
 
 def detect_intent(message):
 
-    message = _normalize_text(message)
+    message = _normalize_text(resolve_command_terms(message)["normalized_terms"])
+
+    # Les phrases interrogatives générales ne sont pas des commandes locales.
+    if message.startswith(("pourquoi ", "comment ", "qu est ce ", "est ce que ")):
+        return None
 
     # ========================================================
     # CHROME / NAVIGATEUR

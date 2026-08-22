@@ -1,0 +1,49 @@
+"""Compréhension locale des commandes : normalisation, alias et fautes ciblées."""
+
+import difflib
+import re
+import unicodedata
+
+ALIASES = {
+    "spotify": {"spotify", "spotfy", "spofity", "spotifi", "spootify"},
+    "wikipedia": {"wikipedia", "wikipédia", "wikipdia", "wikipedai", "wiki"},
+    "browser": {"navigateur", "browser", "chrome", "google chrome", "navgateur"},
+    "open": {"ouvre", "ouvrir", "ouvre moi", "lance", "lancer", "demarre", "démarre"},
+    "search": {"cherche", "recherche", "trouve", "regarde", "va voir"},
+    "play": {"joue", "jouer", "mets", "met", "mets moi", "met moi"},
+}
+
+
+def normalize_command(message):
+    text = unicodedata.normalize("NFD", str(message or "").casefold())
+    text = "".join(ch for ch in text if not unicodedata.combining(ch))
+    text = text.replace("’", "'")
+    text = re.sub(r"[-']", " ", text)
+    text = re.sub(r"[^\w\s]", " ", text)
+    return " ".join(text.split())
+
+
+def _canonical_word(word, vocabulary):
+    if word in vocabulary:
+        return word
+    # Les mots très courts produisent trop de collisions ("et" → "met").
+    if len(word) < 4:
+        return word
+    match = difflib.get_close_matches(word, vocabulary, n=1, cutoff=0.78)
+    return match[0] if match else word
+
+
+def resolve_command_terms(message):
+    normalized = normalize_command(message)
+    words = normalized.split()
+    result = {"normalized": normalized, "terms": words[:], "aliases": set()}
+    for canonical, aliases in ALIASES.items():
+        vocabulary = {normalize_command(alias) for alias in aliases}
+        for index, word in enumerate(words):
+            if _canonical_word(word, vocabulary) in vocabulary:
+                result["terms"][index] = canonical
+                result["aliases"].add(canonical)
+        if any(alias in normalized for alias in vocabulary if " " in alias):
+            result["aliases"].add(canonical)
+    result["normalized_terms"] = " ".join(result["terms"])
+    return result
