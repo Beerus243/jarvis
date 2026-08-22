@@ -22,9 +22,12 @@ def play_track(title=None, artist=None):
     if not query:
         return False, "Je n'ai pas compris quel morceau jouer."
     try:
-        # URI Spotify : le système l'associe à l'application Spotify,
-        # contrairement à une URL https qui ouvre le navigateur.
-        subprocess.Popen(["xdg-open", "spotify:search:" + quote(query)])
+        # Priorité à l'application Flatpak, pour ne jamais basculer vers Chrome.
+        uri = "spotify:search:" + quote(query)
+        try:
+            subprocess.Popen(["flatpak", "run", "com.spotify.Client", uri])
+        except OSError:
+            subprocess.Popen(["xdg-open", uri])
         label = f"{title} de {artist}" if title and artist else (title or artist)
         return True, f"Je lance la recherche de {label} dans Spotify."
     except OSError as error:

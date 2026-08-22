@@ -6,6 +6,7 @@ import unicodedata
 
 ALIASES = {
     "spotify": {"spotify", "spotfy", "spofity", "spotifi", "spootify"},
+    "dadju": {"dadju", "dadjui"},
     "wikipedia": {"wikipedia", "wikipédia", "wikipdia", "wikipedai", "wiki"},
     "browser": {"navigateur", "browser", "chrome", "google chrome", "navgateur"},
     "open": {"ouvre", "ouvrir", "ouvre moi", "lance", "lancer", "demarre", "démarre"},
