@@ -53,3 +53,19 @@ def execute_action(action, confirmation=False, dispatcher=None):
 
 def result_dict(result):
     return asdict(result)
+
+
+def execute_plan(actions, confirmation=False, dispatcher=None):
+    """Exécute séquentiellement un plan déjà construit.
+
+    L'exécution s'arrête dès qu'une étape est bloquée, demande confirmation
+    ou échoue. Aucune boucle ni reprise implicite n'est créée.
+    """
+    results = []
+    for item in actions or []:
+        action = item.action if hasattr(item, "action") else item.get("action", item)
+        result = execute_action(action, confirmation=confirmation, dispatcher=dispatcher)
+        results.append(result)
+        if not result.success or result.policy in {BLOCKED_ACTION, CONFIRMATION_REQUIRED}:
+            break
+    return results
