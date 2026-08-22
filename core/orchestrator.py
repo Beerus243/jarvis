@@ -9,6 +9,7 @@ from core.dispatcher import dispatch
 from core.reference import resolve_reference
 from memory.personal_memory import answer_personal_question
 from memory.personal_state import answer_personal_state_question, update_personal_state
+from memory.personal_state import get_personal_context
 from memory.structured_memory import answer_project_question
 
 
@@ -30,6 +31,7 @@ def _ai_fallback(message, resolved_reference, memory_context=""):
 def process(message):
     clear_diagnostics()
     context = build_decision_context(message)
+    context["personal_context"] = get_personal_context()
     decision = intelligence.analyze(message, context=context)
     record_diagnostic(create_diagnostic_event(
         "INTELLIGENCE",

@@ -52,6 +52,12 @@ _QUESTION_MARKERS = (
     "est ce que je suis a la maison",
     "depuis combien de temps je suis dehors",
     "quand suis je sorti",
+    "quelle est ma routine",
+    "qu est ce que je fais habituellement",
+    "qu est ce que j ai fait aujourd hui",
+    "qu est ce que je faisais avant",
+    "derniere activite",
+    "activite precedente",
 )
 
 _FINISHED_EATING = (
@@ -157,9 +163,23 @@ def update_personal_state(message, now=None):
         return None
     data = _load()
     state = data.setdefault("personal_state", {})
+    current_time = now or datetime.now().astimezone()
+    history = data.setdefault("state_history", [])
+    previous_activity = state.get("activity")
+    previous_started = state.get("started_at")
+    previous_location = state.get("location")
+    new_activity = update.get("activity", previous_activity)
+    if previous_activity and previous_started and new_activity != previous_activity:
+        history.append({
+            "activity": previous_activity,
+            "started_at": previous_started,
+            "ended_at": current_time.isoformat(),
+            **({"location": previous_location} if previous_location else {}),
+        })
+        del history[:-50]
     state.update(update)
-    state["started_at"] = (now or datetime.now().astimezone()).isoformat()
-    data.setdefault("state_history", [])
+    if new_activity != previous_activity or not state.get("started_at"):
+        state["started_at"] = current_time.isoformat()
     _save(data)
     if any(phrase in _text(message) for phrase in _FINISHED_EATING):
         return "D'accord. Je retiens que tu as fini de manger."
@@ -200,6 +220,27 @@ def get_personal_state():
     return dict(_load().get("personal_state", {}))
 
 
+def get_personal_history(limit=20):
+    return list(_load().get("state_history", []))[-limit:]
+
+
+def get_personal_context(now=None):
+    state = get_personal_state()
+    context = dict(state)
+    started = state.get("started_at")
+    context["duration"] = _format_duration(started, now=now) if started else None
+    history = get_personal_history()
+    context["recent_history"] = history
+    context["previous_activity"] = history[-1].get("activity") if history else None
+    return context
+
+
+def get_personal_routine():
+    data = _load()
+    routines = data.get("routines", {})
+    return dict(routines) if isinstance(routines, dict) else {}
+
+
 def _format_duration(started_at, now=None):
     try:
         started = datetime.fromisoformat(started_at)
@@ -221,9 +262,22 @@ def _format_duration(started_at, now=None):
 
 def answer_personal_state_question(message, now=None):
     state = get_personal_state()
+    text = _text(message)
+    if "habituellement" in text or "routine" in text:
+        routine = get_personal_routine()
+        return routine.get("summary") if routine.get("summary") else "Je n'ai pas encore de routine enregistrée."
+    if "qu est ce que j ai fait aujourd hui" in text or "quelle etait mon activite precedente" in text or "qu est ce que je faisais avant" in text or "derniere activite" in text:
+        history = get_personal_history()
+        if not history:
+            return "Je n'ai pas encore d'historique d'activité."
+        if "aujourd hui" in text:
+            history = [event for event in history if event.get("started_at", "").split("T")[0] == datetime.now().astimezone().date().isoformat()]
+        if not history:
+            return "Je n'ai pas d'activité enregistrée aujourd'hui."
+        activities = ", ".join(event.get("activity", "inconnue") for event in history)
+        return f"Tes activités récentes sont : {activities}."
     if not state:
         return None
-    text = _text(message)
     activity = state.get("activity")
     labels = {
         "sleeping": "Tu dors actuellement.",
