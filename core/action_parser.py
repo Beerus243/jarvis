@@ -15,7 +15,7 @@ def _one(text):
         query = re.sub(r"^(?:play|joue|jouer|mets(?:[- ]moi)?|met(?:[- ]moi)?|lance)\s+", "", low, flags=re.I).strip()
         query = re.sub(r"^(?:moi\s+)?du\s+", "", query).strip()
         request = {"action": "PLAY_MUSIC", "query": query}
-        if len(query.split()) > 1 and query.split()[0] in {"damso", "booba", "nekfeu", "gims", "stromae"}:
+        if len(query.split()) > 1 and query.split()[0] in {"damso", "dadju", "booba", "nekfeu", "gims", "stromae"}:
             artist, title = query.split(maxsplit=1)
             request.update({"title": title.strip(), "artist": artist.strip()})
         elif " de " in query:

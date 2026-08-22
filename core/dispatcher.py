@@ -12,7 +12,7 @@ def dispatch(intent):
         if action == "OPEN_APPLICATION":
             return open_application(intent.get("target", ""))[1]
         if action in {"PLAY_MUSIC", "SEARCH_MUSIC"}:
-            return play_track(intent.get("title") or intent.get("query"), intent.get("artist"))
+            return play_track(intent.get("title"), intent.get("artist") or intent.get("query"))
         if action == "PAUSE_MUSIC": return pause()
         if action == "RESUME_MUSIC": return resume()
         if action == "NEXT_TRACK": return next_track()

@@ -93,6 +93,8 @@ def process(message):
         return result.response
 
     if not result.fallback_allowed:
+        if result.error_type == "ACTION_FAILED" and result.response:
+            return result.response
         if result.error_type == "AMBIGUOUS":
             return "Je ne suis pas certain de ce que tu veux dire."
         return None

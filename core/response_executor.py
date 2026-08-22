@@ -53,7 +53,14 @@ def execute(response_plan, message, context=None, handlers=None):
             if all(item.success for item in results):
                 return success(f"{len(results)} action(s) exécutée(s) avec succès.")
             completed = sum(item.success for item in results)
-            return failure(f"{completed} action(s) réussie(s), puis une action a échoué.", fallback_allowed=False, error_type="ACTION_FAILED")
+            return ExecutionResult(
+                False,
+                source or "ACTION_COMPOSED",
+                response=f"{completed} action(s) réussie(s), puis une action a échoué : {results[-1].message}",
+                error="ACTION_FAILED",
+                fallback_allowed=False,
+                error_type="ACTION_FAILED",
+            )
 
         if source == "PERSONAL_MEMORY":
             return success(handlers.get("personal", answer_personal_question)(message))
