@@ -12,6 +12,7 @@ from memory.personal_state import answer_personal_state_question, update_persona
 from memory.personal_state import get_personal_context
 from core.action_executor import execute_action
 from memory.structured_memory import answer_project_question
+from core.pc_context import answer_pc_question
 
 
 def _semantic_fallback(message, resolved_reference):
@@ -70,6 +71,7 @@ def process(message):
                 else answer_personal_state_question(message)
             ),
             "project": answer_project_question,
+            "pc": answer_pc_question,
             "semantic": lambda query: _semantic_fallback(message, query),
             "ai": lambda query: _ai_fallback(message, query),
         },

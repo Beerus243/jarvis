@@ -48,6 +48,10 @@ def execute(response_plan, message, context=None, handlers=None):
         if source == "PERSONAL_MEMORY":
             return success(handlers.get("personal", answer_personal_question)(message))
 
+        if source == "PC_CONTEXT":
+            from core.pc_context import answer_pc_question
+            return success(handlers.get("pc", answer_pc_question)(message, (context or {}).get("pc_context")))
+
         if source == "PERSONAL_STATE":
             from memory.personal_state import answer_personal_state_question, update_personal_state
 

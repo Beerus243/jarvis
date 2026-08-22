@@ -36,4 +36,10 @@ def build_decision_context(message):
             }),
             "value": previous_assistant_message,
         } if previous_user_message or previous_assistant_message else None,
+        "pc_context": _pc_context(),
     }
+
+
+def _pc_context():
+    from core.pc_context import get_pc_context
+    return get_pc_context()

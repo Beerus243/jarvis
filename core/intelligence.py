@@ -8,6 +8,7 @@ from memory.project_questions import detect_project_question
 from memory.project_parser import parse_project_information
 from core.action_policy import detect_sensitive_request
 from memory.text_normalizer import normalize_text
+from core.pc_context import answer_pc_question
 
 CONFIDENCE_HIGH = 0.90
 CONFIDENCE_CONTEXT = 0.70
@@ -98,6 +99,9 @@ def analyze(message, context=None):
             0.99,
             requires_memory=True,
         )
+
+    if answer_pc_question(message, context.get("pc_context")):
+        return _decision("PC_CONTEXT", "QUESTION", 0.99, uses_context=True)
 
     project_intent = detect_project_question(message)
     if project_intent:
