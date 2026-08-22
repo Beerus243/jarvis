@@ -28,7 +28,8 @@ def test_audio_player_failure_does_not_crash():
     with patch.object(
         audio_player.subprocess,
         "run",
-        side_effect=[FileNotFoundError(), OSError("PulseAudio indisponible")],
+        side_effect=[FileNotFoundError(), OSError("PulseAudio indisponible"),
+                     OSError("ALSA indisponible")],
     ), patch.object(audio_player.os, "remove") as remove:
         assert audio_player.play("/tmp/jarvis-test.wav") is False
 

@@ -9,14 +9,21 @@ def play(audio_path, cleanup=True):
     if not audio_path:
         return False
 
+    errors = []
     try:
-        try:
-            subprocess.run(["paplay", audio_path], check=True)
-        except FileNotFoundError:
-            subprocess.run(["aplay", audio_path], check=True)
-        return True
-    except (FileNotFoundError, OSError, subprocess.CalledProcessError) as error:
-        print(f"⚠️ Lecture audio indisponible : {error}")
+        players = (
+            ("pw-cat", "--playback"),
+            ("paplay",),
+            ("aplay",),
+        )
+        for command in players:
+            try:
+                subprocess.run([*command, audio_path], check=True)
+                return True
+            except (FileNotFoundError, OSError, subprocess.CalledProcessError) as error:
+                errors.append(f"{command[0]}: {error}")
+
+        print(f"⚠️ Lecture audio indisponible : {'; '.join(errors)}")
         print(f"Audio disponible : {audio_path}")
         return False
     finally:
