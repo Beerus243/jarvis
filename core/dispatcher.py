@@ -2,7 +2,7 @@ from tools.tools import open_browser, open_musique, get_time
 from tools.applications import open_application, open_folder, open_website
 from actions.media import play_music
 from tools.spotify import play_track, pause, resume, next_track, previous_track
-from actions.browser import open_url, search_web, search_wikipedia
+from tools.browser import open_url, search_web, search_wikipedia
 
 
 def dispatch(intent):

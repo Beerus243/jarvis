@@ -24,9 +24,19 @@ def _one(text):
     match = re.search(r"(?:search|cherche)\s+(.+?)\s+(?:dans|sur)\s+(?:wikipedia|wiki)", low, re.I)
     if match:
         return {"action": "SEARCH_WIKIPEDIA", "query": match.group(1).strip()}
+    match = re.search(r"(?:search|cherche|recherche|trouve|va chercher)\s+(.+?)\s+(?:dans|sur)\s+(?:wikipedia|wiki)", low, re.I)
+    if match:
+        return {"action": "SEARCH_WIKIPEDIA", "query": match.group(1).strip()}
     match = re.search(r"(?:search|cherche)\s+(.+?)\s+sur\s+internet", low, re.I)
     if match:
         return {"action": "SEARCH_WEB", "query": match.group(1).strip()}
+    match = re.search(r"(?:search|cherche|recherche|trouve)\s+(.+)", low, re.I)
+    if match:
+        return {"action": "SEARCH_WEB", "query": match.group(1).strip()}
+    if re.search(r"(?:va|ouvre)\s+(?:sur\s+)?(?:wikipedia|wiki)", low):
+        return {"action": "OPEN_URL", "url": "https://fr.wikipedia.org"}
+    if re.search(r"ouvre\s+(?:youtube)", low):
+        return {"action": "OPEN_URL", "url": "https://www.youtube.com"}
     if ("open" in low or "ouvre" in low) and "wikipedia" in low:
         return {"action": "OPEN_URL", "url": "https://fr.wikipedia.org"}
     return None
