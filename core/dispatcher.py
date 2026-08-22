@@ -1,6 +1,7 @@
 from tools.tools import open_browser, open_musique, get_time
 from tools.applications import open_application, open_folder, open_website
 from actions.media import play_music
+from tools.spotify import play_track, pause, resume, next_track, previous_track
 from actions.browser import open_url, search_web, search_wikipedia
 
 
@@ -11,7 +12,11 @@ def dispatch(intent):
         if action == "OPEN_APPLICATION":
             return open_application(intent.get("target", ""))[1]
         if action in {"PLAY_MUSIC", "SEARCH_MUSIC"}:
-            return play_music(intent.get("query", ""))
+            return play_track(intent.get("title") or intent.get("query"), intent.get("artist"))
+        if action == "PAUSE_MUSIC": return pause()
+        if action == "RESUME_MUSIC": return resume()
+        if action == "NEXT_TRACK": return next_track()
+        if action == "PREVIOUS_TRACK": return previous_track()
         if action == "OPEN_URL":
             return open_url(intent.get("url", ""))
         if action == "SEARCH_WEB":

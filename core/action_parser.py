@@ -14,7 +14,13 @@ def _one(text):
     if re.search(r"(?:play|joue|mets|met|lance)\s+", low):
         query = re.sub(r"^(?:play|joue|jouer|mets(?:[- ]moi)?|met(?:[- ]moi)?|lance)\s+", "", low, flags=re.I).strip()
         query = re.sub(r"^(?:moi\s+)?du\s+", "", query).strip()
-        return {"action": "PLAY_MUSIC", "query": query}
+        request = {"action": "PLAY_MUSIC", "query": query}
+        if " de " in query:
+            title, artist = query.rsplit(" de ", 1)
+            request.update({"title": title.strip(), "artist": artist.strip()})
+        elif query:
+            request["artist"] = query
+        return request
     match = re.search(r"(?:search|cherche)\s+(.+?)\s+(?:dans|sur)\s+(?:wikipedia|wiki)", low, re.I)
     if match:
         return {"action": "SEARCH_WIKIPEDIA", "query": match.group(1).strip()}
