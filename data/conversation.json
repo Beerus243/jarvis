@@ -1,23 +1,19 @@
 [
     {
+        "role": "user",
+        "message": "bonjour"
+    },
+    {
+        "role": "assistant",
+        "message": "Bonjour Fabrice. Je suis heureux de vous voir."
+    },
+    {
+        "role": "user",
+        "message": "ouvre spotify"
+    },
+    {
         "role": "assistant",
         "message": "J'ouvre Spotify."
-    },
-    {
-        "role": "user",
-        "message": "Mets ma musique préférée"
-    },
-    {
-        "role": "assistant",
-        "message": "Je vais lancer votre musique préférée."
-    },
-    {
-        "role": "user",
-        "message": "qui suis-je ?"
-    },
-    {
-        "role": "assistant",
-        "message": "Tu es Fabrice Malanga."
     },
     {
         "role": "user",
@@ -33,10 +29,14 @@
     },
     {
         "role": "user",
-        "message": "ouvre spotify"
+        "message": "je vais dormir"
     },
     {
         "role": "assistant",
-        "message": "J'ouvre Spotify."
+        "message": "D'accord. Je retiens que tu dors."
+    },
+    {
+        "role": "user",
+        "message": "je vais me reveiller a 12H30"
     }
 ]

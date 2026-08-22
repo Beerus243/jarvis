@@ -7,5 +7,117 @@
         "projet": {
             "backend": "Django"
         }
-    }
+    },
+    "action_history": [
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-22T03:24:46.956202+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-22T23:16:16.512543+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-22T23:16:16.522139+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-22T23:16:16.855995+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-22T23:16:16.902937+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-22T23:16:16.916758+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-22T23:16:17.122646+01:00",
+            "result": "Navigateur ouvert",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-22T23:17:05.030771+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-22T23:17:05.036206+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-22T23:17:05.286090+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-22T23:17:05.333131+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-22T23:17:05.347091+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-22T23:17:05.565340+01:00",
+            "result": "Navigateur ouvert",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        }
+    ],
+    "personal_state": {
+        "activity": "sleeping",
+        "availability": "unavailable",
+        "started_at": "2026-08-22T03:25:13.468970+01:00"
+    },
+    "state_history": []
 }
