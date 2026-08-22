@@ -97,10 +97,128 @@ def test_eating_question_does_not_call_groq(tmp_path, monkeypatch):
     assert process("Je mange depuis combien de temps ?").startswith("Tu manges depuis environ")
 
 
+def test_outside_question_does_not_call_groq(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je vais sortir")
+    monkeypatch.setattr("core.orchestrator._ai_fallback", lambda *args: (_ for _ in ()).throw(AssertionError("Groq appelé")))
+    assert process("Où suis-je actuellement ?") == "Tu es actuellement dehors."
+
+
+def test_general_exit_question_is_not_outside():
+    for phrase in (
+        "Pourquoi les gens sortent ?",
+        "Je préfère sortir le soir.",
+        "Est-ce que tu peux m'expliquer comment sortir d'un programme ?",
+        "Je veux sortir de cette application.",
+    ):
+        assert personal_state.detect_personal_state(phrase) is None
+
+
+def test_specific_activity_has_priority():
+    state = personal_state.detect_personal_state("Je vais sortir travailler")
+    assert state["activity"] == "working"
+    assert state["location"] == "outside"
+
+
+def test_outside_question_when_home(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je suis à la maison")
+    assert personal_state.answer_personal_state_question("Est-ce que je suis dehors ?") == "Tu n'es pas actuellement dehors."
+
+
 def test_working_state(tmp_path, monkeypatch):
     memory_file(tmp_path, monkeypatch)
     personal_state.update_personal_state("Je vais travailler")
     assert personal_state.get_personal_state()["activity"] == "working"
+
+
+def test_start_working(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    started = datetime(2026, 8, 22, 8, 0, tzinfo=timezone.utc)
+    personal_state.update_personal_state("Je commence à travailler", now=started)
+    state = personal_state.get_personal_state()
+    assert state["activity"] == "working"
+    assert state["availability"] == "busy"
+    assert state["started_at"] == started.isoformat()
+
+
+def test_start_studying(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je commence à étudier")
+    assert personal_state.get_personal_state()["activity"] == "studying"
+
+
+def test_stop_working(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je travaille")
+    assert "fini de travailler" in personal_state.update_personal_state("J'ai fini de travailler")
+    assert personal_state.get_personal_state()["activity"] == "awake"
+
+
+def test_stop_studying(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("J'étudie")
+    assert "fini d'étudier" in personal_state.update_personal_state("J'ai fini d'étudier")
+    assert personal_state.get_personal_state()["activity"] == "awake"
+
+
+def test_working_question(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je travaille")
+    assert personal_state.answer_personal_state_question("Est-ce que je travaille ?") == "Oui, tu travailles actuellement."
+
+
+def test_studying_question(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("J'étudie")
+    assert personal_state.answer_personal_state_question("Est-ce que j'étudie ?") == "Oui, tu étudies actuellement."
+
+
+def test_activity_question(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je travaille")
+    assert personal_state.answer_personal_state_question("Quelle est mon activité actuelle ?") == "Tu travailles actuellement."
+
+
+def test_working_duration(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    started = datetime(2026, 8, 22, 8, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 8, 22, 10, 30, tzinfo=timezone.utc)
+    personal_state.update_personal_state("Je travaille", now=started)
+    assert personal_state.answer_personal_state_question("Depuis combien de temps je travaille ?", now=now) == "Tu travailles depuis environ 2 heures et 30 minutes."
+
+
+def test_studying_duration(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    started = datetime(2026, 8, 22, 14, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 8, 22, 15, 10, tzinfo=timezone.utc)
+    personal_state.update_personal_state("J'étudie", now=started)
+    assert personal_state.answer_personal_state_question("Depuis combien de temps j'étudie ?", now=now) == "Tu étudies depuis environ 1 heure et 10 minutes."
+
+
+def test_working_question_does_not_call_groq(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je travaille")
+    monkeypatch.setattr("core.orchestrator._ai_fallback", lambda *args: (_ for _ in ()).throw(AssertionError("Groq appelé")))
+    assert process("Est-ce que je travaille ?") == "Oui, tu travailles actuellement."
+
+
+def test_specific_activity_preserved_when_outside():
+    working = personal_state.detect_personal_state("Je vais sortir travailler")
+    studying = personal_state.detect_personal_state("Je vais sortir étudier")
+    assert working["activity"] == "working" and working["location"] == "outside"
+    assert studying["activity"] == "studying" and studying["location"] == "outside"
+
+
+def test_false_positive_work():
+    assert personal_state.detect_personal_state("Pourquoi les gens travaillent ?") is None
+    assert personal_state.detect_personal_state("Comment fonctionne le travail ?") is None
+    assert personal_state.detect_personal_state("Je cherche du travail") is None
+    assert personal_state.detect_personal_state("Je travaille sur un projet informatique") is None
+
+
+def test_false_positive_study():
+    assert personal_state.detect_personal_state("Je cherche une méthode pour étudier") is None
 
 
 def test_outside_state(tmp_path, monkeypatch):
@@ -109,6 +227,58 @@ def test_outside_state(tmp_path, monkeypatch):
     state = personal_state.get_personal_state()
     assert state["activity"] == "outside"
     assert state["location"] == "outside"
+
+
+def test_start_outside(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    started = datetime(2026, 8, 22, 14, 0, tzinfo=timezone.utc)
+    personal_state.update_personal_state("Je vais sortir", now=started)
+    state = personal_state.get_personal_state()
+    assert state["activity"] == "outside"
+    assert state["availability"] == "unavailable"
+    assert state["location"] == "outside"
+    assert state["started_at"] == started.isoformat()
+
+
+def test_return_home(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je vais sortir")
+    personal_state.update_personal_state("Je viens de rentrer")
+    state = personal_state.get_personal_state()
+    assert state["activity"] == "home"
+    assert state["availability"] == "available"
+    assert state["location"] == "home"
+
+
+def test_outside_question(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je vais sortir")
+    assert personal_state.answer_personal_state_question("Est-ce que je suis dehors ?") == "Tu es actuellement dehors."
+    assert personal_state.answer_personal_state_question("Où suis-je actuellement ?") == "Tu es actuellement dehors."
+
+
+def test_home_question(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je suis à la maison")
+    assert personal_state.answer_personal_state_question("Est-ce que je suis à la maison ?") == "Oui, tu es actuellement à la maison."
+
+
+def test_outside_duration(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    started = datetime(2026, 8, 22, 14, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 8, 22, 15, 20, tzinfo=timezone.utc)
+    personal_state.update_personal_state("Je vais sortir", now=started)
+    assert personal_state.answer_personal_state_question("Depuis combien de temps je suis dehors ?", now=now) == "Tu es dehors depuis environ 1 heure et 20 minutes."
+
+
+def test_outside_phrasing():
+    for phrase in ("Je sors", "Je vais dehors", "Je quitte la maison", "Je vais en ville", "Je suis dehors"):
+        assert personal_state.detect_personal_state(phrase)["location"] == "outside"
+
+
+def test_return_phrasing():
+    for phrase in ("Je rentre", "Je suis rentré", "Je suis revenu", "Je suis à la maison"):
+        assert personal_state.detect_personal_state(phrase)["location"] == "home"
 
 
 def test_home_state(tmp_path, monkeypatch):

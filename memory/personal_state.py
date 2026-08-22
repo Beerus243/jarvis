@@ -11,11 +11,11 @@ from memory.text_normalizer import normalize_text
 _ACTIVITY_PATTERNS = (
     ("sleeping", ("je vais dormir", "je pars dormir", "je vais me coucher", "je vais faire dodo", "je vais au lit", "je dors", "je suis en train de dormir")),
     ("eating", ("je vais manger", "je vais déjeuner", "je vais dejeuner", "je vais dîner", "je vais diner", "je vais prendre le petit dejeuner", "je vais prendre mon petit dejeuner", "je pars manger", "je suis en train de manger", "je mange")),
-    ("outside", ("je sors", "je vais sortir")),
+    ("outside", ("je sors", "je vais sortir", "je vais dehors", "je quitte la maison", "je vais en ville", "je vais au travail", "je vais a l ecole", "je vais a la salle", "je suis dehors", "je pars")),
     ("working", ("je vais travailler",)),
     ("studying", ("je vais étudier", "je vais etudier")),
     ("gaming", ("je vais jouer",)),
-    ("home", ("je suis rentré", "je suis rentre", "je suis de retour")),
+    ("home", ("je rentre", "je suis rentré", "je suis rentre", "je viens de rentrer", "je suis de retour", "je suis à la maison", "je suis a la maison", "je suis revenu")),
     ("awake", ("je me réveille", "je me reveille", "je viens de me réveiller", "je viens de me reveiller", "je suis réveillé", "je suis reveille", "je suis réveillé maintenant", "je suis reveille maintenant")),
 )
 
@@ -34,6 +34,17 @@ _QUESTION_MARKERS = (
     "est ce que je mange",
     "je mange depuis combien",
     "depuis quand je mange",
+    "est ce que je travaille",
+    "est ce que j etudie",
+    "depuis combien de temps je travaille",
+    "depuis combien de temps j etudie",
+    "quand ai je commence a travailler",
+    "quand ai je commence a etudier",
+    "est ce que je suis dehors",
+    "ou suis je actuellement",
+    "est ce que je suis a la maison",
+    "depuis combien de temps je suis dehors",
+    "quand suis je sorti",
 )
 
 _FINISHED_EATING = (
@@ -42,6 +53,9 @@ _FINISHED_EATING = (
     "j ai termine de manger",
     "je ne mange plus",
 )
+
+_FINISHED_WORKING = ("j ai fini de travailler", "j arrete de travailler", "je ne travaille plus")
+_FINISHED_STUDYING = ("j ai fini d etudier", "j arrete d etudier", "j ai fini mes etudes")
 
 
 def _load():
@@ -70,13 +84,33 @@ def detect_personal_state(message):
         return None
     if any(phrase in text for phrase in _FINISHED_EATING):
         return {"activity": "awake", "availability": "available"}
+    if any(phrase in text for phrase in _FINISHED_WORKING + _FINISHED_STUDYING):
+        return {"activity": "awake", "availability": "available"}
+
+    # Une activité explicite reste prioritaire, même lorsqu'elle implique
+    # un déplacement (ex. « je vais sortir travailler »).
+    if text.startswith("je vais sortir ") or text.startswith("je pars "):
+        for activity, words in (
+            ("sleeping", ("dormir", "coucher")),
+            ("eating", ("manger", "dejeuner", "diner")),
+            ("working", ("travailler",)),
+            ("studying", ("etudier",)),
+            ("gaming", ("jouer",)),
+        ):
+            if any(word in text for word in words):
+                availability = "unavailable" if activity == "sleeping" else "busy"
+                return {"activity": activity, "availability": availability, "location": "outside"}
+    if text in {"je travaille", "je bosse"} or text.startswith("je commence a travailler") or "je suis au travail" in text:
+        return {"activity": "working", "availability": "busy"}
+    if text in {"j etudie", "je revise", "je fais mes etudes"} or text.startswith("je commence a etudier"):
+        return {"activity": "studying", "availability": "busy"}
     for activity, phrases in _ACTIVITY_PATTERNS:
         if any(phrase in text for phrase in phrases):
             if activity == "home":
                 return {"activity": "home", "location": "home", "availability": "available"}
             if activity == "awake":
                 return {"activity": "awake", "availability": "available", "location": "home"}
-            availability = "unavailable" if activity == "sleeping" else "busy"
+            availability = "unavailable" if activity in {"sleeping", "outside"} else "busy"
             location = "outside" if activity == "outside" else None
             result = {"activity": activity, "availability": availability}
             if location:
@@ -109,6 +143,10 @@ def update_personal_state(message, now=None):
     _save(data)
     if any(phrase in _text(message) for phrase in _FINISHED_EATING):
         return "D'accord. Je retiens que tu as fini de manger."
+    if any(phrase in _text(message) for phrase in _FINISHED_WORKING):
+        return "D'accord. Je retiens que tu as fini de travailler."
+    if any(phrase in _text(message) for phrase in _FINISHED_STUDYING):
+        return "D'accord. Je retiens que tu as fini d'étudier."
     activity = state.get("activity")
     labels = {
         "sleeping": "tu dors",
@@ -181,6 +219,29 @@ def answer_personal_state_question(message, now=None):
             duration = _format_duration(state.get("started_at"), now=now)
             return f"Tu manges depuis environ {duration}." if duration else "Je n'ai pas l'heure de début de ton repas."
         return "Oui, tu manges actuellement."
+    if "est ce que je travaille" in text or "travaille depuis combien" in text or "depuis combien de temps je travaille" in text or "depuis quand je travaille" in text or "commence a travailler" in text:
+        if activity != "working":
+            return "Tu ne travailles pas actuellement."
+        if "depuis" in text or "commence a travailler" in text:
+            duration = _format_duration(state.get("started_at"), now=now)
+            return f"Tu travailles depuis environ {duration}." if duration else "Je n'ai pas l'heure de début de ton travail."
+        return "Oui, tu travailles actuellement."
+    if "est ce que j etudie" in text or "etudie depuis combien" in text or "depuis combien de temps j etudie" in text or "depuis quand j etudie" in text or "commence a etudier" in text:
+        if activity != "studying":
+            return "Tu n'étudies pas actuellement."
+        if "depuis" in text or "commence a etudier" in text:
+            duration = _format_duration(state.get("started_at"), now=now)
+            return f"Tu étudies depuis environ {duration}." if duration else "Je n'ai pas l'heure de début de tes études."
+        return "Oui, tu étudies actuellement."
+    if "est ce que je suis dehors" in text or "ou suis je actuellement" in text or "depuis combien de temps je suis dehors" in text or "quand suis je sorti" in text:
+        if state.get("location") != "outside":
+            return "Tu n'es pas actuellement dehors."
+        if "depuis combien de temps je suis dehors" in text or "quand suis je sorti" in text:
+            duration = _format_duration(state.get("started_at"), now=now)
+            return f"Tu es dehors depuis environ {duration}." if duration else "Je n'ai pas l'heure de début de ta sortie."
+        return "Tu es actuellement dehors."
+    if "est ce que je suis a la maison" in text:
+        return "Oui, tu es actuellement à la maison." if state.get("location") == "home" else "Non, tu n'es pas actuellement à la maison."
     if "quel est mon etat actuel" in text:
         labels = {
             "sleeping": "Tu dors actuellement.", "awake": "Tu es réveillé actuellement.",
