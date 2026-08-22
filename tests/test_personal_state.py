@@ -221,6 +221,111 @@ def test_false_positive_study():
     assert personal_state.detect_personal_state("Je cherche une méthode pour étudier") is None
 
 
+def test_start_playing(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je commence à jouer")
+    assert personal_state.get_personal_state()["activity"] == "playing"
+
+
+def test_start_watching(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je regarde un film")
+    assert personal_state.get_personal_state()["activity"] == "watching"
+
+
+def test_start_listening(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("J'écoute de la musique")
+    assert personal_state.get_personal_state()["activity"] == "listening"
+
+
+def test_stop_playing(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je joue")
+    personal_state.update_personal_state("J'arrête de jouer")
+    assert personal_state.get_personal_state()["activity"] == "awake"
+
+
+def test_stop_watching(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je regarde un animé")
+    personal_state.update_personal_state("J'ai fini l'animé")
+    assert personal_state.get_personal_state()["activity"] == "awake"
+
+
+def test_stop_listening(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("J'écoute de la musique")
+    personal_state.update_personal_state("J'arrête la musique")
+    assert personal_state.get_personal_state()["activity"] == "awake"
+
+
+def test_playing_duration(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    started = datetime(2026, 8, 22, 18, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 8, 22, 19, 30, tzinfo=timezone.utc)
+    personal_state.update_personal_state("Je joue", now=started)
+    assert personal_state.answer_personal_state_question("Depuis combien de temps je joue ?", now=now) == "Tu joues depuis environ 1 heure et 30 minutes."
+
+
+def test_watching_duration(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    started = datetime(2026, 8, 22, 20, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 8, 22, 21, 5, tzinfo=timezone.utc)
+    personal_state.update_personal_state("Je regarde un film", now=started)
+    assert personal_state.answer_personal_state_question("Depuis combien de temps je regarde ?", now=now) == "Tu regardes depuis environ 1 heure et 5 minutes."
+
+
+def test_listening_duration(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    started = datetime(2026, 8, 22, 10, 0, tzinfo=timezone.utc)
+    now = datetime(2026, 8, 22, 10, 45, tzinfo=timezone.utc)
+    personal_state.update_personal_state("J'écoute de la musique", now=started)
+    assert personal_state.answer_personal_state_question("Depuis combien de temps j'écoute de la musique ?", now=now) == "Tu écoutes de la musique depuis environ 45 minutes."
+
+
+def test_playing_question_does_not_call_groq(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je joue")
+    monkeypatch.setattr("core.orchestrator._ai_fallback", lambda *args: (_ for _ in ()).throw(AssertionError("Groq appelé")))
+    assert process("Est-ce que je joue ?") == "Oui, tu joues actuellement."
+
+
+def test_outside_playing_preserves_location(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je vais sortir jouer")
+    state = personal_state.get_personal_state()
+    assert state["activity"] == "playing" and state["location"] == "outside"
+
+
+def test_outside_watching_preserves_location(tmp_path, monkeypatch):
+    memory_file(tmp_path, monkeypatch)
+    personal_state.update_personal_state("Je vais sortir regarder un film")
+    state = personal_state.get_personal_state()
+    assert state["activity"] == "watching" and state["location"] == "outside"
+
+
+def test_false_positive_playing():
+    assert personal_state.detect_personal_state("Pourquoi les gens jouent ?") is None
+    assert personal_state.detect_personal_state("Comment jouer aux échecs ?") is None
+
+
+def test_false_positive_watching():
+    assert personal_state.detect_personal_state("Je regarde un problème dans mon code.") is None
+    assert personal_state.detect_personal_state("Je vais regarder le code.") is None
+
+
+def test_false_positive_listening():
+    assert personal_state.detect_personal_state("J'écoute les utilisateurs.") is None
+    assert personal_state.detect_personal_state("Je veux écouter une explication.") is None
+
+
+def test_play_music_action_remains_action():
+    from core.intelligence import analyze
+
+    assert analyze("Joue de la musique")["type"] == "ACTION"
+
+
 def test_outside_state(tmp_path, monkeypatch):
     memory_file(tmp_path, monkeypatch)
     personal_state.update_personal_state("Je vais sortir")

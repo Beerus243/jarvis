@@ -52,7 +52,7 @@ def save_memory():
 # CONFIGURATION
 # ============================================================
 
-VERSION = "V4.4"
+VERSION = "V4.5"
 EXIT_COMMANDS = {
     "quitter",
     "quit",

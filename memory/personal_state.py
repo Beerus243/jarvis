@@ -40,6 +40,13 @@ _QUESTION_MARKERS = (
     "depuis combien de temps j etudie",
     "quand ai je commence a travailler",
     "quand ai je commence a etudier",
+    "est ce que je joue",
+    "est ce que je regarde",
+    "qu est ce que je regarde",
+    "est ce que j ecoute",
+    "depuis combien de temps je joue",
+    "depuis combien de temps je regarde",
+    "depuis combien de temps j ecoute",
     "est ce que je suis dehors",
     "ou suis je actuellement",
     "est ce que je suis a la maison",
@@ -56,6 +63,9 @@ _FINISHED_EATING = (
 
 _FINISHED_WORKING = ("j ai fini de travailler", "j arrete de travailler", "je ne travaille plus")
 _FINISHED_STUDYING = ("j ai fini d etudier", "j arrete d etudier", "j ai fini mes etudes")
+_FINISHED_PLAYING = ("j ai fini de jouer", "j arrete de jouer")
+_FINISHED_WATCHING = ("j ai fini le film", "j ai fini l anime", "j arrete de regarder")
+_FINISHED_LISTENING = ("j ai fini d ecouter de la musique", "j arrete la musique")
 
 
 def _load():
@@ -86,6 +96,8 @@ def detect_personal_state(message):
         return {"activity": "awake", "availability": "available"}
     if any(phrase in text for phrase in _FINISHED_WORKING + _FINISHED_STUDYING):
         return {"activity": "awake", "availability": "available"}
+    if any(phrase in text for phrase in _FINISHED_PLAYING + _FINISHED_WATCHING + _FINISHED_LISTENING):
+        return {"activity": "awake", "availability": "available"}
 
     # Une activité explicite reste prioritaire, même lorsqu'elle implique
     # un déplacement (ex. « je vais sortir travailler »).
@@ -95,7 +107,9 @@ def detect_personal_state(message):
             ("eating", ("manger", "dejeuner", "diner")),
             ("working", ("travailler",)),
             ("studying", ("etudier",)),
-            ("gaming", ("jouer",)),
+            ("playing", ("jouer",)),
+            ("watching", ("regarder", "film", "anime")),
+            ("listening", ("ecouter", "musique")),
         ):
             if any(word in text for word in words):
                 availability = "unavailable" if activity == "sleeping" else "busy"
@@ -104,6 +118,12 @@ def detect_personal_state(message):
         return {"activity": "working", "availability": "busy"}
     if text in {"j etudie", "je revise", "je fais mes etudes"} or text.startswith("je commence a etudier"):
         return {"activity": "studying", "availability": "busy"}
+    if text in {"je joue"} or text.startswith("je vais jouer") or text.startswith("je commence a jouer") or "je joue a un jeu" in text:
+        return {"activity": "playing", "availability": "busy"}
+    if any(phrase in text for phrase in ("je regarde un film", "je regarde un anime", "je regarde un anime", "je vais regarder un film", "je vais regarder un anime", "je commence un film", "je commence un anime")):
+        return {"activity": "watching", "availability": "busy"}
+    if any(phrase in text for phrase in ("j ecoute de la musique", "je vais ecouter de la musique", "je mets de la musique", "je commence a ecouter de la musique")):
+        return {"activity": "listening", "availability": "busy"}
     for activity, phrases in _ACTIVITY_PATTERNS:
         if any(phrase in text for phrase in phrases):
             if activity == "home":
@@ -147,6 +167,12 @@ def update_personal_state(message, now=None):
         return "D'accord. Je retiens que tu as fini de travailler."
     if any(phrase in _text(message) for phrase in _FINISHED_STUDYING):
         return "D'accord. Je retiens que tu as fini d'étudier."
+    if any(phrase in _text(message) for phrase in _FINISHED_PLAYING):
+        return "D'accord. Je retiens que tu as fini de jouer."
+    if any(phrase in _text(message) for phrase in _FINISHED_WATCHING):
+        return "D'accord. Je retiens que tu as fini de regarder."
+    if any(phrase in _text(message) for phrase in _FINISHED_LISTENING):
+        return "D'accord. Je retiens que tu as fini d'écouter de la musique."
     activity = state.get("activity")
     labels = {
         "sleeping": "tu dors",
@@ -157,6 +183,9 @@ def update_personal_state(message, now=None):
         "gaming": "tu joues",
         "home": "tu es rentré",
         "awake": "tu es réveillé",
+        "playing": "tu joues",
+        "watching": "tu regardes un contenu",
+        "listening": "tu écoutes de la musique",
     }
     if activity in labels:
         if activity == "eating":
@@ -233,6 +262,29 @@ def answer_personal_state_question(message, now=None):
             duration = _format_duration(state.get("started_at"), now=now)
             return f"Tu étudies depuis environ {duration}." if duration else "Je n'ai pas l'heure de début de tes études."
         return "Oui, tu étudies actuellement."
+    if "est ce que je joue" in text or "depuis combien de temps je joue" in text:
+        if activity != "playing":
+            return "Tu ne joues pas actuellement."
+        if "depuis" in text:
+            duration = _format_duration(state.get("started_at"), now=now)
+            return f"Tu joues depuis environ {duration}." if duration else "Je n'ai pas l'heure de début de ton jeu."
+        return "Oui, tu joues actuellement."
+    if "est ce que je regarde" in text or "qu est ce que je regarde" in text or "depuis combien de temps je regarde" in text:
+        if activity != "watching":
+            return "Tu ne regardes rien actuellement."
+        if "qu est ce que je regarde" in text:
+            return "Tu regardes actuellement quelque chose."
+        if "depuis" in text:
+            duration = _format_duration(state.get("started_at"), now=now)
+            return f"Tu regardes depuis environ {duration}." if duration else "Je n'ai pas l'heure de début de ce visionnage."
+        return "Oui, tu regardes actuellement quelque chose."
+    if "est ce que j ecoute" in text or "depuis combien de temps j ecoute" in text:
+        if activity != "listening":
+            return "Tu n'écoutes pas de musique actuellement."
+        if "depuis" in text:
+            duration = _format_duration(state.get("started_at"), now=now)
+            return f"Tu écoutes de la musique depuis environ {duration}." if duration else "Je n'ai pas l'heure de début de cette écoute."
+        return "Oui, tu écoutes actuellement de la musique."
     if "est ce que je suis dehors" in text or "ou suis je actuellement" in text or "depuis combien de temps je suis dehors" in text or "quand suis je sorti" in text:
         if state.get("location") != "outside":
             return "Tu n'es pas actuellement dehors."
@@ -247,6 +299,8 @@ def answer_personal_state_question(message, now=None):
             "sleeping": "Tu dors actuellement.", "awake": "Tu es réveillé actuellement.",
             "working": "Tu travailles actuellement.", "eating": "Tu manges actuellement.",
             "studying": "Tu étudies actuellement.", "gaming": "Tu joues actuellement.",
+            "playing": "Tu joues actuellement.", "watching": "Tu regardes actuellement quelque chose.",
+            "listening": "Tu écoutes actuellement de la musique.",
             "outside": "Tu es actuellement dehors.", "home": "Tu es actuellement chez toi.",
         }
         return labels.get(activity)
