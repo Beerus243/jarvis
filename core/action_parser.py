@@ -15,7 +15,10 @@ def _one(text):
         query = re.sub(r"^(?:play|joue|jouer|mets(?:[- ]moi)?|met(?:[- ]moi)?|lance)\s+", "", low, flags=re.I).strip()
         query = re.sub(r"^(?:moi\s+)?du\s+", "", query).strip()
         request = {"action": "PLAY_MUSIC", "query": query}
-        if " de " in query:
+        if len(query.split()) > 1 and query.split()[0] in {"damso", "booba", "nekfeu", "gims", "stromae"}:
+            artist, title = query.split(maxsplit=1)
+            request.update({"title": title.strip(), "artist": artist.strip()})
+        elif " de " in query:
             title, artist = query.rsplit(" de ", 1)
             request.update({"title": title.strip(), "artist": artist.strip()})
         elif query:
@@ -28,6 +31,9 @@ def _one(text):
     if match:
         return {"action": "SEARCH_WIKIPEDIA", "query": match.group(1).strip()}
     match = re.search(r"(?:search|cherche)\s+(.+?)\s+sur\s+internet", low, re.I)
+    if match:
+        return {"action": "SEARCH_WEB", "query": match.group(1).strip()}
+    match = re.search(r"(?:search|cherche|recherche|trouve)\s+(.+?)\s+(?:sur|dans)\s+(?:chrome|firefox|browser|navigateur)", low, re.I)
     if match:
         return {"action": "SEARCH_WEB", "query": match.group(1).strip()}
     match = re.search(r"(?:search|cherche|recherche|trouve)\s+(.+)", low, re.I)
@@ -43,6 +49,9 @@ def _one(text):
 
 
 def parse_actions(message):
-    parts = [p for p in re.split(r"\s+(?:puis|et)\s+", str(message or ""), flags=re.I) if p.strip()]
+    raw = str(message or "")
+    # Autorise « ouvre Spotify met ... » sans exiger le mot « et ».
+    raw = re.sub(r"((?:ouvre|lance)\s+(?:spotify))\s+(?=(?:met|mets|joue)\b)", r"\1 et ", raw, flags=re.I)
+    parts = [p for p in re.split(r"\s+(?:puis|et)\s+", raw, flags=re.I) if p.strip()]
     actions = [item for part in parts if (item := _one(part))]
     return actions

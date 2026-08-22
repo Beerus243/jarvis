@@ -19,13 +19,14 @@ def search_spotify(query):
 
 def play_track(title=None, artist=None):
     query = " ".join(value for value in (title, artist) if value).strip()
-    url = search_spotify(query)
-    if not url:
+    if not query:
         return False, "Je n'ai pas compris quel morceau jouer."
     try:
-        subprocess.Popen(["xdg-open", url])
+        # URI Spotify : le système l'associe à l'application Spotify,
+        # contrairement à une URL https qui ouvre le navigateur.
+        subprocess.Popen(["xdg-open", "spotify:search:" + quote(query)])
         label = f"{title} de {artist}" if title and artist else (title or artist)
-        return True, f"Je lance la recherche de {label} sur Spotify."
+        return True, f"Je lance la recherche de {label} dans Spotify."
     except OSError as error:
         return False, f"Impossible de lancer Spotify : {error}"
 
