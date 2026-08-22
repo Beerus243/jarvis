@@ -133,6 +133,11 @@ def detect_intent(message):
     ):
         return "OPEN_TERMINAL"
 
+    if "ouvre" in message and any(value in message for value in ("dossier", "documents", "repertoire", "répertoire")):
+        return "OPEN_FOLDER"
+    if "ouvre" in message and any(value in message for value in ("site", "youtube", "github", "google")):
+        return "OPEN_WEBSITE"
+
     # ========================================================
     # SALUTATIONS
     # ========================================================

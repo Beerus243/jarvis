@@ -1,5 +1,7 @@
 import shutil
 import subprocess
+from pathlib import Path
+from urllib.parse import urlparse
 
 
 APPLICATIONS = {
@@ -131,3 +133,25 @@ def list_available_applications():
             available.append(name)
 
     return available
+
+
+def open_folder(name="Documents"):
+    folder = (Path.home() / name).resolve()
+    if not folder.exists() or not folder.is_dir():
+        return f"Le dossier {name} n'existe pas."
+    try:
+        subprocess.Popen(["xdg-open", str(folder)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return f"J'ouvre le dossier {name}."
+    except OSError:
+        return f"Impossible d'ouvrir le dossier {name}."
+
+
+def open_website(url):
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return "Site refusé par la politique de sécurité."
+    try:
+        subprocess.Popen(["xdg-open", url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return f"J'ouvre {url}."
+    except OSError:
+        return "Impossible d'ouvrir le site."

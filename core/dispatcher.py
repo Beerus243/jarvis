@@ -1,5 +1,5 @@
 from tools.tools import open_browser, open_musique, get_time
-from tools.applications import open_application
+from tools.applications import open_application, open_folder, open_website
 
 
 def dispatch(intent):
@@ -30,6 +30,10 @@ def dispatch(intent):
     elif intent == "OPEN_FIREFOX":
         success, response = open_application("firefox")
         return response
+    elif intent == "OPEN_FOLDER":
+        return open_folder("Documents")
+    elif intent in {"OPEN_SITE", "OPEN_WEBSITE"}:
+        return open_website("https://www.google.com")
     
     else:
         return None
