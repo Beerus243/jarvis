@@ -10,54 +10,6 @@
     },
     "action_history": [
         {
-            "action": "PAUSE_MUSIC",
-            "timestamp": "2026-08-23T21:09:46.029184+01:00",
-            "result": "Je mets Spotify en pause.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "NEXT_TRACK",
-            "timestamp": "2026-08-23T21:10:15.883632+01:00",
-            "result": "Je passe au morceau suivant.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "RESUME_MUSIC",
-            "timestamp": "2026-08-23T21:29:38.596033+01:00",
-            "result": "Impossible de reprendre Spotify (HTTP 404).",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "RESUME_MUSIC",
-            "timestamp": "2026-08-23T21:29:58.493983+01:00",
-            "result": "Impossible de reprendre Spotify (HTTP 404).",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T22:07:33.159527+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-23T22:07:33.280109+01:00",
-            "result": "J'ouvre Visual Studio Code.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
             "action": "OPEN_APPLICATION",
             "timestamp": "2026-08-23T22:07:33.476179+01:00",
             "result": "J'ouvre Spotify.",
@@ -404,6 +356,54 @@
         {
             "action": "OPEN_APPLICATION",
             "timestamp": "2026-08-24T00:01:39.705473+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-24T00:19:49.327816+01:00",
+            "result": "Action simulée réussie : 'OPEN_BROWSER'",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-24T00:19:49.346670+01:00",
+            "result": "Action simulée réussie : {'action': 'OPEN_VSCODE', 'target': '~/dev/jarvis'}",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T00:19:49.389551+01:00",
+            "result": "Action simulée réussie : {'action': 'OPEN_APPLICATION', 'target': 'spotify'}",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-24T00:30:19.137267+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-24T00:30:19.243700+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T00:30:19.578288+01:00",
             "result": "J'ouvre Spotify.",
             "success": true,
             "confirmation": false,

@@ -5,7 +5,6 @@ from datetime import datetime
 import uuid
 
 from core.action_planner import plan_actions
-from core.intent import detect_work_environment_intent
 from core.action_executor import execute_plan
 
 PLANNED, RUNNING, WAITING_CONFIRMATION, COMPLETED, FAILED, CANCELLED = (
@@ -34,22 +33,35 @@ def create_task(goal):
     # ========================================================
     # ENVIRONNEMENT DE TRAVAIL
     # ========================================================
+    # JARVIS prépare un environnement de développement complet :
+    # Chrome + VS Code + Spotify.
     #
-    # La détection est centralisée dans intent.py.
-    # Le task engine ne maintient donc plus sa propre liste
-    # de formulations.
-    #
-    # Toutes les formulations reconnues comme WORK_ENVIRONMENT
-    # utilisent exactement le même plan :
-    #
-    #   1. Chrome
-    #   2. VS Code ~/dev/jarvis
-    #   3. Spotify
+    # L'ordre est volontaire :
+    #   1. navigateur
+    #   2. éditeur
+    #   3. musique
     # ========================================================
 
-    work_environment_intent = detect_work_environment_intent(goal)
+    work_environment_phrases = {
+        "prépare mon environnement de travail",
+        "prepare mon environnement de travail",
+        "lance mon environnement de travail",
+        "lancer mon environnement de travail",
+        "ouvre mon environnement de travail",
+        "au boulot",
+        "go bosser",
+        "on bosse",
+        "au travail",
+        "c'est parti pour le boulot",
+        "c est parti pour le boulot",
+        "c'est parti pour travailler",
+        "c est parti pour travailler",
+        "c'est parti on bosse",
+        "c est parti on bosse",
+        "woke go bosser",
+    }
 
-    if work_environment_intent:
+    if normalized_goal in work_environment_phrases:
         from core.action_planner import PlannedAction
 
         steps = [
