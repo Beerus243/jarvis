@@ -10,86 +10,6 @@
     },
     "action_history": [
         {
-            "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-22T23:51:46.017146+01:00",
-            "result": "Cette action nécessite une confirmation explicite.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "DELETE_FILE",
-            "timestamp": "2026-08-22T23:51:46.053284+01:00",
-            "result": "Cette action est bloquée par la politique de sécurité.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:51:46.354433+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:51:46.406301+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:51:46.421780+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-22T23:51:46.628255+01:00",
-            "result": "Navigateur ouvert",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-22T23:52:21.047391+01:00",
-            "result": "Cette action nécessite une confirmation explicite.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "DELETE_FILE",
-            "timestamp": "2026-08-22T23:52:21.058582+01:00",
-            "result": "Cette action est bloquée par la politique de sécurité.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:52:21.564602+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:52:21.687269+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
             "action": "GREETINGS",
             "timestamp": "2026-08-22T23:52:21.719411+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
@@ -408,6 +328,86 @@
             "success": false,
             "confirmation": false,
             "error": "Aucun résultat"
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T01:53:45.815837+01:00",
+            "result": "L'action n'a pas produit de résultat.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T02:02:45.557661+01:00",
+            "result": "L'action n'a pas produit de résultat.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T02:08:02.809904+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T02:08:48.155423+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T02:10:01.727842+01:00",
+            "result": "L'action n'a pas produit de résultat.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T02:10:01.743710+01:00",
+            "result": "L'action n'a pas produit de résultat.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T02:11:56.523946+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-23T02:12:00.612240+01:00",
+            "result": "Je lance Dix leurres de Damso.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T02:12:49.715051+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-23T02:12:53.876535+01:00",
+            "result": "Je lance Dix leurres de Damso.",
+            "success": true,
+            "confirmation": false,
+            "error": null
         }
     ],
     "personal_state": {

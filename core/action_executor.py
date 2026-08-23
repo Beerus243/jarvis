@@ -63,11 +63,37 @@ def execute_plan(actions, confirmation=False, dispatcher=None):
     L'exécution s'arrête dès qu'une étape est bloquée, demande confirmation
     ou échoue. Aucune boucle ni reprise implicite n'est créée.
     """
+
     results = []
+
     for item in actions or []:
-        action = item.action if hasattr(item, "action") else item.get("action", item)
-        result = execute_action(action, confirmation=confirmation, dispatcher=dispatcher)
+
+        # Conserver le dictionnaire complet lorsqu'il s'agit
+        # d'une action structurée.
+        if isinstance(item, dict):
+            action = item
+
+        elif hasattr(item, "action"):
+            action = item.action
+
+        else:
+            action = item
+
+        result = execute_action(
+            action,
+            confirmation=confirmation,
+            dispatcher=dispatcher,
+        )
+
         results.append(result)
-        if not result.success or result.policy in {BLOCKED_ACTION, CONFIRMATION_REQUIRED}:
+
+        if (
+            not result.success
+            or result.policy in {
+                BLOCKED_ACTION,
+                CONFIRMATION_REQUIRED,
+            }
+        ):
             break
+
     return results

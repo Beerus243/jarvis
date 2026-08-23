@@ -1,59 +1,187 @@
 from tools.tools import open_browser, open_musique, get_time
 from tools.applications import open_application, open_folder, open_website
 from actions.media import play_music
-from tools.spotify import play_track, pause, resume, next_track, previous_track
-from tools.browser import open_url, search_web, search_wikipedia
+from tools.spotify import (
+    play_track,
+    pause,
+    resume,
+    next_track,
+    previous_track,
+)
+from tools.browser import (
+    open_url,
+    search_web,
+    search_wikipedia,
+)
 
 
 def dispatch(intent):
 
+    # ========================================================
+    # ACTIONS STRUCTURÉES
+    # ========================================================
+
     if isinstance(intent, dict):
+
         action = intent.get("action")
+
+        # ----------------------------------------------------
+        # APPLICATION
+        # ----------------------------------------------------
+
         if action == "OPEN_APPLICATION":
-            return open_application(intent.get("target", ""))[1]
-        if action in {"PLAY_MUSIC", "SEARCH_MUSIC"}:
-            return play_track(intent.get("title"), intent.get("artist") or intent.get("query"))
-        if action == "PAUSE_MUSIC": return pause()
-        if action == "RESUME_MUSIC": return resume()
-        if action == "NEXT_TRACK": return next_track()
-        if action == "PREVIOUS_TRACK": return previous_track()
+
+            return open_application(
+                intent.get("target", "")
+            )
+
+        # ----------------------------------------------------
+        # SPOTIFY
+        # ----------------------------------------------------
+
+        if action in {
+            "PLAY_MUSIC",
+            "SEARCH_MUSIC",
+        }:
+
+            return play_track(
+                title=intent.get("title"),
+                artist=(
+                    intent.get("artist")
+                    or intent.get("query")
+                ),
+            )
+
+        if action == "PAUSE_MUSIC":
+
+            return pause()
+
+        if action == "RESUME_MUSIC":
+
+            return resume()
+
+        if action == "NEXT_TRACK":
+
+            return next_track()
+
+        if action == "PREVIOUS_TRACK":
+
+            return previous_track()
+
+        # ----------------------------------------------------
+        # NAVIGATION WEB
+        # ----------------------------------------------------
+
         if action == "OPEN_URL":
-            return open_url(intent.get("url", ""))
+
+            return open_url(
+                intent.get("url", "")
+            )
+
         if action == "SEARCH_WEB":
-            return search_web(intent.get("query", ""))
+
+            return search_web(
+                intent.get("query", "")
+            )
+
         if action == "SEARCH_WIKIPEDIA":
-            return search_wikipedia(intent.get("query", ""))
+
+            return search_wikipedia(
+                intent.get("query", "")
+            )
+
+    # ========================================================
+    # ANCIENNES INTENTIONS SIMPLES
+    # ========================================================
 
     if intent == "GREETINGS":
-        return "Bonjour Fabrice. Je suis heureux de vous voir."
+
+        return (
+            True,
+            "Bonjour Fabrice. "
+            "Je suis heureux de vous voir."
+        )
 
     elif intent == "GET_TIME":
+
         heure = get_time()
-        return f"Il est actuellement {heure}"
+
+        return (
+            True,
+            f"Il est actuellement {heure}",
+        )
 
     elif intent == "OPEN_BROWSER":
-        return open_browser()
+
+        result = open_browser()
+
+        if isinstance(result, tuple):
+            return result
+
+        return (
+            bool(result),
+            result,
+        )
 
     elif intent == "OPEN_SPOTIFY":
-        return open_musique()
+
+        result = open_musique()
+
+        if isinstance(result, tuple):
+            return result
+
+        return (
+            bool(result),
+            result,
+        )
 
     elif intent == "PLAY_MUSIC":
-        return open_musique()
+
+        result = open_musique()
+
+        if isinstance(result, tuple):
+            return result
+
+        return (
+            bool(result),
+            result,
+        )
 
     elif intent == "OPEN_TERMINAL":
-        success, response = open_application("terminal")
-        return response
+
+        return open_application(
+            "terminal"
+        )
 
     elif intent == "OPEN_VSCODE":
-        success, response = open_application("vscode")
-        return response
+
+        return open_application(
+            "vscode"
+        )
+
     elif intent == "OPEN_FIREFOX":
-        success, response = open_application("firefox")
-        return response
+
+        return open_application(
+            "firefox"
+        )
+
     elif intent == "OPEN_FOLDER":
-        return open_folder("Documents")
-    elif intent in {"OPEN_SITE", "OPEN_WEBSITE"}:
-        return open_website("https://www.google.com")
-    
-    else:
-        return None
+
+        return open_folder(
+            "Documents"
+        )
+
+    elif intent in {
+        "OPEN_SITE",
+        "OPEN_WEBSITE",
+    }:
+
+        return open_website(
+            "https://www.google.com"
+        )
+
+    # ========================================================
+    # AUCUNE ACTION RECONNUE
+    # ========================================================
+
+    return None
