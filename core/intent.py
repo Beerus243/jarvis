@@ -80,6 +80,21 @@ def detect_intent(message):
     ):
         return "OPEN_SPOTIFY"
 
+
+    # ========================================================
+    # LECTURE D'UN ARTISTE (PLAY_MUSIC avec artiste)
+    # ========================================================
+
+    play_music_match = re.match(
+        r"^(?:mets|joue)(?: moi)?(?: du| de la| des)? (.+)$",
+        message,
+    )
+
+    if play_music_match:
+        artist = play_music_match.group(1).strip()
+        if artist:
+            return {"action": "PLAY_MUSIC", "artist": artist}
+        
     # ========================================================
     # FIREFOX
     # ========================================================

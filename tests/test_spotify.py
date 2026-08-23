@@ -1,37 +1,119 @@
-from unittest.mock import patch
-
-from core.action_parser import parse_actions
-from tools.spotify import play_track
+from tools import spotify
 
 
-def test_parse_artist():
-    action = parse_actions("mets du Damso")[0]
-    assert action["action"] == "PLAY_MUSIC"
-    assert action["artist"] == "damso"
+def test_search_query():
+    captured = {}
+
+    def fake_request(method, endpoint, **kwargs):
+        captured["method"] = method
+        captured["endpoint"] = endpoint
+        captured["params"] = kwargs["params"]
+
+        class Response:
+            def raise_for_status(self):
+                pass
+
+            def json(self):
+                return {
+                    "tracks": {
+                        "items": [
+                            {
+                                "name": "Mosaïque Solitaire",
+                                "uri": "spotify:track:test",
+                                "artists": [
+                                    {
+                                        "name": "Damso"
+                                    }
+                                ],
+                            }
+                        ]
+                    }
+                }
+
+        return Response()
+
+    original = spotify._request
+
+    try:
+        spotify._request = fake_request
+
+        result = spotify.search_track(
+            title="Mosaïque Solitaire",
+            artist="Damso",
+        )
+
+        assert result["uri"] == "spotify:track:test"
+        assert (
+            captured["params"]["type"]
+            == "track"
+        )
+
+    finally:
+        spotify._request = original
 
 
-def test_parse_track_and_artist():
-    action = parse_actions("mets Mosaïque Solitaire de Damso")[0]
-    assert action["title"] == "mosaique solitaire"
-    assert action["artist"] == "damso"
+def test_play_track(monkeypatch):
+    calls = []
 
+    def fake_search_track(title=None, artist=None):
+        return {
+            "name": "Mosaïque Solitaire",
+            "uri": "spotify:track:test",
+            "artists": [
+                {
+                    "name": "Damso"
+                }
+            ],
+        }
 
-def test_parse_compound_open_and_play():
-    actions = parse_actions("ouvre spotify met damso feu de bois")
-    assert actions[0] == {"action": "OPEN_APPLICATION", "target": "spotify"}
-    assert actions[1]["artist"] == "damso"
-    assert actions[1]["title"] == "feu de bois"
+    def fake_device():
+        return {
+            "id": "device-test",
+            "is_active": True,
+        }
 
+    def fake_request(method, endpoint, **kwargs):
+        calls.append(
+            (
+                method,
+                endpoint,
+                kwargs,
+            )
+        )
 
-def test_play_track():
-    with patch("tools.spotify.subprocess.Popen") as popen:
-        ok, message = play_track("Mosaïque Solitaire", "Damso")
-    assert ok is True
-    assert "Damso" in message
-    popen.assert_called_once()
+        class Response:
+            status_code = 204
 
+        return Response()
 
-def test_spotify_failure():
-    with patch("tools.spotify.subprocess.Popen", side_effect=OSError("absent")):
-        ok, _ = play_track("Damso")
-    assert ok is False
+    monkeypatch.setattr(
+        spotify,
+        "search_track",
+        fake_search_track,
+    )
+
+    monkeypatch.setattr(
+        spotify,
+        "get_active_device",
+        fake_device,
+    )
+
+    monkeypatch.setattr(
+        spotify,
+        "_request",
+        fake_request,
+    )
+
+    success, message = spotify.play_track(
+        title="Mosaïque Solitaire",
+        artist="Damso",
+    )
+
+    assert success is True
+    assert "Mosaïque Solitaire" in message
+
+    assert calls[0][0] == "PUT"
+    assert calls[0][1] == "/me/player/play"
+    assert calls[0][2]["json"]["uris"] == [
+        "spotify:track:test"
+    ]

@@ -1,9 +1,15 @@
 """Paramètres centralisés de JARVIS."""
-
 from pathlib import Path
-
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+ENV_FILE = BASE_DIR / ".env"
+
+load_dotenv(
+    dotenv_path=ENV_FILE,
+    override=False,
+)
 DATA_DIR = BASE_DIR / "data"
 MEMORY_FILE = DATA_DIR / "user.json"
 CONVERSATION_FILE = DATA_DIR / "conversation.json"

@@ -10,16 +10,8 @@
     },
     "action_history": [
         {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-22T03:24:46.956202+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
             "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-22T23:16:16.512543+01:00",
+            "timestamp": "2026-08-22T23:51:46.017146+01:00",
             "result": "Cette action nécessite une confirmation explicite.",
             "success": false,
             "confirmation": false,
@@ -27,7 +19,7 @@
         },
         {
             "action": "DELETE_FILE",
-            "timestamp": "2026-08-22T23:16:16.522139+01:00",
+            "timestamp": "2026-08-22T23:51:46.053284+01:00",
             "result": "Cette action est bloquée par la politique de sécurité.",
             "success": false,
             "confirmation": false,
@@ -35,7 +27,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:16:16.855995+01:00",
+            "timestamp": "2026-08-22T23:51:46.354433+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -43,7 +35,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:16:16.902937+01:00",
+            "timestamp": "2026-08-22T23:51:46.406301+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -51,7 +43,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:16:16.916758+01:00",
+            "timestamp": "2026-08-22T23:51:46.421780+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -59,7 +51,7 @@
         },
         {
             "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-22T23:16:17.122646+01:00",
+            "timestamp": "2026-08-22T23:51:46.628255+01:00",
             "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
@@ -67,7 +59,7 @@
         },
         {
             "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-22T23:17:05.030771+01:00",
+            "timestamp": "2026-08-22T23:52:21.047391+01:00",
             "result": "Cette action nécessite une confirmation explicite.",
             "success": false,
             "confirmation": false,
@@ -75,7 +67,7 @@
         },
         {
             "action": "DELETE_FILE",
-            "timestamp": "2026-08-22T23:17:05.036206+01:00",
+            "timestamp": "2026-08-22T23:52:21.058582+01:00",
             "result": "Cette action est bloquée par la politique de sécurité.",
             "success": false,
             "confirmation": false,
@@ -83,7 +75,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:17:05.286090+01:00",
+            "timestamp": "2026-08-22T23:52:21.564602+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -91,7 +83,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:17:05.333131+01:00",
+            "timestamp": "2026-08-22T23:52:21.687269+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -99,7 +91,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-22T23:17:05.347091+01:00",
+            "timestamp": "2026-08-22T23:52:21.719411+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -107,11 +99,315 @@
         },
         {
             "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-22T23:17:05.565340+01:00",
+            "timestamp": "2026-08-22T23:52:22.024034+01:00",
             "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
             "error": null
+        },
+        {
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-22T23:52:46.073612+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-22T23:52:46.082492+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-22T23:52:46.416141+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-22T23:52:46.498422+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-22T23:52:46.525720+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-22T23:52:46.946010+01:00",
+            "result": "Navigateur ouvert",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T00:00:42.797595+01:00",
+            "result": "L'action n'a pas produit de résultat.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T00:01:29.687602+01:00",
+            "result": "opened",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-23T00:01:29.703442+01:00",
+            "result": "played",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T00:02:09.728528+01:00",
+            "result": "opened",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-23T00:02:09.734379+01:00",
+            "result": "played",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-23T00:02:12.329776+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-23T00:02:12.342430+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T00:02:12.825558+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T00:02:12.922354+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T00:02:12.952194+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T00:02:13.304676+01:00",
+            "result": "Navigateur ouvert",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T00:06:08.564210+01:00",
+            "result": "L'action n'a pas produit de résultat.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
+        },
+        {
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-23T00:07:11.220336+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-23T00:07:11.228813+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T00:07:11.521275+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T00:07:11.577145+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T00:07:11.596097+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T00:07:11.888147+01:00",
+            "result": "Navigateur ouvert",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T00:07:27.963733+01:00",
+            "result": "opened",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-23T00:07:27.970658+01:00",
+            "result": "played",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-23T00:07:46.184915+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-23T00:07:46.198467+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T00:07:46.684177+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T00:07:46.772303+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T00:07:46.793853+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T00:07:47.122056+01:00",
+            "result": "Navigateur ouvert",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T00:09:52.813330+01:00",
+            "result": "L'action n'a pas produit de résultat.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T00:11:49.815907+01:00",
+            "result": "L'action n'a pas produit de résultat.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T00:17:01.474143+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-23T00:17:01.488613+01:00",
+            "result": "Je lance la recherche de intuition de dadju dans Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T01:28:06.038495+01:00",
+            "result": "L'action n'a pas produit de résultat.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T01:29:14.863549+01:00",
+            "result": "L'action n'a pas produit de résultat.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
         }
     ],
     "personal_state": {

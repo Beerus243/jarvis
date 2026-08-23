@@ -1,42 +1,42 @@
 [
     {
         "role": "user",
-        "message": "bonjour"
+        "message": "ouvre spotify met dadjui intuition"
     },
     {
         "role": "assistant",
-        "message": "Bonjour Fabrice. Je suis heureux de vous voir."
+        "message": "0 action(s) réussie(s), puis une action a échoué : L'action n'a pas produit de résultat."
     },
     {
         "role": "user",
-        "message": "ouvre spotify"
+        "message": "ouvre spotify met dadju intuition"
     },
     {
         "role": "assistant",
-        "message": "J'ouvre Spotify."
+        "message": "0 action(s) réussie(s), puis une action a échoué : L'action n'a pas produit de résultat."
     },
     {
         "role": "user",
-        "message": "qui es tu ?"
-    },
-    {
-        "role": "user",
-        "message": "bonjour"
+        "message": "ouvre spotify met gims bella"
     },
     {
         "role": "assistant",
-        "message": "Bonjour Fabrice. Je suis heureux de vous voir."
+        "message": "0 action(s) réussie(s), puis une action a échoué : L'action n'a pas produit de résultat."
     },
     {
         "role": "user",
-        "message": "je vais dormir"
+        "message": "ouvre spotify mets damso dix leurre"
     },
     {
         "role": "assistant",
-        "message": "D'accord. Je retiens que tu dors."
+        "message": "0 action(s) réussie(s), puis une action a échoué : L'action n'a pas produit de résultat."
     },
     {
         "role": "user",
-        "message": "je vais me reveiller a 12H30"
+        "message": "ouvre spotify met damso dix leurre"
+    },
+    {
+        "role": "assistant",
+        "message": "0 action(s) réussie(s), puis une action a échoué : L'action n'a pas produit de résultat."
     }
 ]
