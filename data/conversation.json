@@ -1,42 +1,42 @@
 [
     {
         "role": "user",
-        "message": "ouvre spotify met gims bella"
+        "message": "pause la musique"
     },
     {
         "role": "assistant",
-        "message": "0 action(s) réussie(s), puis une action a échoué : L'action n'a pas produit de résultat."
+        "message": "J'ouvre Spotify."
     },
     {
         "role": "user",
-        "message": "ouvre spotify mets damso dix leurre"
+        "message": "reprends la musique"
     },
     {
         "role": "assistant",
-        "message": "0 action(s) réussie(s), puis une action a échoué : L'action n'a pas produit de résultat."
+        "message": "J'ouvre Spotify."
     },
     {
         "role": "user",
-        "message": "ouvre spotify met damso dix leurre"
+        "message": "morceau suivant"
     },
     {
         "role": "assistant",
-        "message": "0 action(s) réussie(s), puis une action a échoué : L'action n'a pas produit de résultat."
+        "message": "Impossible de passer au morceau suivant (HTTP 200)."
     },
     {
         "role": "user",
-        "message": "ouvre spotify met damso dix leurre"
+        "message": "chanson précédente"
     },
     {
         "role": "assistant",
-        "message": "0 action(s) réussie(s), puis une action a échoué : L'action n'a pas produit de résultat."
+        "message": "Impossible de revenir au morceau précédent (HTTP 403)."
     },
     {
         "role": "user",
-        "message": "ouvre spotify met damso dix leurre"
+        "message": "ouvre Spotify"
     },
     {
         "role": "assistant",
-        "message": "2 action(s) exécutée(s) avec succès."
+        "message": "J'ouvre Spotify."
     }
 ]
