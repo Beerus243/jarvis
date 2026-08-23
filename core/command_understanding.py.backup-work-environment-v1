@@ -79,47 +79,6 @@ def resolve_command_terms(message):
     if any(pattern in normalized for pattern in work_environment_patterns):
         result["normalized_terms"] = normalized
         return result
-
-    # ------------------------------------------------------------
-    # CONTEXTE : ENVIRONNEMENT DE TRAVAIL
-    # ------------------------------------------------------------
-    #
-    # Certains verbes sont ambigus :
-    #
-    #   "mets"  -> play
-    #   "lance" -> open
-    #
-    # Mais dans une expression comme :
-    #
-    #   "mets-moi en condition pour travailler"
-    #   "lance mon environnement de dev"
-    #
-    # ils ne désignent pas une action musicale ou une ouverture
-    # d'application. Ils font partie d'une intention plus large :
-    # préparer l'environnement de travail.
-    #
-    # On conserve donc la phrase telle quelle pour permettre aux
-    # couches supérieures (intent / intelligence) de l'interpréter.
-    # ------------------------------------------------------------
-
-    work_environment_patterns = (
-        "en condition pour travailler",
-        "en condition pour coder",
-        "environnement de travail",
-        "environnement de dev",
-        "prepare moi pour travailler",
-        "prepare moi pour coder",
-        "je vais travailler",
-        "je vais coder",
-        "je vais bosser",
-        "go bosser",
-        "au boulot",
-        "au travail",
-    )
-
-    if any(pattern in normalized for pattern in work_environment_patterns):
-        result["normalized_terms"] = normalized
-        return result
     for canonical, aliases in ALIASES.items():
         vocabulary = {normalize_command(alias) for alias in aliases}
         for index, word in enumerate(words):

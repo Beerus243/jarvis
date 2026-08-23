@@ -73,23 +73,18 @@ def analyze(message, context=None):
     )
 
     intent = detect_intent(message)
+    parsed_actions = parse_actions(message) if not normalized.startswith(("est ce ", "est-ce ", "quelle ", "qu est ce ", "qu'est ce ", "pourquoi ", "comment ")) else []
+    if len(parsed_actions) > 1:
+        return _decision("ACTION_COMPOSED", parsed_actions, 0.99)
+    if intent:
+        return _decision("ACTION", intent, 0.98)
+    if parsed_actions:
+        return _decision("ACTION", parsed_actions[0], 0.99)
 
+    if normalized in {"annule", "annuler", "stop", "arrête", "arrete"} and get_active_task():
+        return _decision("TASK", "CANCEL", 0.99)
     # ========================================================
     # ENVIRONNEMENT DE TRAVAIL
-    # ========================================================
-    #
-    # Cette détection doit avoir priorité sur parse_actions().
-    #
-    # Exemple :
-    #
-    # "mets-moi en condition pour travailler"
-    #
-    # pourrait être interprété par le parseur musical comme :
-    #
-    # PLAY_MUSIC
-    #
-    # alors qu'il s'agit clairement d'une demande de préparation
-    # de l'environnement de travail.
     # ========================================================
 
     work_environment_intent = detect_work_environment_intent(message)
@@ -100,20 +95,6 @@ def analyze(message, context=None):
             "CREATE",
             0.99,
         )
-
-    parsed_actions = parse_actions(message) if not normalized.startswith(("est ce ", "est-ce ", "quelle ", "qu est ce ", "qu'est ce ", "pourquoi ", "comment ")) else []
-
-    if len(parsed_actions) > 1:
-        return _decision("ACTION_COMPOSED", parsed_actions, 0.99)
-
-    if intent:
-        return _decision("ACTION", intent, 0.98)
-
-    if parsed_actions:
-        return _decision("ACTION", parsed_actions[0], 0.99)
-
-    if normalized in {"annule", "annuler", "stop", "arrête", "arrete"} and get_active_task():
-        return _decision("TASK", "CANCEL", 0.99)
 
     sensitive_action = detect_sensitive_request(message)
     if sensitive_action:

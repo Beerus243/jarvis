@@ -1,6 +1,6 @@
 """Décision locale de JARVIS, sans exécution ni appel réseau."""
 
-from core.intent import detect_intent, detect_work_environment_intent
+from core.intent import detect_intent
 from core.reference import has_reference, analyze_reference
 from memory.personal_memory import detect_personal_question
 from memory.personal_state import detect_personal_state, detect_personal_state_question
@@ -73,47 +73,39 @@ def analyze(message, context=None):
     )
 
     intent = detect_intent(message)
-
-    # ========================================================
-    # ENVIRONNEMENT DE TRAVAIL
-    # ========================================================
-    #
-    # Cette détection doit avoir priorité sur parse_actions().
-    #
-    # Exemple :
-    #
-    # "mets-moi en condition pour travailler"
-    #
-    # pourrait être interprété par le parseur musical comme :
-    #
-    # PLAY_MUSIC
-    #
-    # alors qu'il s'agit clairement d'une demande de préparation
-    # de l'environnement de travail.
-    # ========================================================
-
-    work_environment_intent = detect_work_environment_intent(message)
-
-    if work_environment_intent:
-        return _decision(
-            "TASK",
-            "CREATE",
-            0.99,
-        )
-
     parsed_actions = parse_actions(message) if not normalized.startswith(("est ce ", "est-ce ", "quelle ", "qu est ce ", "qu'est ce ", "pourquoi ", "comment ")) else []
-
     if len(parsed_actions) > 1:
         return _decision("ACTION_COMPOSED", parsed_actions, 0.99)
-
     if intent:
         return _decision("ACTION", intent, 0.98)
-
     if parsed_actions:
         return _decision("ACTION", parsed_actions[0], 0.99)
 
     if normalized in {"annule", "annuler", "stop", "arrête", "arrete"} and get_active_task():
         return _decision("TASK", "CANCEL", 0.99)
+    # ========================================================
+    # ENVIRONNEMENT DE TRAVAIL
+    # ========================================================
+
+    work_environment_phrases = {
+        "prépare mon environnement de travail",
+        "prepare mon environnement de travail",
+        "lance mon environnement de travail",
+        "lancer mon environnement de travail",
+        "ouvre mon environnement de travail",
+        "ouvre mon environnement de travail",
+        "au boulot",
+        "go bosser",
+        "on bosse",
+        "au travail",
+        "c est parti pour le boulot",
+        "c est parti pour travailler",
+        "c est parti on bosse",
+        "woke go bosser",
+    }
+
+    if normalized in work_environment_phrases:
+        return _decision("TASK", "CREATE", 0.99)
 
     sensitive_action = detect_sensitive_request(message)
     if sensitive_action:

@@ -76,36 +76,6 @@ def execute_plan(actions, confirmation=False, dispatcher=None):
         elif hasattr(item, "action"):
             action = item.action
 
-            # ------------------------------------------------
-            # PlannedAction
-            # ------------------------------------------------
-            # Certaines actions composées transportent une
-            # cible dans "message".
-            #
-            # Exemple :
-            #
-            # PlannedAction(
-            #     "OPEN_VSCODE",
-            #     "~/dev/jarvis"
-            # )
-            #
-            # doit devenir :
-            #
-            # {
-            #     "action": "OPEN_VSCODE",
-            #     "target": "~/dev/jarvis"
-            # }
-            #
-            # On ne modifie que les actions qui nécessitent
-            # explicitement cette cible.
-            # ------------------------------------------------
-
-            if action == "OPEN_VSCODE" and getattr(item, "message", ""):
-                action = {
-                    "action": "OPEN_VSCODE",
-                    "target": item.message,
-                }
-
         else:
             action = item
 

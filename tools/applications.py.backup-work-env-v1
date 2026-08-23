@@ -75,12 +75,9 @@ def is_application_available(name):
     return False
 
 
-def open_application(name, target=None):
+def open_application(name):
     """
     Lance une application connue.
-
-    target permet de transmettre une cible à l'application,
-    par exemple un dossier à ouvrir dans VS Code.
     """
 
     name = name.lower().strip()
@@ -100,45 +97,11 @@ def open_application(name, target=None):
 
             try:
 
-                launch_command = list(command)
-
-                # ------------------------------------------------
-                # VS CODE
-                # ------------------------------------------------
-                # Permet :
-                #   code
-                #   code ~/dev/jarvis
-                # ------------------------------------------------
-
-                if name == "vscode" and target:
-
-                    target_path = Path(target).expanduser().resolve()
-
-                    if not target_path.exists():
-                        return (
-                            False,
-                            f"Le dossier {target} n'existe pas."
-                        )
-
-                    if not target_path.is_dir():
-                        return (
-                            False,
-                            f"La cible {target} n'est pas un dossier."
-                        )
-
-                    launch_command.append(str(target_path))
-
                 subprocess.Popen(
-                    launch_command,
+                    command,
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL
                 )
-
-                if name == "vscode" and target:
-                    return (
-                        True,
-                        f"J'ouvre {application['label']} dans {target}."
-                    )
 
                 return (
                     True,

@@ -5,15 +5,7 @@
     },
     {
         "role": "assistant",
-        "message": "J'ouvre Spotify."
-    },
-    {
-        "role": "user",
-        "message": "reprends la musique"
-    },
-    {
-        "role": "assistant",
-        "message": "J'ouvre Spotify."
+        "message": "Je mets Spotify en pause."
     },
     {
         "role": "user",
@@ -21,22 +13,30 @@
     },
     {
         "role": "assistant",
-        "message": "Impossible de passer au morceau suivant (HTTP 200)."
+        "message": "Je passe au morceau suivant."
     },
     {
         "role": "user",
-        "message": "chanson précédente"
+        "message": "reprends la lecture"
     },
     {
         "role": "assistant",
-        "message": "Impossible de revenir au morceau précédent (HTTP 403)."
+        "message": "Impossible de reprendre Spotify (HTTP 404)."
     },
     {
         "role": "user",
-        "message": "ouvre Spotify"
+        "message": "reprends la lecture"
     },
     {
         "role": "assistant",
-        "message": "J'ouvre Spotify."
+        "message": "Impossible de reprendre Spotify (HTTP 404)."
+    },
+    {
+        "role": "user",
+        "message": "au boulot"
+    },
+    {
+        "role": "assistant",
+        "message": "Tâche terminée : 3 étape(s) exécutée(s)."
     }
 ]

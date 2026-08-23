@@ -27,55 +27,6 @@ def _normalize_text(text: str) -> str:
     return text
 
 
-def detect_work_environment_intent(message):
-    """
-    Détecte les formulations naturelles demandant
-    de préparer l'environnement de travail.
-
-    Cette fonction ne déclenche aucune action.
-    Elle retourne uniquement l'intention WORK_ENVIRONMENT
-    ou None.
-    """
-
-    message = _normalize_text(
-        resolve_command_terms(message)["normalized_terms"]
-    )
-
-    work_environment_phrases = {
-        "au boulot",
-        "au travail",
-        "go bosser",
-        "on bosse",
-        "je vais bosser",
-        "je vais travailler",
-        "je vais coder",
-        "on va bosser",
-        "on va travailler",
-        "on va coder",
-        "c est parti pour le boulot",
-        "c est parti pour travailler",
-        "c est parti pour coder",
-        "c est parti on bosse",
-        "prepare mon environnement de travail",
-        "lance mon environnement de travail",
-        "ouvre mon environnement de travail",
-        "prepare mon environnement de dev",
-        "lance mon environnement de dev",
-        "lancer mon environnement de dev",
-        "ouvre mon environnement de dev",
-        "ouvrir mon environnement de dev",
-        "prepare moi pour coder",
-        "prepare moi pour travailler",
-        "mets moi en condition pour travailler",
-        "mets moi en condition pour coder",
-    }
-
-    if message in work_environment_phrases:
-        return "WORK_ENVIRONMENT"
-
-    return None
-
-
 def detect_intent(message):
 
     message = _normalize_text(resolve_command_terms(message)["normalized_terms"])

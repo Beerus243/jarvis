@@ -52,11 +52,8 @@ def create_task(goal):
         "go bosser",
         "on bosse",
         "au travail",
-        "c'est parti pour le boulot",
         "c est parti pour le boulot",
-        "c'est parti pour travailler",
         "c est parti pour travailler",
-        "c'est parti on bosse",
         "c est parti on bosse",
         "woke go bosser",
     }
@@ -66,7 +63,7 @@ def create_task(goal):
 
         steps = [
             PlannedAction("OPEN_BROWSER", "Chrome"),
-            PlannedAction("OPEN_VSCODE", "~/dev/jarvis"),
+            PlannedAction("OPEN_VSCODE", "VS Code"),
             PlannedAction(
                 {
                     "action": "OPEN_APPLICATION",

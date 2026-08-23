@@ -10,404 +10,404 @@
     },
     "action_history": [
         {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T02:02:45.557661+01:00",
-            "result": "L'action n'a pas produit de résultat.",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T02:08:02.809904+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T02:08:48.155423+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T02:10:01.727842+01:00",
-            "result": "L'action n'a pas produit de résultat.",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T02:10:01.743710+01:00",
-            "result": "L'action n'a pas produit de résultat.",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T02:11:56.523946+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T02:12:00.612240+01:00",
-            "result": "Je lance Dix leurres de Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T02:12:49.715051+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T02:12:53.876535+01:00",
-            "result": "Je lance Dix leurres de Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T02:34:04.229282+01:00",
-            "result": "Je lance Γ. Mosaïque solitaire de Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-23T02:35:17.123349+01:00",
-            "result": "Cette action nécessite une confirmation explicite.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "DELETE_FILE",
-            "timestamp": "2026-08-23T02:35:17.131951+01:00",
-            "result": "Cette action est bloquée par la politique de sécurité.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-23T02:35:17.627104+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-23T02:35:17.762543+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-23T02:35:17.801931+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T02:35:18.126136+01:00",
-            "result": "Navigateur ouvert",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-23T02:45:08.744621+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T02:47:02.764638+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T02:47:12.055250+01:00",
-            "result": "Je lance Dix leurres de Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T02:47:40.415468+01:00",
-            "result": "Je lance Doza de Pause.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T02:48:13.800205+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T02:48:19.301826+01:00",
-            "result": "Je lance Poséidon de Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-23T02:48:36.933504+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-23T02:48:55.080354+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "NEXT_TRACK",
-            "timestamp": "2026-08-23T02:49:27.063326+01:00",
-            "result": "Impossible de passer au morceau suivant (HTTP 200).",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "PREVIOUS_TRACK",
-            "timestamp": "2026-08-23T02:49:46.873991+01:00",
-            "result": "Impossible de revenir au morceau précédent (HTTP 403).",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-23T02:50:04.903100+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T17:30:44.704147+01:00",
-            "result": "Je lance Feu de bois de Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T17:30:47.341348+01:00",
-            "result": "Je lance Feu de bois de Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T17:30:48.038752+01:00",
-            "result": "Je n'ai pas trouvé ce morceau sur Spotify.",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T17:30:50.354356+01:00",
-            "result": "Je lance Reine de Dadju.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-23T17:30:50.433479+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-23T17:30:50.464126+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "NEXT_TRACK",
-            "timestamp": "2026-08-23T17:30:52.043276+01:00",
-            "result": "Impossible de passer au morceau suivant (HTTP 200).",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "PREVIOUS_TRACK",
-            "timestamp": "2026-08-23T17:30:53.022201+01:00",
-            "result": "Impossible de revenir au morceau précédent (HTTP 403).",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-23T17:30:53.068733+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T17:35:04.067208+01:00",
-            "result": "Je lance Feu de bois de Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T17:35:08.088461+01:00",
-            "result": "Je lance Feu de bois de Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T17:35:10.294028+01:00",
-            "result": "Je n'ai pas trouvé ce morceau sur Spotify.",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T17:35:14.162424+01:00",
-            "result": "Je lance Reine de Dadju.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-23T17:35:14.359694+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-23T17:35:14.577743+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "NEXT_TRACK",
-            "timestamp": "2026-08-23T17:35:16.658752+01:00",
-            "result": "Impossible de passer au morceau suivant (HTTP 200).",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "PREVIOUS_TRACK",
-            "timestamp": "2026-08-23T17:35:17.672578+01:00",
-            "result": "Impossible de revenir au morceau précédent (HTTP 403).",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-23T17:35:17.896751+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-23T17:48:28.555069+01:00",
-            "result": "Je lance Feu de bois de Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
             "action": "PAUSE_MUSIC",
-            "timestamp": "2026-08-23T17:48:29.694929+01:00",
-            "result": "Impossible de mettre Spotify en pause (HTTP 200).",
-            "success": false,
+            "timestamp": "2026-08-23T21:09:46.029184+01:00",
+            "result": "Je mets Spotify en pause.",
+            "success": true,
             "confirmation": false,
-            "error": "Aucun résultat"
-        },
-        {
-            "action": "RESUME_MUSIC",
-            "timestamp": "2026-08-23T17:48:30.757729+01:00",
-            "result": "Impossible de reprendre Spotify (HTTP 200).",
-            "success": false,
-            "confirmation": false,
-            "error": "Aucun résultat"
+            "error": null
         },
         {
             "action": "NEXT_TRACK",
-            "timestamp": "2026-08-23T17:48:31.802783+01:00",
+            "timestamp": "2026-08-23T21:10:15.883632+01:00",
             "result": "Je passe au morceau suivant.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "PREVIOUS_TRACK",
-            "timestamp": "2026-08-23T17:48:32.659546+01:00",
-            "result": "Impossible de revenir au morceau précédent (HTTP 403).",
+            "action": "RESUME_MUSIC",
+            "timestamp": "2026-08-23T21:29:38.596033+01:00",
+            "result": "Impossible de reprendre Spotify (HTTP 404).",
             "success": false,
             "confirmation": false,
             "error": "Aucun résultat"
+        },
+        {
+            "action": "RESUME_MUSIC",
+            "timestamp": "2026-08-23T21:29:58.493983+01:00",
+            "result": "Impossible de reprendre Spotify (HTTP 404).",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T22:07:33.159527+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-23T22:07:33.280109+01:00",
+            "result": "J'ouvre Visual Studio Code.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T22:07:33.476179+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T22:55:31.118374+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-23T22:55:31.175036+01:00",
+            "result": "J'ouvre Visual Studio Code.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T22:55:31.265928+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T23:01:29.831579+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-23T23:01:29.860194+01:00",
+            "result": "Il est actuellement 23:01:29",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T23:01:29.901711+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T23:01:30.639139+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T23:01:30.734219+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-23T23:01:30.894014+01:00",
+            "result": "J'ouvre Visual Studio Code.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T23:01:30.983755+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T23:14:38.910099+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-23T23:14:38.925882+01:00",
+            "result": "J'ouvre Visual Studio Code.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T23:14:39.002160+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T23:18:56.199821+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-23T23:18:56.241634+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T23:18:56.342860+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T23:19:06.204773+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-23T23:19:06.321830+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T23:19:06.478713+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T23:24:21.330426+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-23T23:24:21.379701+01:00",
+            "result": "Il est actuellement 23:24:21",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T23:24:21.487807+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T23:24:21.563712+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T23:24:21.677750+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-23T23:24:21.829242+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T23:24:22.046788+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T23:42:27.705297+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-23T23:42:27.736203+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T23:42:27.777162+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-23T23:49:17.352049+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-23T23:49:17.373227+01:00",
+            "result": "Il est actuellement 23:49:17",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T23:49:17.399782+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T23:49:17.433090+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-23T23:49:17.560830+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-23T23:49:17.627622+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-23T23:49:17.703609+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-24T00:01:39.251106+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-24T00:01:39.296094+01:00",
+            "result": "Il est actuellement 00:01:39",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-24T00:01:39.359874+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T00:01:39.432909+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-24T00:01:39.523123+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-24T00:01:39.622914+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T00:01:39.705473+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
         }
     ],
     "personal_state": {

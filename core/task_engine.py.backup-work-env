@@ -27,58 +27,10 @@ _active_task = None
 
 def create_task(goal):
     global _active_task
-
-    normalized_goal = str(goal or "").casefold().strip()
-
-    # ========================================================
-    # ENVIRONNEMENT DE TRAVAIL
-    # ========================================================
-    # JARVIS prépare un environnement de développement complet :
-    # Chrome + VS Code + Spotify.
-    #
-    # L'ordre est volontaire :
-    #   1. navigateur
-    #   2. éditeur
-    #   3. musique
-    # ========================================================
-
-    work_environment_phrases = {
-        "prépare mon environnement de travail",
-        "prepare mon environnement de travail",
-        "lance mon environnement de travail",
-        "lancer mon environnement de travail",
-        "ouvre mon environnement de travail",
-        "au boulot",
-        "go bosser",
-        "on bosse",
-        "au travail",
-        "c'est parti pour le boulot",
-        "c est parti pour le boulot",
-        "c'est parti pour travailler",
-        "c est parti pour travailler",
-        "c'est parti on bosse",
-        "c est parti on bosse",
-        "woke go bosser",
-    }
-
-    if normalized_goal in work_environment_phrases:
+    steps = plan_actions(goal)
+    if not steps and "environnement de travail" in str(goal).casefold():
         from core.action_planner import PlannedAction
-
-        steps = [
-            PlannedAction("OPEN_BROWSER", "Chrome"),
-            PlannedAction("OPEN_VSCODE", "~/dev/jarvis"),
-            PlannedAction(
-                {
-                    "action": "OPEN_APPLICATION",
-                    "target": "spotify",
-                },
-                "Spotify",
-            ),
-        ]
-
-    else:
-        steps = plan_actions(goal)
-
+        steps = [PlannedAction("OPEN_BROWSER", "navigateur"), PlannedAction("OPEN_VSCODE", "éditeur")]
     task = Task(goal, steps)
     _active_task = task
     return task
