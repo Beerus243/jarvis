@@ -1,42 +1,42 @@
 [
     {
-        "role": "user",
-        "message": "pause la musique"
-    },
-    {
         "role": "assistant",
-        "message": "Je mets Spotify en pause."
+        "message": "Bonjour Fabrice. Je suis heureux de vous voir."
     },
     {
         "role": "user",
-        "message": "morceau suivant"
+        "message": "quelle heure il est"
     },
     {
         "role": "assistant",
-        "message": "Je passe au morceau suivant."
+        "message": "Il est actuellement 03:18:03"
     },
     {
         "role": "user",
-        "message": "reprends la lecture"
+        "message": "ouvre spotify"
     },
     {
         "role": "assistant",
-        "message": "Impossible de reprendre Spotify (HTTP 404)."
+        "message": "J'ouvre Spotify."
     },
     {
         "role": "user",
-        "message": "reprends la lecture"
+        "message": "ouvre mon projet jarvis"
     },
     {
         "role": "assistant",
-        "message": "Impossible de reprendre Spotify (HTTP 404)."
+        "message": "J'ouvre Visual Studio Code dans ~/dev/jarvis."
     },
     {
         "role": "user",
-        "message": "au boulot"
+        "message": "quels sont mes projets"
     },
     {
         "role": "assistant",
-        "message": "Tâche terminée : 3 étape(s) exécutée(s)."
+        "message": "J'ai 2 projets enregistrés : JARVIS, RDV."
+    },
+    {
+        "role": "user",
+        "message": "j'ai sommeil"
     }
 ]

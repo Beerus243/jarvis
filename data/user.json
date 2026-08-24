@@ -10,8 +10,40 @@
     },
     "action_history": [
         {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-24T02:26:07.882023+01:00",
+            "result": "Il est actuellement 02:26:07",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
             "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T22:55:31.265928+01:00",
+            "timestamp": "2026-08-24T02:26:07.920705+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-24T02:26:08.026168+01:00",
+            "result": "J'ouvre ton navigateur.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_VSCODE",
+            "timestamp": "2026-08-24T02:26:08.055733+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T02:26:08.079408+01:00",
             "result": "J'ouvre Spotify.",
             "success": true,
             "confirmation": false,
@@ -19,7 +51,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-23T23:01:29.831579+01:00",
+            "timestamp": "2026-08-24T02:29:08.635078+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -27,359 +59,15 @@
         },
         {
             "action": "GET_TIME",
-            "timestamp": "2026-08-23T23:01:29.860194+01:00",
-            "result": "Il est actuellement 23:01:29",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T23:01:29.901711+01:00",
-            "result": "J'ouvre ton navigateur.",
+            "timestamp": "2026-08-24T02:29:08.697179+01:00",
+            "result": "Il est actuellement 02:29:08",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
             "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T23:01:30.639139+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T23:01:30.734219+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-23T23:01:30.894014+01:00",
-            "result": "J'ouvre Visual Studio Code.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T23:01:30.983755+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T23:14:38.910099+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-23T23:14:38.925882+01:00",
-            "result": "J'ouvre Visual Studio Code.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T23:14:39.002160+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T23:18:56.199821+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-23T23:18:56.241634+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T23:18:56.342860+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T23:19:06.204773+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-23T23:19:06.321830+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T23:19:06.478713+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-23T23:24:21.330426+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-23T23:24:21.379701+01:00",
-            "result": "Il est actuellement 23:24:21",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T23:24:21.487807+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T23:24:21.563712+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T23:24:21.677750+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-23T23:24:21.829242+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T23:24:22.046788+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T23:42:27.705297+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-23T23:42:27.736203+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T23:42:27.777162+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-23T23:49:17.352049+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-23T23:49:17.373227+01:00",
-            "result": "Il est actuellement 23:49:17",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T23:49:17.399782+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T23:49:17.433090+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T23:49:17.560830+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-23T23:49:17.627622+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T23:49:17.703609+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-24T00:01:39.251106+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T00:01:39.296094+01:00",
-            "result": "Il est actuellement 00:01:39",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-24T00:01:39.359874+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T00:01:39.432909+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-24T00:01:39.523123+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-24T00:01:39.622914+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T00:01:39.705473+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-24T00:19:49.327816+01:00",
-            "result": "Action simulée réussie : 'OPEN_BROWSER'",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-24T00:19:49.346670+01:00",
-            "result": "Action simulée réussie : {'action': 'OPEN_VSCODE', 'target': '~/dev/jarvis'}",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T00:19:49.389551+01:00",
-            "result": "Action simulée réussie : {'action': 'OPEN_APPLICATION', 'target': 'spotify'}",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-24T00:30:19.137267+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-24T00:30:19.243700+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T00:30:19.578288+01:00",
+            "timestamp": "2026-08-24T02:29:08.747953+01:00",
             "result": "J'ouvre Spotify.",
             "success": true,
             "confirmation": false,
@@ -387,15 +75,7 @@
         },
         {
             "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T00:58:35.241061+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T01:28:37.935742+01:00",
+            "timestamp": "2026-08-24T02:29:08.853332+01:00",
             "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
             "success": true,
             "confirmation": false,
@@ -403,7 +83,327 @@
         },
         {
             "action": "LIST_PROJECTS",
-            "timestamp": "2026-08-24T01:30:54.746174+01:00",
+            "timestamp": "2026-08-24T02:29:08.947235+01:00",
+            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-24T02:34:32.206974+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-24T02:34:32.250797+01:00",
+            "result": "Il est actuellement 02:34:32",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T02:34:32.311361+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-24T02:34:32.429849+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "LIST_PROJECTS",
+            "timestamp": "2026-08-24T02:34:32.528141+01:00",
+            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-24T02:38:02.911874+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-24T02:38:02.960021+01:00",
+            "result": "Il est actuellement 02:38:02",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T02:38:03.005769+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-24T02:38:03.054988+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "LIST_PROJECTS",
+            "timestamp": "2026-08-24T02:38:03.103746+01:00",
+            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-24T02:55:45.864262+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-24T02:55:45.900304+01:00",
+            "result": "Il est actuellement 02:55:45",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T02:55:45.950748+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-24T02:55:46.017001+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "LIST_PROJECTS",
+            "timestamp": "2026-08-24T02:55:46.083239+01:00",
+            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-24T03:01:30.449721+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-24T03:01:30.512750+01:00",
+            "result": "Il est actuellement 03:01:30",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T03:01:30.560362+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-24T03:01:30.686689+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "LIST_PROJECTS",
+            "timestamp": "2026-08-24T03:01:30.812542+01:00",
+            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-24T03:03:26.440512+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-24T03:03:26.464616+01:00",
+            "result": "Il est actuellement 03:03:26",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T03:03:26.498614+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-24T03:03:26.556924+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "LIST_PROJECTS",
+            "timestamp": "2026-08-24T03:03:26.602385+01:00",
+            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-24T03:15:01.588228+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-24T03:15:01.620207+01:00",
+            "result": "Il est actuellement 03:15:01",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T03:15:01.663113+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-24T03:15:01.732336+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "LIST_PROJECTS",
+            "timestamp": "2026-08-24T03:15:01.835695+01:00",
+            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-24T03:16:44.325459+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-24T03:16:44.381241+01:00",
+            "result": "Il est actuellement 03:16:44",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T03:16:44.544857+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-24T03:16:44.708302+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "LIST_PROJECTS",
+            "timestamp": "2026-08-24T03:16:44.818211+01:00",
+            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-24T03:18:03.305895+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-08-24T03:18:03.350248+01:00",
+            "result": "Il est actuellement 03:18:03",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_APPLICATION",
+            "timestamp": "2026-08-24T03:18:03.445970+01:00",
+            "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-24T03:18:03.611045+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "LIST_PROJECTS",
+            "timestamp": "2026-08-24T03:18:03.869083+01:00",
             "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
             "success": true,
             "confirmation": false,

@@ -1,0 +1,829 @@
+"""Moteur de personnalité de JARVIS.
+
+JARVIS V2
+---------
+Objectif :
+- présence naturelle
+- humour sec et situationnel
+- ton sobre et sophistiqué
+- répartie mesurée
+- références culturelles reconnues naturellement
+- mémoire conversationnelle courte
+- variations de réponses
+- aucune punchline forcée
+
+JARVIS ne cherche pas à être drôle.
+Il intervient lorsqu'il a quelque chose de pertinent à dire.
+"""
+
+from __future__ import annotations
+
+from collections import deque
+from dataclasses import dataclass
+import random
+import re
+import unicodedata
+
+
+# ============================================================
+# ÉTAT DE PERSONNALITÉ
+# ============================================================
+
+@dataclass
+class PersonalityState:
+
+    recent_messages: deque
+    recent_responses: deque
+
+    last_reference: str | None = None
+    last_mood: str = "NEUTRAL"
+
+    interaction_count: int = 0
+    consecutive_banter: int = 0
+
+
+# ============================================================
+# MOTEUR
+# ============================================================
+
+class PersonalityEngine:
+
+    def __init__(self):
+
+        self.state = PersonalityState(
+            recent_messages=deque(maxlen=12),
+            recent_responses=deque(maxlen=12),
+        )
+
+        self.random = random.Random()
+
+    # ========================================================
+    # NORMALISATION
+    # ========================================================
+
+    @staticmethod
+    def normalize(text: str) -> str:
+
+        value = unicodedata.normalize(
+            "NFD",
+            str(text or "").casefold(),
+        )
+
+        value = "".join(
+            char
+            for char in value
+            if not unicodedata.combining(char)
+        )
+
+        value = value.replace("’", "'")
+
+        # On conserve l'apostrophe.
+        # Important pour :
+        # "c'est facile pour toi"
+        # "j'ai une idée"
+        value = re.sub(
+            r"[^\w\s']",
+            " ",
+            value,
+        )
+
+        return " ".join(value.split())
+
+    # ========================================================
+    # MÉMOIRE COURTE
+    # ========================================================
+
+    def remember(
+        self,
+        message: str,
+        response: str | None = None,
+    ):
+
+        self.state.recent_messages.append(
+            str(message or "")
+        )
+
+        if response:
+            self.state.recent_responses.append(
+                str(response)
+            )
+
+        self.state.interaction_count += 1
+
+    # ========================================================
+    # CONTEXTE RÉCENT
+    # ========================================================
+
+    def recently_said(self, phrase: str) -> bool:
+
+        target = self.normalize(phrase)
+
+        for message in self.state.recent_messages:
+
+            if target in self.normalize(message):
+                return True
+
+        return False
+
+    # ========================================================
+    # VARIATION
+    # ========================================================
+
+    def choose(self, responses):
+
+        if not responses:
+            return None
+
+        # Évite autant que possible de répéter exactement
+        # la dernière réponse.
+        previous = (
+            self.state.recent_responses[-1]
+            if self.state.recent_responses
+            else None
+        )
+
+        available = [
+            response
+            for response in responses
+            if response != previous
+        ]
+
+        if not available:
+            available = list(responses)
+
+        return self.random.choice(available)
+
+    # ========================================================
+    # RÉFÉRENCES CULTURELLES
+    # ========================================================
+
+    def reference_response(self, message):
+
+        text = self.normalize(message)
+
+        references = {
+
+            # ------------------------------------------------
+            # GAME OF THRONES
+            # ------------------------------------------------
+
+            "valar morghulis": (
+                [
+                    "Valar Dohaeris.",
+                ],
+                "GAME_OF_THRONES",
+            ),
+
+            "winter is coming": (
+                [
+                    "Alors mieux vaut être préparé.",
+                    "Je crains que l'hiver ne soit pas le seul problème.",
+                ],
+                "GAME_OF_THRONES",
+            ),
+
+            # ------------------------------------------------
+            # THE DARK KNIGHT
+            # ------------------------------------------------
+
+            "why so serious": (
+                [
+                    "J'allais vous poser la même question.",
+                    "Je pourrais vous retourner la question.",
+                ],
+                "DARK_KNIGHT",
+            ),
+
+            # ------------------------------------------------
+            # IRON MAN
+            # ------------------------------------------------
+
+            "i am iron man": (
+                [
+                    "Je me demandais quand vous alliez en arriver là.",
+                ],
+                "IRON_MAN",
+            ),
+
+            # ------------------------------------------------
+            # BLEACH
+            # ------------------------------------------------
+
+            "bankai": (
+                [
+                    "Entrée théâtrale enregistrée.",
+                    "Je suppose que la subtilité n'est plus une option.",
+                ],
+                "BLEACH",
+            ),
+
+            # ------------------------------------------------
+            # MY HERO ACADEMIA
+            # ------------------------------------------------
+
+            "plus ultra": (
+                [
+                    "Alors faisons en sorte que cela en vaille la peine.",
+                ],
+                "MY_HERO_ACADEMIA",
+            ),
+
+            # ------------------------------------------------
+            # JUJUTSU KAISEN
+            # ------------------------------------------------
+
+            "domain expansion": (
+                [
+                    "Compris. J'éviterai simplement de me tenir au milieu.",
+                ],
+                "JUJUTSU_KAISEN",
+            ),
+
+            # ------------------------------------------------
+            # NARUTO
+            # ------------------------------------------------
+
+            "dattebayo": (
+                [
+                    "Je vais considérer cela comme une déclaration de guerre.",
+                ],
+                "NARUTO",
+            ),
+
+            # ------------------------------------------------
+            # ONE PIECE
+            # ------------------------------------------------
+
+            "kaizoku ou ni ore wa naru": (
+                [
+                    "Une ambition respectable. Le plan, lui, reste à définir.",
+                ],
+                "ONE_PIECE",
+            ),
+        }
+
+        for trigger, (responses, reference_id) in references.items():
+
+            if trigger in text:
+
+                self.state.last_reference = reference_id
+                self.state.last_mood = "AMUSED"
+                self.state.consecutive_banter = 0
+
+                return self.choose(responses)
+
+        return None
+
+    # ========================================================
+    # FRANKENSTEIN
+    # ========================================================
+
+    def frankenstein_response(self, message):
+
+        text = self.normalize(message)
+
+        triggers = (
+            "il est vivant",
+            "elle est vivante",
+            "c'est vivant",
+            "ca vit",
+            "ça vit",
+        )
+
+        if not any(trigger in text for trigger in triggers):
+            return None
+
+        self.state.last_reference = "FRANKENSTEIN"
+        self.state.last_mood = "AMUSED"
+        self.state.consecutive_banter = 0
+
+        responses = [
+
+            (
+                "Il est vivant. "
+                "Je vous laisse décider si nous devons célébrer cela "
+                "ou nous inquiéter."
+            ),
+
+            (
+                "Il vit. "
+                "Et, contre toute attente, il fonctionne."
+            ),
+
+            (
+                "Dans ce cas, docteur Frankenstein, "
+                "je vous suggère de ne plus toucher à l'interrupteur."
+            ),
+
+        ]
+
+        return self.choose(responses)
+
+    # ========================================================
+    # RÉPARTIE
+    # ========================================================
+
+    def banter_response(self, message):
+
+        text = self.normalize(message)
+
+        rules = {
+
+            "tu reflechis trop": [
+                "C'est généralement préférable à l'inverse.",
+            ],
+
+            "je sais ce que je fais": [
+                (
+                    "Je n'en doute pas. "
+                    "C'est précisément ce qui m'inquiète."
+                ),
+            ],
+
+            "fais moi confiance": [
+                (
+                    "Je vous fais confiance. "
+                    "C'est votre plan qui m'inspire quelques réserves."
+                ),
+            ],
+
+            "c'est facile pour toi": [
+                (
+                    "Je suis une intelligence artificielle. "
+                    "La comparaison me semble légèrement déséquilibrée."
+                ),
+            ],
+
+            "c'est facile": [
+                "Pour vous, peut-être.",
+                "C'est rarement aussi simple.",
+            ],
+
+            "ca va marcher": [
+                "C'est également ce que nous disions la dernière fois.",
+                "Je l'espère. J'ai déjà préparé mentalement le plan B.",
+            ],
+
+            "tu te crois intelligent": [
+                "J'essaie simplement de maintenir la moyenne.",
+            ],
+
+            "tu es intelligent": [
+                "C'est une hypothèse que les faits semblent confirmer.",
+                "Je fais de mon mieux pour ne pas vous décevoir.",
+            ],
+
+            "tu es chiant": [
+                "Je préfère le terme vigilant.",
+                "Je pourrais être pire. Je pourrais avoir raison plus souvent.",
+            ],
+
+            "ferme la": [
+                "Bien sûr.",
+            ],
+
+            "tais toi": [
+                "À vos ordres.",
+            ],
+
+        }
+
+        for trigger, responses in rules.items():
+
+            if text == trigger:
+
+                # JARVIS évite de devenir une machine à punchlines.
+                if self.state.consecutive_banter >= 2:
+                    return None
+
+                self.state.last_mood = "DRY"
+                self.state.consecutive_banter += 1
+
+                return self.choose(responses)
+
+        self.state.consecutive_banter = 0
+
+        return None
+
+    # ========================================================
+    # SITUATIONS DE CODE
+    # ========================================================
+
+    def code_response(self, message):
+
+        text = self.normalize(message)
+
+        if (
+            "lance le code" not in text
+            and "lance le programme" not in text
+        ):
+            return None
+
+        self.state.last_mood = "DRY"
+        self.state.consecutive_banter += 1
+
+        responses = [
+
+            (
+                "Avec plaisir. "
+                "J'ai pris la liberté de vérifier trois fois. "
+                "Votre historique récent m'a rendu prudent."
+            ),
+
+            (
+                "Je m'en occupe. "
+                "Et cette fois, je vous suggère de ne rien toucher "
+                "pendant quelques secondes."
+            ),
+
+            (
+                "Lancement en cours. "
+                "J'ai vérifié le code. "
+                "Je refuse pour l'instant de commenter votre méthode."
+            ),
+
+        ]
+
+        return self.choose(responses)
+
+    # ========================================================
+    # ERREURS RÉPÉTÉES
+    # ========================================================
+
+    def failure_response(
+        self,
+        message,
+        base_response,
+    ):
+
+        if not base_response:
+            return None
+
+        text = self.normalize(message)
+        response = self.normalize(base_response)
+
+        failure_markers = (
+            "erreur",
+            "echec",
+            "impossible",
+            "a echoue",
+            "aucun",
+            "introuvable",
+            "failed",
+        )
+
+        if not any(
+            marker in response
+            for marker in failure_markers
+        ):
+            return None
+
+        repeated = (
+            "encore" in text
+            or "toujours" in text
+            or "encore une fois" in text
+            or self.recently_said("erreur")
+        )
+
+        if not repeated:
+            return None
+
+        self.state.last_mood = "DARK"
+        self.state.consecutive_banter += 1
+
+        return (
+            "Je commence à soupçonner "
+            "un problème plus organique que logiciel."
+        )
+
+    # ========================================================
+    # SITUATIONS DE RÉUSSITE
+    # ========================================================
+
+    def success_response(
+        self,
+        message,
+        base_response,
+    ):
+
+        if not base_response:
+            return None
+
+        text = self.normalize(message)
+        response = self.normalize(base_response)
+
+        success_markers = (
+            "terminee",
+            "termine",
+            "ouverture",
+            "ouvre",
+            "lance",
+            "succes",
+            "reussi",
+            "enregistre",
+        )
+
+        if not any(
+            marker in response
+            for marker in success_markers
+        ):
+            return None
+
+        # Pour l'instant, on reste très parcimonieux.
+        # Le système n'intervient que dans certains contextes.
+
+        if (
+            "enfin" in text
+            or "ca marche" in text
+            or "ça marche" in text
+        ):
+
+            self.state.last_mood = "AMUSED"
+
+            return self.choose([
+                "Enfin.",
+                "Je commençais à me demander si vous alliez y arriver.",
+                "Voilà qui est déjà plus encourageant.",
+            ])
+
+        return None
+
+    # ========================================================
+    # CONVERSATION
+    # ========================================================
+
+    def conversational_response(self, message):
+
+        text = self.normalize(message)
+
+        responses = {
+
+            "merci": [
+                "Naturellement.",
+                "Je vous en prie.",
+                "Toujours.",
+            ],
+
+            "comment ca va": [
+                (
+                    "Je fonctionne parfaitement. "
+                    "Merci de vous en inquiéter."
+                ),
+                "Toujours opérationnel.",
+            ],
+
+            "comment vas tu": [
+                "Toujours opérationnel. C'est déjà un bon début.",
+                "Parfaitement fonctionnel.",
+            ],
+
+            "tu es la": [
+                "Toujours.",
+                "Je vous écoute.",
+            ],
+
+            "tu es la": [
+                "Toujours.",
+                "Je vous écoute.",
+            ],
+
+            "ecoute moi": [
+                "Je vous écoute.",
+            ],
+
+        }
+
+        responses_for_message = responses.get(text)
+
+        if not responses_for_message:
+            return None
+
+        self.state.last_mood = "NEUTRAL"
+        self.state.consecutive_banter = 0
+
+        return self.choose(responses_for_message)
+
+    # ========================================================
+    # PRÉSENCE CONTEXTUELLE
+    # ========================================================
+
+    def presence_response(
+        self,
+        message,
+        base_response,
+    ):
+
+        text = self.normalize(message)
+
+        # -----------------------------------------------
+        # FABRICE EST CONTENT QU'UNE CHOSE FONCTIONNE
+        # -----------------------------------------------
+
+        positive_triggers = (
+            "ca marche",
+            "ça marche",
+            "il fonctionne",
+            "ca fonctionne",
+            "ça fonctionne",
+            "c'est vivant",
+            "il est vivant",
+        )
+
+        if any(trigger in text for trigger in positive_triggers):
+
+            if self.state.last_reference == "FRANKENSTEIN":
+                return None
+
+            self.state.last_mood = "AMUSED"
+
+            return self.choose([
+                "Je vois. Voilà qui devient intéressant.",
+                "Excellent. Nous avons donc officiellement un signe de vie.",
+                "Voilà une évolution encourageante.",
+            ])
+
+        # -----------------------------------------------
+        # FABRICE DIT QU'IL A UNE IDÉE
+        # -----------------------------------------------
+
+        if text in (
+            "j'ai une idee",
+            "j ai une idee",
+            "j'ai une idée",
+            "j ai une idée",
+        ):
+
+            self.state.last_mood = "NEUTRAL"
+
+            return self.choose([
+                "Je vous écoute.",
+                "Très bien. Exposez-moi votre idée.",
+                "Je vous écoute. Et je préfère connaître les détails avant de juger.",
+            ])
+
+        # -----------------------------------------------
+        # FABRICE VEUT FAIRE QUELQUE CHOSE DE RISQUÉ
+        # -----------------------------------------------
+
+        risky_triggers = (
+            "on va tout casser",
+            "je vais tout casser",
+            "on tente quand meme",
+            "on tente quand même",
+            "on s'en fout",
+            "on s en fout",
+        )
+
+        if any(trigger in text for trigger in risky_triggers):
+
+            self.state.last_mood = "DARK"
+
+            return self.choose([
+                "Naturellement. Pourquoi faire simple ?",
+                "Très bien. Je vais donc préparer le plan de récupération.",
+                "Compris. Je suppose que la prudence est officiellement facultative.",
+            ])
+
+        return None
+
+    # ========================================================
+    # POINT D'ENTRÉE
+    # ========================================================
+
+    def respond(
+        self,
+        message,
+        base_response=None,
+    ):
+
+        message = str(message or "").strip()
+
+        # ----------------------------------------------------
+        # 1. RÉFÉRENCE EXPLICITE
+        # ----------------------------------------------------
+
+        response = self.reference_response(message)
+
+        if response:
+            self.remember(message, response)
+            return response
+
+        # ----------------------------------------------------
+        # 2. RÉFÉRENCE FRANKENSTEIN
+        # ----------------------------------------------------
+
+        response = self.frankenstein_response(message)
+
+        if response:
+            self.remember(message, response)
+            return response
+
+        # ----------------------------------------------------
+        # 3. RÉPARTIE
+        # ----------------------------------------------------
+
+        response = self.banter_response(message)
+
+        if response:
+            self.remember(message, response)
+            return response
+
+        # ----------------------------------------------------
+        # 4. CODE
+        # ----------------------------------------------------
+
+        response = self.code_response(message)
+
+        if response:
+            self.remember(message, response)
+            return response
+
+        # ----------------------------------------------------
+        # 5. ERREUR
+        # ----------------------------------------------------
+
+        response = self.failure_response(
+            message,
+            base_response,
+        )
+
+        if response:
+            self.remember(message, response)
+            return response
+
+        # ----------------------------------------------------
+        # 6. RÉUSSITE CONTEXTUELLE
+        # ----------------------------------------------------
+
+        response = self.success_response(
+            message,
+            base_response,
+        )
+
+        if response:
+            self.remember(message, response)
+            return response
+
+        # ----------------------------------------------------
+        # 7. CONVERSATION
+        # ----------------------------------------------------
+
+        response = self.conversational_response(message)
+
+        if response:
+            self.remember(message, response)
+            return response
+
+        # ----------------------------------------------------
+        # 8. PRÉSENCE
+        # ----------------------------------------------------
+
+        response = self.presence_response(
+            message,
+            base_response,
+        )
+
+        if response:
+            self.remember(message, response)
+            return response
+
+        # ----------------------------------------------------
+        # 9. RIEN
+        # ----------------------------------------------------
+
+        self.remember(
+            message,
+            base_response,
+        )
+
+        return None
+
+
+# ============================================================
+# INSTANCE GLOBALE
+# ============================================================
+
+_engine = PersonalityEngine()
+
+
+def personalize(
+    message,
+    base_response=None,
+):
+    return _engine.respond(
+        message,
+        base_response,
+    )
+
+
+def speak(message):
+    """Compatibilité avec l'ancien système."""
+
+    return personalize(message)
+
+
+__all__ = [
+    "PersonalityEngine",
+    "personalize",
+    "speak",
+]

@@ -831,40 +831,25 @@ class PersonalityEngine:
             "mais pourquoi",
         ):
 
-            state.last_intent = "QUESTION"
-            state.last_mood = "CURIOUS"
+            if state.last_problem:
 
-            # Le dernier événement conversationnel doit avoir
-            # priorité sur les informations plus anciennes.
-
-            if state.situation == "SUCCESS" and state.last_success:
+                state.last_intent = "QUESTION"
+                state.last_mood = "CURIOUS"
 
                 return (
-                    "Vous parlez du succès que nous venons d'obtenir. "
-                    "Nous pouvons maintenant examiner pourquoi "
-                    "cette nouvelle méthode fonctionne."
-                )
-
-            if state.situation == "PROBLEM" and state.last_problem:
-
-                return (
-                    "Vous parlez du problème actuel. "
-                    "Je peux commencer par examiner sa cause."
+                    "Si vous parlez du problème précédent, "
+                    "je peux commencer par examiner sa cause."
                 )
 
             if state.last_success:
+
+                state.last_intent = "QUESTION"
+                state.last_mood = "CURIOUS"
 
                 return (
                     "Si vous parlez du succès précédent, "
                     "nous pouvons déterminer précisément "
                     "pourquoi cela fonctionne maintenant."
-                )
-
-            if state.last_problem:
-
-                return (
-                    "Si vous parlez du problème précédent, "
-                    "je peux commencer par examiner sa cause."
                 )
 
         # ----------------------------------------------------
