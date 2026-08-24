@@ -1,0 +1,10 @@
+{
+    "jarvis": {
+        "name": "JARVIS",
+        "path": "~/dev/jarvis"
+    },
+    "rdv": {
+        "name": "RDV",
+        "path": "~/dev/rdv"
+    }
+}

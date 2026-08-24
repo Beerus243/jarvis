@@ -1,6 +1,6 @@
 from tools.tools import open_browser, open_musique, get_time
 from tools.applications import open_application, open_folder, open_website
-from tools.projects import resolve_project, format_projects
+from tools.projects import resolve_project
 from tools.projects import resolve_project
 from actions.media import play_music
 from tools.spotify import (
@@ -18,13 +18,6 @@ from tools.browser import (
 
 
 def dispatch(intent):
-
-    # ========================================================
-    # PROJETS — LISTER
-    # ========================================================
-
-    if intent == "LIST_PROJECTS":
-        return True, format_projects()
 
     # ========================================================
     # ACTIONS STRUCTURÉES

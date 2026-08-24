@@ -226,61 +226,6 @@ def detect_intent(message):
         return "OPEN_FIREFOX"
 
     # ========================================================
-    # PROJETS — LISTER LES PROJETS
-    # ========================================================
-
-    list_projects_phrases = [
-        "quels sont mes projets",
-        "quel sont mes projets",
-        "liste mes projets",
-        "liste des projets",
-        "affiche mes projets",
-        "montre moi mes projets",
-        "montre-moi mes projets",
-        "mes projets",
-        "mes projets actuels",
-    ]
-
-    if any(
-        phrase == message
-        for phrase in list_projects_phrases
-    ):
-        return "LIST_PROJECTS"
-
-    # ========================================================
-    # PROJET — OUVRIR DANS VS CODE
-    # ========================================================
-    #
-    # Exemples :
-    #
-    #   ouvre mon projet jarvis
-    #   ouvre le projet jarvis
-    #   ouvre mon projet "jarvis"
-    #   lance mon projet jarvis
-    #   ouvre mon projet JARVIS
-    #
-    # Le nom du projet est transmis au dispatcher.
-    # La résolution du chemin est centralisée dans tools.projects.
-    # ========================================================
-
-    project_match = re.match(
-        r'^(?:open|launch|start) '
-        r'(?:(?:mon|my|le|the) )?'
-        r'(?:projet|project) '
-        r'["\']?(.+?)["\']?$',
-        message,
-    )
-
-    if project_match:
-        project = project_match.group(1).strip()
-
-        if project:
-            return {
-                "action": "OPEN_PROJECT",
-                "project": project,
-            }
-
-    # ========================================================
     # VISUAL STUDIO CODE
     # ========================================================
 

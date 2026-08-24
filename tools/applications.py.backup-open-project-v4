@@ -1,0 +1,194 @@
+import shutil
+import subprocess
+from pathlib import Path
+from urllib.parse import urlparse
+
+
+APPLICATIONS = {
+    "chrome": {
+        "commands": [
+            ["google-chrome"],
+            ["google-chrome-stable"],
+        ],
+        "label": "Google Chrome",
+    },
+
+    "spotify": {
+        "commands": [
+            ["flatpak", "run", "com.spotify.Client"],
+        ],
+        "label": "Spotify",
+    },
+
+    "vscode": {
+        "commands": [
+            ["code"],
+        ],
+        "label": "Visual Studio Code",
+    },
+
+    "firefox": {
+        "commands": [
+            ["firefox"],
+        ],
+        "label": "Firefox",
+    },
+
+    "terminal": {
+        "commands": [
+            ["konsole"],
+            ["gnome-terminal"],
+            ["ptyxis"],
+        ],
+        "label": "Terminal",
+    },
+}
+
+
+def is_command_available(command):
+    """
+    Vérifie si une commande existe sur le système.
+    """
+
+    executable = command[0]
+
+    return shutil.which(executable) is not None
+
+
+def is_application_available(name):
+    """
+    Vérifie si une application est disponible.
+    """
+
+    name = name.lower().strip()
+
+    application = APPLICATIONS.get(name)
+
+    if not application:
+        return False
+
+    for command in application["commands"]:
+
+        if is_command_available(command):
+            return True
+
+    return False
+
+
+def open_application(name, target=None):
+    """
+    Lance une application connue.
+
+    target permet de transmettre une cible à l'application,
+    par exemple un dossier à ouvrir dans VS Code.
+    """
+
+    name = name.lower().strip()
+
+    application = APPLICATIONS.get(name)
+
+    if not application:
+
+        return (
+            False,
+            "Je ne connais pas cette application."
+        )
+
+    for command in application["commands"]:
+
+        if is_command_available(command):
+
+            try:
+
+                launch_command = list(command)
+
+                # ------------------------------------------------
+                # VS CODE
+                # ------------------------------------------------
+                # Permet :
+                #   code
+                #   code ~/dev/jarvis
+                # ------------------------------------------------
+
+                if name == "vscode" and target:
+
+                    target_path = Path(target).expanduser().resolve()
+
+                    if not target_path.exists():
+                        return (
+                            False,
+                            f"Le dossier {target} n'existe pas."
+                        )
+
+                    if not target_path.is_dir():
+                        return (
+                            False,
+                            f"La cible {target} n'est pas un dossier."
+                        )
+
+                    launch_command.append(str(target_path))
+
+                subprocess.Popen(
+                    launch_command,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
+
+                if name == "vscode" and target:
+                    return (
+                        True,
+                        f"J'ouvre {application['label']} dans {target}."
+                    )
+
+                return (
+                    True,
+                    f"J'ouvre {application['label']}."
+                )
+
+            except OSError:
+
+                return (
+                    False,
+                    f"Impossible de lancer {application['label']}."
+                )
+
+    return (
+        False,
+        f"{application['label']} n'est pas disponible "
+        "sur ce système."
+    )
+
+
+def list_available_applications():
+
+    available = []
+
+    for name in APPLICATIONS:
+
+        if is_application_available(name):
+
+            available.append(name)
+
+    return available
+
+
+def open_folder(name="Documents"):
+    folder = (Path.home() / name).resolve()
+    if not folder.exists() or not folder.is_dir():
+        return f"Le dossier {name} n'existe pas."
+    try:
+        subprocess.Popen(["xdg-open", str(folder)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return f"J'ouvre le dossier {name}."
+    except OSError:
+        return f"Impossible d'ouvrir le dossier {name}."
+
+
+def open_website(url):
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        return "Site refusé par la politique de sécurité."
+    try:
+        subprocess.Popen(["xdg-open", url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return f"J'ouvre {url}."
+    except OSError:
+        return "Impossible d'ouvrir le site."

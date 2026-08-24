@@ -11,30 +11,6 @@
     "action_history": [
         {
             "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-23T22:07:33.476179+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-23T22:55:31.118374+01:00",
-            "result": "J'ouvre ton navigateur.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-23T22:55:31.175036+01:00",
-            "result": "J'ouvre Visual Studio Code.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
             "timestamp": "2026-08-23T22:55:31.265928+01:00",
             "result": "J'ouvre Spotify.",
             "success": true,
@@ -405,6 +381,30 @@
             "action": "OPEN_APPLICATION",
             "timestamp": "2026-08-24T00:30:19.578288+01:00",
             "result": "J'ouvre Spotify.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-24T00:58:35.241061+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-24T01:28:37.935742+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "LIST_PROJECTS",
+            "timestamp": "2026-08-24T01:30:54.746174+01:00",
+            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
             "success": true,
             "confirmation": false,
             "error": null

@@ -1,0 +1,76 @@
+"""Gestion du registre des projets de JARVIS."""
+
+import json
+from pathlib import Path
+
+
+PROJECTS_FILE = Path(__file__).resolve().parent.parent / "memory" / "projects.json"
+
+
+def load_projects():
+    """Charge le registre des projets."""
+
+    try:
+        with PROJECTS_FILE.open("r", encoding="utf-8") as file:
+            data = json.load(file)
+
+        if not isinstance(data, dict):
+            return {}
+
+        return data
+
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {}
+
+
+def resolve_project(project):
+    """
+    Résout un nom de projet vers son chemin.
+
+    Exemple :
+        jarvis -> ~/dev/jarvis
+    """
+
+    key = str(project or "").casefold().strip()
+
+    if not key:
+        return None
+
+    projects = load_projects()
+
+    entry = projects.get(key)
+
+    if not isinstance(entry, dict):
+        return None
+
+    path = entry.get("path")
+
+    if not path:
+        return None
+
+    return {
+        "key": key,
+        "name": entry.get("name", key),
+        "path": path,
+    }
+
+
+def list_projects():
+    """Retourne les projets enregistrés."""
+
+    projects = load_projects()
+
+    result = []
+
+    for key, entry in projects.items():
+
+        if not isinstance(entry, dict):
+            continue
+
+        result.append({
+            "key": key,
+            "name": entry.get("name", key),
+            "path": entry.get("path"),
+        })
+
+    return result

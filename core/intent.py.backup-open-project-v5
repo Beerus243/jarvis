@@ -226,28 +226,6 @@ def detect_intent(message):
         return "OPEN_FIREFOX"
 
     # ========================================================
-    # PROJETS — LISTER LES PROJETS
-    # ========================================================
-
-    list_projects_phrases = [
-        "quels sont mes projets",
-        "quel sont mes projets",
-        "liste mes projets",
-        "liste des projets",
-        "affiche mes projets",
-        "montre moi mes projets",
-        "montre-moi mes projets",
-        "mes projets",
-        "mes projets actuels",
-    ]
-
-    if any(
-        phrase == message
-        for phrase in list_projects_phrases
-    ):
-        return "LIST_PROJECTS"
-
-    # ========================================================
     # PROJET — OUVRIR DANS VS CODE
     # ========================================================
     #
@@ -264,10 +242,8 @@ def detect_intent(message):
     # ========================================================
 
     project_match = re.match(
-        r'^(?:open|launch|start) '
-        r'(?:(?:mon|my|le|the) )?'
-        r'(?:projet|project) '
-        r'["\']?(.+?)["\']?$',
+        r'^(?:ouvre|lance|demarre|démarre) '
+        r'(?:mon )?(?:projet )["\']?(.+?)["\']?$',
         message,
     )
 
