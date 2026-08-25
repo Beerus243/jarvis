@@ -10,14 +10,6 @@
     },
     "action_history": [
         {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T02:26:07.882023+01:00",
-            "result": "Il est actuellement 02:26:07",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
             "action": "OPEN_APPLICATION",
             "timestamp": "2026-08-24T02:26:07.920705+01:00",
             "result": "J'ouvre Spotify.",
@@ -405,6 +397,14 @@
             "action": "LIST_PROJECTS",
             "timestamp": "2026-08-24T03:18:03.869083+01:00",
             "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_PROJECT",
+            "timestamp": "2026-08-25T15:15:30.161564+01:00",
+            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
             "success": true,
             "confirmation": false,
             "error": null

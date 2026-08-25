@@ -1,42 +1,42 @@
 [
     {
+        "role": "user",
+        "message": "valar morghulis"
+    },
+    {
         "role": "assistant",
-        "message": "Bonjour Fabrice. Je suis heureux de vous voir."
+        "message": "Valar Dohaeris."
     },
     {
         "role": "user",
-        "message": "quelle heure il est"
-    },
-    {
-        "role": "assistant",
-        "message": "Il est actuellement 03:18:03"
+        "message": "vala dohaeris"
     },
     {
         "role": "user",
-        "message": "ouvre spotify"
-    },
-    {
-        "role": "assistant",
-        "message": "J'ouvre Spotify."
-    },
-    {
-        "role": "user",
-        "message": "ouvre mon projet jarvis"
-    },
-    {
-        "role": "assistant",
-        "message": "J'ouvre Visual Studio Code dans ~/dev/jarvis."
-    },
-    {
-        "role": "user",
-        "message": "quels sont mes projets"
-    },
-    {
-        "role": "assistant",
-        "message": "J'ai 2 projets enregistrés : JARVIS, RDV."
+        "message": "je suis crevé"
     },
     {
         "role": "user",
         "message": "j'ai sommeil"
+    },
+    {
+        "role": "user",
+        "message": "c'est facile pour toi"
+    },
+    {
+        "role": "assistant",
+        "message": "Je suis une intelligence artificielle. La comparaison me semble légèrement déséquilibrée."
+    },
+    {
+        "role": "user",
+        "message": "qui es tu ?"
+    },
+    {
+        "role": "user",
+        "message": "ton avis"
+    },
+    {
+        "role": "assistant",
+        "message": "Je peux vous donner un avis. Mais je préfère vous donner le vrai plutôt que celui que vous espérez entendre."
     }
 ]
