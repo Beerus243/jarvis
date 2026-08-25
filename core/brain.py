@@ -1,6 +1,9 @@
 from core.conversation import add_message
 from core.orchestrator import process
 from personality.personality import personalize
+from core.decision_context import build_decision_context
+from memory.personal_state import get_personal_context
+from core.user_state import detect_user_state
 
 # Compatibilité avec les tests/intégrations qui remplaçaient cet ancien point
 # d'injection. L'appel réel est désormais géré par l'orchestrateur.
@@ -9,6 +12,9 @@ ask_ai = None
 
 def think(message):
     response = process(message)
+    context = build_decision_context(message)
+    context["personal_context"] = get_personal_context()
+    context["user_state"] = detect_user_state(message)
 
     # ========================================================
     # PERSONALITÉ
@@ -22,6 +28,7 @@ def think(message):
     personality_response = personalize(
         message,
         response,
+        context,
     )
 
     if personality_response:

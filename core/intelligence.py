@@ -11,6 +11,7 @@ from memory.text_normalizer import normalize_text
 from core.pc_context import answer_pc_question
 from core.task_engine import get_active_task
 from core.action_parser import parse_actions
+from core.user_state import detect_user_state
 
 CONFIDENCE_HIGH = 0.90
 CONFIDENCE_CONTEXT = 0.70
@@ -48,6 +49,18 @@ def analyze(message, context=None):
     context = context or {}
     reference = context.get("reference_info") or analyze_reference(message, context)
     normalized = normalize_text(message)
+    pending = _pending_context()
+
+    if "sa musique" in normalized or "son dernier album" in normalized:
+        artist = _last_music_artist()
+        if artist:
+            return _decision("ACTION", {"action": "PLAY_MUSIC", "artist": artist, "query": artist}, 0.99)
+
+    if pending and normalized in {"pause", "continue", "continuer", "oui"}:
+        return _decision("USER_STATE", {"state": "tired_followup", "answer": normalized}, 0.99, uses_context=True)
+
+    if pending and pending.get("intent") == "PLAY_MUSIC" and _looks_like_artist(normalized):
+        return _decision("ACTION", {"action": "PLAY_MUSIC", "artist": message.strip(), "query": message.strip()}, 0.99)
     contextual_text = normalized.rstrip(" ?!.")
     contextual_phrases = (
         "pourquoi",
@@ -73,6 +86,15 @@ def analyze(message, context=None):
     )
 
     intent = detect_intent(message)
+
+    subjective_state = detect_user_state(message)
+    simple_state = (
+        subjective_state
+        and len(normalized.split()) <= 6
+        and not any(marker in normalized for marker in ("parce que", "car ", "pourquoi", "comment", "qu est ce", "que me conseilles"))
+    )
+    if simple_state:
+        return _decision("USER_STATE", subjective_state, 0.99, uses_context=True)
 
     # ========================================================
     # ENVIRONNEMENT DE TRAVAIL
@@ -102,6 +124,9 @@ def analyze(message, context=None):
         )
 
     parsed_actions = parse_actions(message) if not normalized.startswith(("est ce ", "est-ce ", "quelle ", "qu est ce ", "qu'est ce ", "pourquoi ", "comment ")) else []
+
+    if parsed_actions and parsed_actions[0].get("needs_clarification") and any(marker in normalized for marker in ("mets moi", "mets-moi", "met moi", "met-moi")):
+        return _decision("CLARIFICATION", parsed_actions[0], 0.99)
 
     if len(parsed_actions) > 1:
         return _decision("ACTION_COMPOSED", parsed_actions, 0.99)
@@ -192,3 +217,23 @@ def analyze(message, context=None):
         requires_ai=True,
         ambiguous=fallback_confidence < CONFIDENCE_CONTEXT,
     )
+
+
+def _pending_context():
+    try:
+        from personality.personality import get_pending_context
+        return get_pending_context()
+    except (ImportError, AttributeError):
+        return None
+
+
+def _last_music_artist():
+    try:
+        from personality.personality import get_last_music_artist
+        return get_last_music_artist()
+    except (ImportError, AttributeError):
+        return None
+
+
+def _looks_like_artist(text):
+    return bool(text and len(text.split()) <= 5 and text not in {"pause", "continue", "continuer", "oui"})

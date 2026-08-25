@@ -108,6 +108,10 @@ def _one(text):
             "",
             query,
         ).strip()
+        query = re.sub(r"^moi\s+", "", query).strip()
+
+        if query in {"", "une musique", "de la musique", "un morceau", "quelque chose"}:
+            return {"action": "PLAY_MUSIC", "needs_clarification": True}
 
         request = {
             "action": "PLAY_MUSIC",

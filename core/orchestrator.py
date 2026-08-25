@@ -14,6 +14,8 @@ from core.action_executor import execute_action
 from memory.structured_memory import answer_project_question
 from core.pc_context import answer_pc_question
 from core.task_engine import create_task, cancel_task, get_active_task, execute_task
+from personality.personality import personalize, clear_pending, remember_music_artist
+from core.user_state import detect_user_state
 
 
 def _semantic_fallback(message, resolved_reference):
@@ -35,6 +37,7 @@ def process(message):
     clear_diagnostics()
     context = build_decision_context(message)
     context["personal_context"] = get_personal_context()
+    context["user_state"] = detect_user_state(message)
     decision = intelligence.analyze(message, context=context)
     record_diagnostic(create_diagnostic_event(
         "INTELLIGENCE",
@@ -66,6 +69,11 @@ def process(message):
         handlers={
             "dispatch": _dispatch_action,
             "raw_dispatch": dispatch,
+            "user_state": lambda msg, state: personalize(
+                msg,
+                None,
+                {**context, "user_state": state},
+            ),
             "personal": answer_personal_question,
             "state": lambda message: (
                 update_personal_state(message)
@@ -127,4 +135,7 @@ def _handle_task(message, intent):
 
 def _dispatch_action(intent):
     result = execute_action(intent, dispatcher=dispatch)
+    if result.success and isinstance(intent, dict) and intent.get("action") == "PLAY_MUSIC":
+        remember_music_artist(intent.get("artist"))
+        clear_pending()
     return result.message

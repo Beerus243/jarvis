@@ -23,6 +23,7 @@ from dataclasses import dataclass
 import random
 import re
 import unicodedata
+from core.user_state import detect_user_state
 
 
 # ============================================================
@@ -51,6 +52,9 @@ class PersonalityState:
     last_problem: str | None = None
     last_success: str | None = None
     last_intent: str | None = None
+    pending_intent: str | None = None
+    pending_slots: dict | None = None
+    last_music_artist: str | None = None
 
 
 # ============================================================
@@ -1868,6 +1872,7 @@ class PersonalityEngine:
         self,
         message,
         base_response=None,
+        context=None,
     ):
 
         message = str(message or "").strip()
@@ -1880,6 +1885,22 @@ class PersonalityEngine:
             message,
             base_response,
         )
+
+        normalized_message = self.normalize(message)
+        if base_response and "mets" in normalized_message and any(value in normalized_message for value in ("une musique", "de la musique", "un morceau")):
+            self.set_music_pending()
+            return base_response
+
+        subjective_state = (context or {}).get("user_state") or detect_user_state(message)
+        if subjective_state and subjective_state.get("state") == "tired_followup":
+            response = self.followup_response(subjective_state.get("answer"))
+            self.remember(message, response)
+            return response
+        if subjective_state and subjective_state.get("state") == "tired":
+            response = self.tired_response(context or {})
+            if response:
+                self.remember(message, response)
+                return response
 
         # ----------------------------------------------------
         # MÉMOIRE RÉFÉRENTIELLE
@@ -2037,6 +2058,41 @@ class PersonalityEngine:
 
         return None
 
+    def tired_response(self, context):
+        personal = context.get("personal_context") or {}
+        activity = personal.get("activity")
+        duration = personal.get("duration")
+        duration_relevant = {
+            "working": "travailles",
+            "studying": "étudies",
+        }
+        self.state.pending_intent = "FATIGUE_FOLLOWUP"
+        self.state.pending_slots = {"missing": "pause_or_continue"}
+        if activity in duration_relevant:
+            label = duration_relevant[activity]
+            if duration:
+                return f"Je vois. Tu {label} depuis {duration}. Une pause serait probablement judicieuse. Tu veux continuer ou faire une pause ?"
+            return f"Je vois. Tu {label} actuellement. Une pause serait probablement judicieuse. Tu veux continuer ou faire une pause ?"
+        return "Je vois. Tu sembles fatigué. Tu préfères faire une pause ou continuer ?"
+
+    def followup_response(self, answer):
+        self.state.pending_intent = None
+        self.state.pending_slots = None
+        if answer in {"continue", "continuer", "oui"}:
+            return "Très bien. On continue. On reprend là où on s'était arrêté ?"
+        return "D'accord. On peut faire une pause et reprendre plus tard."
+
+    def set_music_pending(self):
+        self.state.pending_intent = "PLAY_MUSIC"
+        self.state.pending_slots = {"missing": "music_reference"}
+
+    def clear_pending(self):
+        self.state.pending_intent = None
+        self.state.pending_slots = None
+
+    def remember_music_artist(self, artist):
+        self.state.last_music_artist = str(artist or "").strip() or None
+
 
 # ============================================================
 # INSTANCE GLOBALE
@@ -2048,11 +2104,34 @@ _engine = PersonalityEngine()
 def personalize(
     message,
     base_response=None,
+    context=None,
 ):
     return _engine.respond(
         message,
         base_response,
+        context,
     )
+
+
+def get_pending_context():
+    if not _engine.state.pending_intent:
+        return None
+    return {
+        "intent": _engine.state.pending_intent,
+        "slots": dict(_engine.state.pending_slots or {}),
+    }
+
+
+def clear_pending():
+    _engine.clear_pending()
+
+
+def remember_music_artist(artist):
+    _engine.remember_music_artist(artist)
+
+
+def get_last_music_artist():
+    return _engine.state.last_music_artist
 
 
 def speak(message):

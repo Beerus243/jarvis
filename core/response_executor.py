@@ -45,6 +45,15 @@ def execute(response_plan, message, context=None, handlers=None):
         if source == "ACTION":
             return success(handlers.get("dispatch", dispatch)(response_plan.get("intent")))
 
+        if source == "USER_STATE":
+            return success(handlers.get("user_state", lambda msg, state: None)(message, response_plan.get("intent")))
+
+        if source == "CLARIFICATION":
+            intent = response_plan.get("intent") or {}
+            if intent.get("action") == "PLAY_MUSIC":
+                return success("Bien sûr. Tu veux quelque chose de précis ou je choisis pour toi ?")
+            return success("Je ne suis pas certain de ce que tu veux dire. Donne-moi un peu plus de contexte.")
+
         if source == "ACTION_COMPOSED":
             from core.action_executor import execute_plan
             results = execute_plan(response_plan.get("intent", []), dispatcher=handlers.get("raw_dispatch", dispatch))
