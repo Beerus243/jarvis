@@ -10,401 +10,401 @@
     },
     "action_history": [
         {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T02:26:07.920705+01:00",
-            "result": "J'ouvre Spotify.",
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-25T22:10:35.042443+01:00",
+            "result": "Je lance Damso.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-25T22:10:35.676936+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-25T22:10:35.777449+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-25T22:10:35.806705+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
             "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-24T02:26:08.026168+01:00",
-            "result": "J'ouvre ton navigateur.",
+            "timestamp": "2026-08-25T22:10:36.156990+01:00",
+            "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_VSCODE",
-            "timestamp": "2026-08-24T02:26:08.055733+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-25T22:30:57.788463+01:00",
+            "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T02:26:08.079408+01:00",
-            "result": "J'ouvre Spotify.",
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-25T22:31:17.454656+01:00",
+            "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-24T02:29:08.635078+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-25T22:31:21.100649+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T02:29:08.697179+01:00",
-            "result": "Il est actuellement 02:29:08",
-            "success": true,
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-25T22:31:21.108769+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T02:29:08.747953+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T02:29:08.853332+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "LIST_PROJECTS",
-            "timestamp": "2026-08-24T02:29:08.947235+01:00",
-            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-25T22:31:21.544732+01:00",
+            "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-24T02:34:32.206974+01:00",
+            "timestamp": "2026-08-25T22:31:22.684252+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T02:34:32.250797+01:00",
-            "result": "Il est actuellement 02:34:32",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T02:34:32.311361+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T02:34:32.429849+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "LIST_PROJECTS",
-            "timestamp": "2026-08-24T02:34:32.528141+01:00",
-            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-24T02:38:02.911874+01:00",
+            "timestamp": "2026-08-25T22:31:22.905673+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T02:38:02.960021+01:00",
-            "result": "Il est actuellement 02:38:02",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T02:38:03.005769+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T02:38:03.054988+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "LIST_PROJECTS",
-            "timestamp": "2026-08-24T02:38:03.103746+01:00",
-            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-24T02:55:45.864262+01:00",
+            "timestamp": "2026-08-25T22:31:22.945570+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T02:55:45.900304+01:00",
-            "result": "Il est actuellement 02:55:45",
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-25T22:31:23.376940+01:00",
+            "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T02:55:45.950748+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-25T22:32:23.639529+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T02:55:46.017001+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-25T22:32:23.648932+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "LIST_PROJECTS",
-            "timestamp": "2026-08-24T02:55:46.083239+01:00",
-            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-25T22:32:24.138898+01:00",
+            "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-24T03:01:30.449721+01:00",
+            "timestamp": "2026-08-25T22:32:25.039889+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T03:01:30.512750+01:00",
-            "result": "Il est actuellement 03:01:30",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T03:01:30.560362+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T03:01:30.686689+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "LIST_PROJECTS",
-            "timestamp": "2026-08-24T03:01:30.812542+01:00",
-            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-24T03:03:26.440512+01:00",
+            "timestamp": "2026-08-25T22:32:25.185756+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T03:03:26.464616+01:00",
-            "result": "Il est actuellement 03:03:26",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T03:03:26.498614+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T03:03:26.556924+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "LIST_PROJECTS",
-            "timestamp": "2026-08-24T03:03:26.602385+01:00",
-            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-24T03:15:01.588228+01:00",
+            "timestamp": "2026-08-25T22:32:25.224277+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T03:15:01.620207+01:00",
-            "result": "Il est actuellement 03:15:01",
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-25T22:32:25.624509+01:00",
+            "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T03:15:01.663113+01:00",
-            "result": "J'ouvre Spotify.",
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-26T00:03:14.457421+01:00",
+            "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T03:15:01.732336+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-26T00:03:29.343537+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "LIST_PROJECTS",
-            "timestamp": "2026-08-24T03:15:01.835695+01:00",
-            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-26T00:03:29.396466+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-26T00:03:31.506006+01:00",
+            "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-24T03:16:44.325459+01:00",
+            "timestamp": "2026-08-26T00:03:34.485165+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T03:16:44.381241+01:00",
-            "result": "Il est actuellement 03:16:44",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T03:16:44.544857+01:00",
-            "result": "J'ouvre Spotify.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T03:16:44.708302+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "LIST_PROJECTS",
-            "timestamp": "2026-08-24T03:16:44.818211+01:00",
-            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-24T03:18:03.305895+01:00",
+            "timestamp": "2026-08-26T00:03:34.999947+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "GET_TIME",
-            "timestamp": "2026-08-24T03:18:03.350248+01:00",
-            "result": "Il est actuellement 03:18:03",
+            "action": "GREETINGS",
+            "timestamp": "2026-08-26T00:03:35.312761+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_APPLICATION",
-            "timestamp": "2026-08-24T03:18:03.445970+01:00",
-            "result": "J'ouvre Spotify.",
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-26T00:03:37.350491+01:00",
+            "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-24T03:18:03.611045+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-26T00:03:49.014271+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-26T00:03:49.063866+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-26T00:03:51.996264+01:00",
+            "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "LIST_PROJECTS",
-            "timestamp": "2026-08-24T03:18:03.869083+01:00",
-            "result": "J'ai 2 projets enregistrés : JARVIS, RDV.",
+            "action": "GREETINGS",
+            "timestamp": "2026-08-26T00:03:55.782344+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_PROJECT",
-            "timestamp": "2026-08-25T15:15:30.161564+01:00",
-            "result": "J'ouvre Visual Studio Code dans ~/dev/jarvis.",
+            "action": "GREETINGS",
+            "timestamp": "2026-08-26T00:03:56.968252+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-26T00:03:57.248764+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-26T00:03:59.381874+01:00",
+            "result": "Navigateur ouvert",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-26T00:04:34.101457+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-26T00:04:34.135778+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-26T00:04:37.246194+01:00",
+            "result": "Je lance Damso.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-26T00:04:42.019115+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-26T00:04:42.656178+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-26T00:04:42.918715+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-26T00:04:46.057751+01:00",
+            "result": "Navigateur ouvert",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-26T00:32:23.346067+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-26T00:32:23.380568+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-26T00:32:25.171980+01:00",
+            "result": "Je lance Damso.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-26T00:32:27.887114+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-26T00:32:28.437779+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-26T00:32:28.610320+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-26T00:32:30.533426+01:00",
+            "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
             "error": null

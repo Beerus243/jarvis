@@ -1,22 +1,6 @@
 [
     {
         "role": "user",
-        "message": "valar morghulis"
-    },
-    {
-        "role": "assistant",
-        "message": "Valar Dohaeris."
-    },
-    {
-        "role": "user",
-        "message": "vala dohaeris"
-    },
-    {
-        "role": "user",
-        "message": "je suis crevé"
-    },
-    {
-        "role": "user",
         "message": "j'ai sommeil"
     },
     {
@@ -38,5 +22,21 @@
     {
         "role": "assistant",
         "message": "Je peux vous donner un avis. Mais je préfère vous donner le vrai plutôt que celui que vous espérez entendre."
+    },
+    {
+        "role": "user",
+        "message": "j'ai sommeil"
+    },
+    {
+        "role": "assistant",
+        "message": "Je vois. Tu sembles fatigué. Tu préfères faire une pause ou continuer ?"
+    },
+    {
+        "role": "user",
+        "message": "pause"
+    },
+    {
+        "role": "user",
+        "message": "pause"
     }
 ]
