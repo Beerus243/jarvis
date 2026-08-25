@@ -7,6 +7,7 @@ import shutil
 import socket
 import subprocess
 from pathlib import Path
+from core.kwin_context import get_kwin_context
 
 
 KNOWN_APPLICATIONS = {
@@ -110,6 +111,7 @@ def _audio():
 
 
 def get_pc_context():
+    kwin = get_kwin_context()
     return {
         "os": platform.platform(),
         "hostname": socket.gethostname(),
@@ -121,6 +123,8 @@ def get_pc_context():
         "network": {"available": bool(socket.gethostname())},
         "audio": _audio(),
         "applications": get_known_applications(),
+        "active_window": kwin["active_window"],
+        "windows": kwin["windows"],
     }
 
 

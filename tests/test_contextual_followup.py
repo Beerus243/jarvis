@@ -81,3 +81,21 @@ def test_pause_reports_detected_but_uncontrollable_application():
     )
     assert "VS Code" in response
     assert "fermer automatiquement" in response
+
+
+def test_pause_uses_reliable_active_window_without_closing_it():
+    clear_pending()
+    from personality.personality import PersonalityEngine
+    engine = PersonalityEngine()
+    response = engine.respond(
+        "pause",
+        context={
+            "user_state": {"state": "tired_followup", "answer": "pause"},
+            "pc_context": {"active_window": {
+                "available": True, "application": "VS Code", "title": "brain.py",
+                "pid": 3086, "active": True, "closeable": False,
+            }},
+        },
+    )
+    assert "VS Code" in response
+    assert "fermer" in response.lower()

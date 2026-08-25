@@ -2124,7 +2124,15 @@ class PersonalityEngine:
 
     @staticmethod
     def _pause_context_response(context):
-        applications = (context or {}).get("pc_context", {}).get("applications", [])
+        pc_context = (context or {}).get("pc_context", {})
+        active_window = pc_context.get("active_window") or {}
+        if active_window.get("available") and active_window.get("application"):
+            application = active_window["application"]
+            if active_window.get("closeable"):
+                return f"D'accord. Je vois {application} au premier plan. Je peux proposer de fermer cette fenêtre, mais je n'exécute rien sans confirmation."
+            return f"D'accord. Je vois {application} au premier plan. Je garde le contexte, mais je ne vais pas fermer cette fenêtre automatiquement."
+
+        applications = pc_context.get("applications", [])
         running = [item for item in applications if item.get("running")]
         if not running:
             return "D'accord pour la pause. Je garde le contexte de la session. Je n'ai pas de tâche identifiable à fermer automatiquement. Tu veux que je le fasse ?"
