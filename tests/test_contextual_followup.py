@@ -62,3 +62,22 @@ def test_break_does_not_claim_to_close_unknown_apps():
     engine = PersonalityEngine()
     response = engine.respond("pause", context={"user_state": {"state": "tired_followup", "answer": "pause"}, "pc_context": {"applications": []}})
     assert "fermer automatiquement" in response
+
+
+def test_pause_reports_detected_but_uncontrollable_application():
+    clear_pending()
+    from personality.personality import PersonalityEngine
+    engine = PersonalityEngine()
+    response = engine.respond(
+        "pause",
+        context={
+            "user_state": {"state": "tired_followup", "answer": "pause"},
+            "pc_context": {"applications": [{
+                "name": "VS Code", "running": True,
+                "pid": 3086, "controllable": False,
+                "capabilities": ["open"],
+            }]},
+        },
+    )
+    assert "VS Code" in response
+    assert "fermer automatiquement" in response

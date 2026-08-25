@@ -5,7 +5,93 @@ import os
 import platform
 import shutil
 import socket
+import subprocess
 from pathlib import Path
+
+
+KNOWN_APPLICATIONS = {
+    "vscode": {
+        "name": "VS Code",
+        "process_names": {"code"},
+        "capabilities": ["open"],
+        "controllable": False,
+    },
+    "chrome": {
+        "name": "Chrome",
+        "process_names": {"chrome", "google-chrome", "google-chrome-stable"},
+        "capabilities": ["open"],
+        "controllable": False,
+    },
+    "firefox": {
+        "name": "Firefox",
+        "process_names": {"firefox"},
+        "capabilities": ["open"],
+        "controllable": False,
+    },
+    "spotify": {
+        "name": "Spotify",
+        "process_names": {"spotify"},
+        "capabilities": ["open", "spotify_control"],
+        "controllable": True,
+    },
+    "dolphin": {
+        "name": "Dolphin",
+        "process_names": {"dolphin"},
+        "capabilities": ["open"],
+        "controllable": False,
+    },
+    "terminal": {
+        "name": "Terminal",
+        "process_names": {"konsole", "ptyxis", "gnome-terminal", "alacritty", "kitty", "foot"},
+        "capabilities": ["open"],
+        "controllable": False,
+    },
+}
+
+
+def _process_snapshot():
+    """Retourne les processus visibles, sans envoyer de signal au système."""
+    try:
+        result = subprocess.run(
+            ["ps", "-eo", "pid=,ppid=,comm="],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return []
+
+    processes = []
+    for line in result.stdout.splitlines():
+        fields = line.split(None, 2)
+        if len(fields) != 3:
+            continue
+        try:
+            processes.append({"pid": int(fields[0]), "ppid": int(fields[1]), "comm": fields[2].strip()})
+        except ValueError:
+            continue
+    return processes
+
+
+def get_known_applications(processes=None):
+    """Détecte uniquement les applications de la liste blanche du projet."""
+    processes = _process_snapshot() if processes is None else processes
+    applications = []
+    for key, definition in KNOWN_APPLICATIONS.items():
+        matches = [item for item in processes if item["comm"] in definition["process_names"]]
+        match_pids = {item["pid"] for item in matches}
+        # Le PID racine est celui qui n'est pas enfant d'un autre processus
+        # correspondant. À défaut, on garde le plus ancien PID observé.
+        roots = [item for item in matches if item["ppid"] not in match_pids]
+        primary = min(roots or matches, key=lambda item: item["pid"]) if matches else None
+        applications.append({
+            "name": definition["name"],
+            "running": bool(matches),
+            "pid": primary["pid"] if primary else None,
+            "controllable": bool(definition["controllable"] and matches),
+            "capabilities": list(definition["capabilities"]),
+        })
+    return applications
 
 
 def _battery():
@@ -34,7 +120,7 @@ def get_pc_context():
         "power": _battery().get("status", "unknown"),
         "network": {"available": bool(socket.gethostname())},
         "audio": _audio(),
-        "applications": [],
+        "applications": get_known_applications(),
     }
 
 

@@ -2098,7 +2098,7 @@ class PersonalityEngine:
             self.state.expected_response = ("oui", "non", "annule")
             self.state.pending_action = None
             self.state.requires_confirmation = True
-            return "D'accord. Pour cette pause, je peux garder le contexte de la session, mais je n'ai pas de tâche que je puisse fermer automatiquement. Tu veux que je le fasse ?"
+            return self._pause_context_response(context)
         self.state.pending_intent = None
         self.state.pending_slots = None
         self.state.pending_question = None
@@ -2120,6 +2120,25 @@ class PersonalityEngine:
         self.state.expected_response = ("oui", "non", "annule")
         self.state.pending_action = None
         self.state.requires_confirmation = True
+        return self._pause_context_response(context)
+
+    @staticmethod
+    def _pause_context_response(context):
+        applications = (context or {}).get("pc_context", {}).get("applications", [])
+        running = [item for item in applications if item.get("running")]
+        if not running:
+            return "D'accord pour la pause. Je garde le contexte de la session. Je n'ai pas de tâche identifiable à fermer automatiquement. Tu veux que je le fasse ?"
+
+        uncontrollable = [item.get("name") for item in running if "close" not in (item.get("capabilities") or [])]
+        closable = [item.get("name") for item in running if "close" in (item.get("capabilities") or [])]
+        if closable:
+            labels = ", ".join(name for name in closable if name)
+            return f"D'accord. Je garde le contexte. Je peux fermer proprement {labels}. Tu veux que je le fasse ?"
+        labels = ", ".join(name for name in uncontrollable if name)
+        if labels:
+            verb = "est" if len(uncontrollable) == 1 else "sont"
+            adjective = "ouvert" if len(uncontrollable) == 1 else "ouverts"
+            return f"D'accord. Je garde le contexte. {labels} {verb} toujours {adjective}, mais je ne vais pas les fermer automatiquement."
         return "D'accord. Je garde le contexte de la session. Je n'ai pas de tâche identifiable à fermer automatiquement. Tu veux que je le fasse ?"
 
     def break_confirmation_response(self, answer):
