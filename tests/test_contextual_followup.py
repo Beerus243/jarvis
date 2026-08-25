@@ -27,3 +27,21 @@ def test_fatigue_followups_are_local():
     with patch("core.brain.add_message"), patch("core.orchestrator._ai_fallback", side_effect=AssertionError("Groq appelé")):
         think("j'ai sommeil")
         assert "pause" in think("pause").lower()
+
+
+def test_confirmation_after_pause_and_rejection_are_local():
+    clear_pending()
+    with patch("core.brain.add_message"), patch("core.orchestrator._ai_fallback", side_effect=AssertionError("Groq appelé")):
+        think("j'ai sommeil")
+        think("pause")
+        assert "rien" in think("oui").lower()
+        think("j'ai sommeil")
+        think("pause")
+        assert "laisse" in think("non").lower()
+
+
+def test_explicit_break_is_local_and_confirmable():
+    clear_pending()
+    with patch("core.brain.add_message"), patch("core.orchestrator._ai_fallback", side_effect=AssertionError("Groq appelé")):
+        assert "session" in think("je vais faire une pause").lower()
+        assert "session" in think("oui").lower()

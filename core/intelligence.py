@@ -56,11 +56,17 @@ def analyze(message, context=None):
         if artist:
             return _decision("ACTION", {"action": "PLAY_MUSIC", "artist": artist, "query": artist}, 0.99)
 
-    if pending and normalized in {"pause", "continue", "continuer", "oui"}:
+    if pending and pending.get("intent") == "BREAK_CONFIRMATION" and normalized in {"oui", "non", "annule", "annuler"}:
+        return _decision("USER_STATE", {"state": "break_confirmation", "answer": normalized}, 0.99, uses_context=True)
+
+    if pending and pending.get("intent") == "FATIGUE_FOLLOWUP" and normalized in {"pause", "continue", "continuer"}:
         return _decision("USER_STATE", {"state": "tired_followup", "answer": normalized}, 0.99, uses_context=True)
 
     if pending and pending.get("intent") == "PLAY_MUSIC" and _looks_like_artist(normalized):
         return _decision("ACTION", {"action": "PLAY_MUSIC", "artist": message.strip(), "query": message.strip()}, 0.99)
+
+    if normalized in {"je vais faire une pause", "je fais une pause", "j arrete pour ce soir", "je vais arreter", "on fait une pause"}:
+        return _decision("USER_STATE", {"state": "take_break"}, 0.99, uses_context=True)
     contextual_text = normalized.rstrip(" ?!.")
     contextual_phrases = (
         "pourquoi",

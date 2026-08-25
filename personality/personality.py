@@ -55,6 +55,10 @@ class PersonalityState:
     pending_intent: str | None = None
     pending_slots: dict | None = None
     last_music_artist: str | None = None
+    pending_question: str | None = None
+    expected_response: tuple | None = None
+    pending_action: dict | None = None
+    requires_confirmation: bool = False
 
 
 # ============================================================
@@ -1893,7 +1897,15 @@ class PersonalityEngine:
 
         subjective_state = (context or {}).get("user_state") or detect_user_state(message)
         if subjective_state and subjective_state.get("state") == "tired_followup":
-            response = self.followup_response(subjective_state.get("answer"))
+            response = self.followup_response(subjective_state.get("answer"), context or {})
+            self.remember(message, response)
+            return response
+        if subjective_state and subjective_state.get("state") == "break_confirmation":
+            response = self.break_confirmation_response(subjective_state.get("answer"))
+            self.remember(message, response)
+            return response
+        if subjective_state and subjective_state.get("state") == "take_break":
+            response = self.take_break_response(context or {})
             self.remember(message, response)
             return response
         if subjective_state and subjective_state.get("state") == "tired":
@@ -2068,6 +2080,9 @@ class PersonalityEngine:
         }
         self.state.pending_intent = "FATIGUE_FOLLOWUP"
         self.state.pending_slots = {"missing": "pause_or_continue"}
+        self.state.pending_question = "pause_or_continue"
+        self.state.expected_response = ("pause", "continue")
+        self.state.requires_confirmation = False
         if activity in duration_relevant:
             label = duration_relevant[activity]
             if duration:
@@ -2075,12 +2090,39 @@ class PersonalityEngine:
             return f"Je vois. Tu {label} actuellement. Une pause serait probablement judicieuse. Tu veux continuer ou faire une pause ?"
         return "Je vois. Tu sembles fatigué. Tu préfères faire une pause ou continuer ?"
 
-    def followup_response(self, answer):
+    def followup_response(self, answer, context=None):
+        if answer == "pause":
+            self.state.pending_intent = "BREAK_CONFIRMATION"
+            self.state.pending_slots = {"missing": "confirmation"}
+            self.state.pending_question = "close_identified_tasks"
+            self.state.expected_response = ("oui", "non", "annule")
+            self.state.pending_action = None
+            self.state.requires_confirmation = True
+            return "D'accord. Pour cette pause, je peux garder le contexte de la session, mais je n'ai pas de tâche que je puisse fermer automatiquement. Tu veux que je le fasse ?"
         self.state.pending_intent = None
         self.state.pending_slots = None
+        self.state.pending_question = None
+        self.state.expected_response = None
+        self.state.pending_action = None
+        self.state.requires_confirmation = False
         if answer in {"continue", "continuer", "oui"}:
             return "Très bien. On continue. On reprend là où on s'était arrêté ?"
         return "D'accord. On peut faire une pause et reprendre plus tard."
+
+    def take_break_response(self, context):
+        self.state.pending_intent = "BREAK_CONFIRMATION"
+        self.state.pending_slots = {"missing": "confirmation"}
+        self.state.pending_question = "close_identified_tasks"
+        self.state.expected_response = ("oui", "non", "annule")
+        self.state.pending_action = None
+        self.state.requires_confirmation = True
+        return "D'accord. Je garde le contexte de la session. Je n'ai pas de tâche identifiable à fermer automatiquement. Tu veux que je le fasse ?"
+
+    def break_confirmation_response(self, answer):
+        self.clear_pending()
+        if answer in {"oui"}:
+            return "Très bien. Je garde le contexte de la session. Je n'ai rien de concret à fermer automatiquement pour l'instant."
+        return "D'accord. Je laisse tout ouvert et nous reprendrons quand tu voudras."
 
     def set_music_pending(self):
         self.state.pending_intent = "PLAY_MUSIC"
@@ -2089,6 +2131,10 @@ class PersonalityEngine:
     def clear_pending(self):
         self.state.pending_intent = None
         self.state.pending_slots = None
+        self.state.pending_question = None
+        self.state.expected_response = None
+        self.state.pending_action = None
+        self.state.requires_confirmation = False
 
     def remember_music_artist(self, artist):
         self.state.last_music_artist = str(artist or "").strip() or None
@@ -2119,6 +2165,8 @@ def get_pending_context():
     return {
         "intent": _engine.state.pending_intent,
         "slots": dict(_engine.state.pending_slots or {}),
+        "expected_response": list(_engine.state.expected_response or ()),
+        "requires_confirmation": _engine.state.requires_confirmation,
     }
 
 
