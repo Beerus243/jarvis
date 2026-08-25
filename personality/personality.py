@@ -2106,6 +2106,10 @@ class PersonalityEngine:
         self.state.pending_action = None
         self.state.requires_confirmation = False
         if answer in {"continue", "continuer", "oui"}:
+            if self.state.last_action:
+                return f"Très bien. On reprend après : {self.state.last_action}."
+            if self.state.last_problem:
+                return "Très bien. On reprend sur le problème en cours, là où nous nous étions arrêtés ?"
             return "Très bien. On continue. On reprend là où on s'était arrêté ?"
         return "D'accord. On peut faire une pause et reprendre plus tard."
 

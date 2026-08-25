@@ -45,3 +45,20 @@ def test_explicit_break_is_local_and_confirmable():
     with patch("core.brain.add_message"), patch("core.orchestrator._ai_fallback", side_effect=AssertionError("Groq appelé")):
         assert "session" in think("je vais faire une pause").lower()
         assert "session" in think("oui").lower()
+
+
+def test_continue_uses_known_personality_action_without_inventing_task():
+    clear_pending()
+    from personality.personality import PersonalityEngine
+    engine = PersonalityEngine()
+    engine.state.last_action = "je vais relancer les tests"
+    response = engine.respond("continue", context={"user_state": {"state": "tired_followup", "answer": "continue"}})
+    assert "relancer les tests" in response
+
+
+def test_break_does_not_claim_to_close_unknown_apps():
+    clear_pending()
+    from personality.personality import PersonalityEngine
+    engine = PersonalityEngine()
+    response = engine.respond("pause", context={"user_state": {"state": "tired_followup", "answer": "pause"}, "pc_context": {"applications": []}})
+    assert "fermer automatiquement" in response

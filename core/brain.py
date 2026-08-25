@@ -4,6 +4,7 @@ from personality.personality import personalize
 from core.decision_context import build_decision_context
 from memory.personal_state import get_personal_context
 from core.user_state import detect_user_state
+from core.task_engine import get_active_task, task_dict
 
 # Compatibilité avec les tests/intégrations qui remplaçaient cet ancien point
 # d'injection. L'appel réel est désormais géré par l'orchestrateur.
@@ -15,6 +16,7 @@ def think(message):
     context = build_decision_context(message)
     context["personal_context"] = get_personal_context()
     context["user_state"] = detect_user_state(message)
+    context["active_task"] = task_dict(get_active_task())
 
     # ========================================================
     # PERSONALITÉ
