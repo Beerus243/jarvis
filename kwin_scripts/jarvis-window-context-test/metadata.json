@@ -1,0 +1,13 @@
+{
+  "KPlugin": {
+    "Name": "JARVIS Window Context Test",
+    "Description": "Test D-Bus lecture seule de JARVIS",
+    "Icon": "applications-system",
+    "Id": "jarvis-window-context-test",
+    "Version": "1.0",
+    "License": "MIT"
+  },
+  "X-KDE-ServiceTypes": ["KWin/Script"],
+  "X-Plasma-API": "javascript",
+  "X-Plasma-MainScript": "code/main.js"
+}
