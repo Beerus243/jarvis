@@ -117,6 +117,7 @@ def detect_intent(message):
 
     spotify_phrases = [
         "ouvre spotify",
+        "open spotify",
         "lance spotify",
         "demarre spotify",
         "ouvre la musique",

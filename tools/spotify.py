@@ -376,10 +376,20 @@ def get_active_device():
 
 
 def play_track(title=None, artist=None):
-    track = search_track(
-        title=title,
-        artist=artist,
-    )
+    try:
+        track = search_track(
+            title=title,
+            artist=artist,
+        )
+    except (requests.RequestException, OSError, ValueError) as error:
+        # L'API peut être indisponible (DNS, réseau ou OAuth). On conserve
+        # une action locale utile au lieu de laisser remonter une exception.
+        query = " ".join(value for value in (title, artist) if value).strip()
+        try:
+            subprocess.Popen(["flatpak", "run", "com.spotify.Client", "spotify:search:" + urllib.parse.quote(query)])
+            return True, f"Spotify API indisponible ; j'ouvre la recherche de {query} dans Spotify."
+        except OSError:
+            return False, f"Spotify est indisponible ({error})."
 
     if not track:
         return (
