@@ -1,18 +1,6 @@
 [
     {
         "role": "user",
-        "message": "j'ai sommeil"
-    },
-    {
-        "role": "user",
-        "message": "c'est facile pour toi"
-    },
-    {
-        "role": "assistant",
-        "message": "Je suis une intelligence artificielle. La comparaison me semble légèrement déséquilibrée."
-    },
-    {
-        "role": "user",
         "message": "qui es tu ?"
     },
     {
@@ -38,5 +26,17 @@
     {
         "role": "user",
         "message": "pause"
+    },
+    {
+        "role": "user",
+        "message": "comment tu vas"
+    },
+    {
+        "role": "user",
+        "message": "ouvre Spotify"
+    },
+    {
+        "role": "assistant",
+        "message": "J'ouvre Spotify."
     }
 ]

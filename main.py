@@ -159,9 +159,11 @@ def main():
 if __name__ == "__main__":
 
     if "--voice" in sys.argv[1:]:
-        from voice.assistant_loop import AssistantLoop
+        from voice.voice_pipeline import LocalWakeVoicePipeline
 
-        print("JARVIS en veille...")
-        AssistantLoop().run()
+        try:
+            LocalWakeVoicePipeline.from_defaults().run_microphone()
+        except KeyboardInterrupt:
+            print("\nJARVIS > Arrêt demandé. À bientôt, Fabrice.")
     else:
         main()

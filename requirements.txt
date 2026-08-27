@@ -4,3 +4,11 @@ sentence-transformers==5.7.0
 python-dotenv
 openai
 pytest
+openwakeword==0.4.0
+SpeechRecognition
+PyAudio
+numpy
+soundfile
+kokoro
+pyttsx3
+requests
