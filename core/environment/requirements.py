@@ -12,6 +12,7 @@ class RequirementStatus(str, Enum):
     MISSING = "MISSING"
     MISCONFIGURED = "MISCONFIGURED"
     UNKNOWN = "UNKNOWN"
+    PARTIAL = "PARTIAL"
 
 
 @dataclass

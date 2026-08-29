@@ -8,6 +8,7 @@ from typing import Any, Callable
 
 from .inspector import inspect_environment
 from .requirements import Requirement, RequirementPlan, RequirementStatus
+from .profiles import DEFAULT_PROFILES, EnvironmentProfile
 
 
 def _text(value: Any) -> str:
@@ -93,11 +94,25 @@ PROFILES: dict[str, Callable[[Mapping[str, Any]], list[Requirement]]] = {
 }
 
 
-def _profile_for(request: str) -> str | None:
+def _profile_for(request: str | EnvironmentProfile) -> str | None:
+    if isinstance(request, EnvironmentProfile): return request.id
     text = _normalise(request)
-    if "flutter" in text:
-        return "flutter_development"
-    return None
+    profile = DEFAULT_PROFILES.resolve(text)
+    if profile is None:
+        profile = next((p for p in DEFAULT_PROFILES.list() if any(alias in text for alias in p.aliases)), None)
+    return profile.id if profile else None
+
+def _generic_profile(profile: str, environment: Mapping[str, Any]) -> list[Requirement]:
+    def cmd(name, label, required=True): return _command_requirement(name, label, environment, required=required)
+    if profile == 'java':
+        java=cmd('java','Java runtime'); javac=cmd('javac','javac (JDK)', True)
+        if java.status == RequirementStatus.MISSING and javac.status == RequirementStatus.SATISFIED: java.status=RequirementStatus.PARTIAL
+        return [java,javac]
+    if profile in {'node','nextjs'}:
+        items=[cmd('node','Node.js'),cmd('npm','npm'),cmd('git','Git')]
+        if profile == 'nextjs': items.append(Requirement('nextjs','Next.js tooling',RequirementStatus.MISSING,required=False,depends_on=['node','npm']))
+        return items
+    return _flutter_profile(environment)
 
 
 def resolve_requirements(request: str, environment: Mapping[str, Any] | None = None) -> RequirementPlan:
@@ -108,7 +123,7 @@ def resolve_requirements(request: str, environment: Mapping[str, Any] | None = N
         return RequirementPlan(request=request, profile=None,
                                message="Aucun profil technique reconnu pour cette demande.")
     snapshot = environment if environment is not None else inspect_environment()
-    requirements = PROFILES[profile](snapshot)
+    requirements = PROFILES.get(profile, lambda env: _generic_profile(profile, env))(snapshot)
     gaps = [item for item in requirements if item.status != RequirementStatus.SATISFIED and item.required]
     rank = {"javac": 10, "adb": 20, "flutter": 30, "dart": 40, "android_sdk": 50, "git": 60,
             "android_studio": 70}
