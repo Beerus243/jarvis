@@ -118,3 +118,18 @@ class WebLLMResearchProvider:
         verification={'evidence': [ResearchCandidate(source.name, 'version', str(version), url, confidence) for url in evidence_urls]}
         return EnvironmentResearchResult(official_sources=[source],version=str(version),artifacts=artifacts,
                                          verification=verification,confidence=confidence,status='READY')
+
+class FlutterResearchProvider(WebLLMResearchProvider):
+    """Strict Flutter adapter: no artifact means no installable result."""
+    def research(self, request):
+        result = super().research(request)
+        if result.status != 'READY' or not result.artifacts:
+            result.status = 'NEEDS_RESEARCH'
+            result.warnings.append('Artefact Flutter ou checksum officiel manquant.')
+            return result
+        artifact = result.artifacts[0]
+        if not artifact.checksum or len(artifact.checksum) != 64:
+            result.status = 'NEEDS_RESEARCH'; result.warnings.append('SHA-256 Flutter absent ou invalide.')
+        if artifact.platform != 'linux' or artifact.architecture != request.architecture:
+            result.status = 'NEEDS_RESEARCH'; result.warnings.append('Plateforme/architecture Flutter incohérente.')
+        return result
