@@ -8,12 +8,18 @@ from .downloader import ArtifactDownloader
 from .extractor import SecureArchiveExtractor
 from .path_config import ConfigureUserPath
 from .verifier import verify
+import os
+from contextlib import contextmanager
 
 class InstallationEngine:
     """Dispatcher for typed installation steps; never accepts shell commands."""
-    def __init__(self, downloader=None, extractor=None, path_config=None, verifier=verify):
-        self.downloader=downloader or ArtifactDownloader(); self.extractor=extractor or SecureArchiveExtractor(); self.path_config=path_config or ConfigureUserPath(); self.verifier=verifier
+    def __init__(self, downloader=None, extractor=None, path_config=None, verifier=verify, allowed_root=None):
+        self.downloader=downloader or ArtifactDownloader(); self.extractor=extractor or SecureArchiveExtractor(); self.path_config=path_config or ConfigureUserPath(); self.verifier=verifier; self.allowed_root=Path(allowed_root or Path.home()).resolve()
     def execute(self, plan, *, artifact=None, dry_run=True, confirmation_handler=None):
+        if not dry_run and artifact is not None:
+            destination=Path(artifact.destination).expanduser().resolve()
+            if not destination.is_relative_to(self.allowed_root):
+                return InstallationReport([ExecutionResult('preflight',ExecutionStatus.FAILED,error='Destination hors HOME.')])
         done=set(); results=[]; state={}
         for step in plan.steps:
             if any(dep not in done for dep in step.dependencies):
@@ -25,7 +31,11 @@ class InstallationEngine:
             try:
                 if artifact is None and step.action_type in {'DOWNLOAD','VERIFY','EXTRACT','INSTALL','CONFIGURE_PATH'}: raise ValueError('InstallationArtifact requis.')
                 if step.action_type == 'DOWNLOAD':
-                    value=self.downloader.download(artifact); state['download']=value
+                    value=None
+                    for _ in range(2):
+                        value=self.downloader.download(artifact)
+                        if value.success: break
+                    state['download']=value
                     if not value.success: raise RuntimeError(value.error or 'Téléchargement échoué.')
                 elif step.action_type == 'VERIFY':
                     if not state.get('download') or not state['download'].success: raise RuntimeError('Téléchargement absent.')
@@ -66,7 +76,8 @@ class InstallationState(str, Enum):
 @dataclass
 class InstallationReport:
     results:list[ExecutionResult]=field(default_factory=list)
-    def to_dict(self): return {'results':[r.to_dict() for r in self.results], 'success':bool(self.results) and all(r.status==ExecutionStatus.SUCCESS for r in self.results)}
+    product:str|None=None; version:str|None=None; destination:str|None=None
+    def to_dict(self): return {'product':self.product,'version':self.version,'destination':self.destination,'results':[r.to_dict() for r in self.results], 'success':bool(self.results) and all(r.status==ExecutionStatus.SUCCESS for r in self.results)}
 
 def execute_installation_plan(plan, *, confirmation_handler=None, dry_run=True, operations=None):
     """Execute only typed installation steps. Real side effects require injected operations."""

@@ -23,6 +23,7 @@ from .extractor import SecureArchiveExtractor
 from .installation_engine import InstallationEngine
 from .path_config import ConfigureUserPath
 from .verifier import verify
+from .lock import InstallationLock
 from .research import (OfficialSource, OfficialSourceRegistry, DEFAULT_SOURCES, EnvironmentMetadata,
                        EnvironmentResearchRequest, EnvironmentResearchResult, EnvironmentResearcher,
                        MetadataCache, validate_metadata, ResearchCandidate, ResearchProvider)
@@ -45,5 +46,6 @@ __all__ += ["EnvironmentPreparationService"]
 __all__ += ["WebSearchClient", "WebSearchResult", "WebLLMResearchProvider", "FlutterResearchProvider", "GroqResearchInterpreter"]
 __all__ += ["ArtifactDownloader", "DownloadResult", "SecureArchiveExtractor"]
 __all__ += ["InstallationEngine"]
+__all__ += ["InstallationLock"]
 __all__ += ["ConfigureUserPath", "verify"]
 __all__ += ["OfficialSource", "OfficialSourceRegistry", "DEFAULT_SOURCES", "EnvironmentMetadata", "EnvironmentResearchRequest", "EnvironmentResearchResult", "EnvironmentResearcher", "MetadataCache", "validate_metadata", "ResearchCandidate", "ResearchProvider"]

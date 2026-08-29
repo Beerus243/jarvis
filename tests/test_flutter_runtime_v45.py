@@ -4,6 +4,7 @@ from core.environment.installation_engine import InstallationEngine
 from core.environment.installers.flutter_installer import FlutterInstaller
 from core.environment.execution import ExecutionStatus, ExecutionResult
 from core.environment.path_config import ConfigureUserPath
+from core.environment.lock import InstallationLock
 
 class FakeDownload:
     def __init__(self,path): self.path=path; self.calls=0
@@ -23,7 +24,7 @@ def artifact(tmp):
 def test_flutter_runtime_end_to_end(tmp_path):
     plan=FlutterInstaller().plan(); dl=FakeDownload(tmp_path/'a'); ex=FakeExtract(); pc=FakePath()
     def verifier(name, executable=None): return ExecutionResult(name,ExecutionStatus.SUCCESS)
-    report=InstallationEngine(dl,ex,pc,verifier).execute(plan,artifact=artifact(tmp_path),dry_run=False,confirmation_handler=lambda step: True)
+    report=InstallationEngine(dl,ex,pc,verifier,allowed_root=tmp_path).execute(plan,artifact=artifact(tmp_path),dry_run=False,confirmation_handler=lambda step: True)
     assert report.to_dict()['success'] and dl.calls==1 and ex.calls==1 and pc.calls==1
 def test_runtime_stops_after_download_failure(tmp_path):
     class Bad:
@@ -33,3 +34,9 @@ def test_runtime_stops_after_download_failure(tmp_path):
 def test_runtime_dry_run_has_no_side_effects(tmp_path):
     dl=FakeDownload(tmp_path/'a'); ex=FakeExtract(); pc=FakePath(); report=InstallationEngine(dl,ex,pc).execute(FlutterInstaller().plan(),artifact=artifact(tmp_path),dry_run=True)
     assert all(item.status==ExecutionStatus.SKIPPED for item in report.results) and dl.calls==0 and ex.calls==0 and pc.calls==0
+def test_installation_lock_prevents_concurrency(tmp_path):
+    lock=InstallationLock(tmp_path/'lock')
+    with lock:
+        try:
+            with InstallationLock(tmp_path/'lock'): assert False
+        except RuntimeError: pass
