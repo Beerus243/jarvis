@@ -1,13 +1,5 @@
 [
     {
-        "role": "user",
-        "message": "qui es tu ?"
-    },
-    {
-        "role": "user",
-        "message": "ton avis"
-    },
-    {
         "role": "assistant",
         "message": "Je peux vous donner un avis. Mais je préfère vous donner le vrai plutôt que celui que vous espérez entendre."
     },
@@ -30,6 +22,14 @@
     {
         "role": "user",
         "message": "comment tu vas"
+    },
+    {
+        "role": "user",
+        "message": "ouvre Spotify"
+    },
+    {
+        "role": "assistant",
+        "message": "J'ouvre Spotify."
     },
     {
         "role": "user",

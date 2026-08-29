@@ -151,21 +151,31 @@ class LocalWakeVoicePipeline:
         """Transcribe only audio supplied after a successful wake detection."""
         if self.state != VoiceState.COMMAND_LISTENING:
             return {"success": False, "error": "Wake word non détecté"}
+        print("[STT] envoi Google", flush=True)
         self.state = VoiceState.THINKING
         started = time.monotonic()
         try:
-            command = self.stt(audio_data)
+            try:
+                command = self.stt(audio_data)
+            except Exception as error:
+                print(f"[STT] {type(error).__name__}: {error}", flush=True)
+                raise
+            print(f"[STT] résultat: {command!r}", flush=True)
             if not command or not str(command).strip():
                 self.session.timeout()
                 self.state = self.session.state
                 return {"success": False, "error": "Commande vide"}
-            response = self.brain(str(command).strip())
+            command = str(command).strip()
+            print(f"[BRAIN] texte reçu: {command!r}", flush=True)
+            response = self.brain(command)
+            print(f"[DISPATCH] réponse brain: {response!r}", flush=True)
             self.state = VoiceState.SPEAKING
             if response:
+                print("[ACTION] réponse exécutée/envoyée", flush=True)
                 self.speaker(response)
             result = {
                 "success": bool(response),
-                "command": str(command).strip(),
+                "command": command,
                 "response": response,
                 "elapsed": time.monotonic() - started,
                 "error": None if response else "Aucune réponse",
@@ -226,11 +236,23 @@ class LocalWakeVoicePipeline:
                 if self.state != VoiceState.COMMAND_LISTENING:
                     continue
                 print("[LISTEN] J'écoute votre commande...", flush=True)
+                print(f"[COMMAND_CAPTURE] début — stream actif: {stream.is_active()} arrêté: {stream.is_stopped()}", flush=True)
                 frames = [
                     stream.read(chunk, exception_on_overflow=False)
                     for _ in range(max(1, round(command_seconds * sample_rate / chunk)))
                 ]
-                audio = sr.AudioData(b"".join(frames), sample_rate, 2)
+                raw_command = b"".join(frames)
+                samples = len(raw_command) // 2
+                values = struct.unpack("<" + "h" * samples, raw_command) if samples else ()
+                command_rms = ((sum(value * value for value in values) / samples) ** 0.5
+                               if samples else 0.0)
+                command_peak = max((abs(value) for value in values), default=0)
+                print(f"[COMMAND_CAPTURE] durée: {samples / sample_rate:.3f}s", flush=True)
+                print(f"[COMMAND_CAPTURE] RMS: {command_rms:.1f}", flush=True)
+                print(f"[COMMAND_CAPTURE] peak: {command_peak}", flush=True)
+                print(f"[COMMAND_CAPTURE] nombre de samples: {samples}", flush=True)
+                print(f"[COMMAND_CAPTURE] stream actif: {stream.is_active()} arrêté: {stream.is_stopped()}", flush=True)
+                audio = sr.AudioData(raw_command, sample_rate, 2)
                 result = self.process_command_audio(audio)
                 results.append(result)
                 if result.get("command", "").casefold().strip() in {

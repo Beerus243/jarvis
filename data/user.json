@@ -10,56 +10,8 @@
     },
     "action_history": [
         {
-            "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-26T01:55:37.635098+01:00",
-            "result": "Cette action nécessite une confirmation explicite.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "DELETE_FILE",
-            "timestamp": "2026-08-26T01:55:37.644123+01:00",
-            "result": "Cette action est bloquée par la politique de sécurité.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-26T01:55:38.014940+01:00",
-            "result": "Je lance Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-26T01:55:38.677096+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-26T01:55:38.803581+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-08-26T01:55:38.895340+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
             "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-26T01:55:39.248418+01:00",
+            "timestamp": "2026-08-29T13:36:20.576917+01:00",
             "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
@@ -67,7 +19,7 @@
         },
         {
             "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-26T02:10:18.294541+01:00",
+            "timestamp": "2026-08-29T13:39:13.011291+01:00",
             "result": "Cette action nécessite une confirmation explicite.",
             "success": false,
             "confirmation": false,
@@ -75,7 +27,7 @@
         },
         {
             "action": "DELETE_FILE",
-            "timestamp": "2026-08-26T02:10:18.302576+01:00",
+            "timestamp": "2026-08-29T13:39:13.019430+01:00",
             "result": "Cette action est bloquée par la politique de sécurité.",
             "success": false,
             "confirmation": false,
@@ -83,7 +35,7 @@
         },
         {
             "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-26T02:10:18.711103+01:00",
+            "timestamp": "2026-08-29T13:39:13.448892+01:00",
             "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
@@ -91,7 +43,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-26T02:10:19.377924+01:00",
+            "timestamp": "2026-08-29T13:39:14.361042+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -99,7 +51,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-26T02:10:19.566518+01:00",
+            "timestamp": "2026-08-29T13:39:14.522986+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -107,7 +59,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-26T02:10:19.609435+01:00",
+            "timestamp": "2026-08-29T13:39:14.560933+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -115,7 +67,7 @@
         },
         {
             "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-26T02:10:20.076384+01:00",
+            "timestamp": "2026-08-29T13:39:15.021360+01:00",
             "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
@@ -123,7 +75,7 @@
         },
         {
             "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-26T02:13:42.481284+01:00",
+            "timestamp": "2026-08-29T13:40:03.909350+01:00",
             "result": "Cette action nécessite une confirmation explicite.",
             "success": false,
             "confirmation": false,
@@ -131,7 +83,7 @@
         },
         {
             "action": "DELETE_FILE",
-            "timestamp": "2026-08-26T02:13:42.490801+01:00",
+            "timestamp": "2026-08-29T13:40:03.917497+01:00",
             "result": "Cette action est bloquée par la politique de sécurité.",
             "success": false,
             "confirmation": false,
@@ -139,7 +91,7 @@
         },
         {
             "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-26T02:13:42.859091+01:00",
+            "timestamp": "2026-08-29T13:40:04.369565+01:00",
             "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
@@ -147,7 +99,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-26T02:13:43.581414+01:00",
+            "timestamp": "2026-08-29T13:40:05.238400+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -155,7 +107,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-26T02:13:43.734760+01:00",
+            "timestamp": "2026-08-29T13:40:05.387200+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -163,7 +115,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-26T02:13:43.769607+01:00",
+            "timestamp": "2026-08-29T13:40:05.434178+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -171,7 +123,7 @@
         },
         {
             "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-26T02:13:44.122424+01:00",
+            "timestamp": "2026-08-29T13:40:05.844797+01:00",
             "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
@@ -179,7 +131,7 @@
         },
         {
             "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-27T23:34:25.623086+01:00",
+            "timestamp": "2026-08-29T13:42:47.913305+01:00",
             "result": "Cette action nécessite une confirmation explicite.",
             "success": false,
             "confirmation": false,
@@ -187,7 +139,7 @@
         },
         {
             "action": "DELETE_FILE",
-            "timestamp": "2026-08-27T23:34:25.637611+01:00",
+            "timestamp": "2026-08-29T13:42:47.926349+01:00",
             "result": "Cette action est bloquée par la politique de sécurité.",
             "success": false,
             "confirmation": false,
@@ -195,7 +147,7 @@
         },
         {
             "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-27T23:34:26.138452+01:00",
+            "timestamp": "2026-08-29T13:42:48.492138+01:00",
             "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
@@ -203,7 +155,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-27T23:34:27.058494+01:00",
+            "timestamp": "2026-08-29T13:42:49.573437+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -211,7 +163,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-27T23:34:27.174432+01:00",
+            "timestamp": "2026-08-29T13:42:49.730301+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -219,7 +171,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-27T23:34:27.205790+01:00",
+            "timestamp": "2026-08-29T13:42:49.771423+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -227,7 +179,7 @@
         },
         {
             "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-27T23:34:27.524496+01:00",
+            "timestamp": "2026-08-29T13:42:50.178829+01:00",
             "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
@@ -235,7 +187,7 @@
         },
         {
             "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-27T23:34:54.247987+01:00",
+            "timestamp": "2026-08-29T13:43:26.347923+01:00",
             "result": "Cette action nécessite une confirmation explicite.",
             "success": false,
             "confirmation": false,
@@ -243,7 +195,7 @@
         },
         {
             "action": "DELETE_FILE",
-            "timestamp": "2026-08-27T23:34:54.263428+01:00",
+            "timestamp": "2026-08-29T13:43:26.358302+01:00",
             "result": "Cette action est bloquée par la politique de sécurité.",
             "success": false,
             "confirmation": false,
@@ -251,7 +203,7 @@
         },
         {
             "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-27T23:34:54.922488+01:00",
+            "timestamp": "2026-08-29T13:43:26.846564+01:00",
             "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
@@ -259,7 +211,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-27T23:34:55.773262+01:00",
+            "timestamp": "2026-08-29T13:43:28.186483+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -267,7 +219,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-27T23:34:55.988885+01:00",
+            "timestamp": "2026-08-29T13:43:28.406958+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -275,7 +227,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-27T23:34:56.049265+01:00",
+            "timestamp": "2026-08-29T13:43:28.446536+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -283,7 +235,7 @@
         },
         {
             "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-27T23:34:56.666432+01:00",
+            "timestamp": "2026-08-29T13:43:28.928897+01:00",
             "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
@@ -291,7 +243,7 @@
         },
         {
             "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-27T23:43:21.359381+01:00",
+            "timestamp": "2026-08-29T13:47:43.702776+01:00",
             "result": "Cette action nécessite une confirmation explicite.",
             "success": false,
             "confirmation": false,
@@ -299,7 +251,7 @@
         },
         {
             "action": "DELETE_FILE",
-            "timestamp": "2026-08-27T23:43:21.369243+01:00",
+            "timestamp": "2026-08-29T13:47:43.712047+01:00",
             "result": "Cette action est bloquée par la politique de sécurité.",
             "success": false,
             "confirmation": false,
@@ -307,7 +259,7 @@
         },
         {
             "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-27T23:43:21.794440+01:00",
+            "timestamp": "2026-08-29T13:47:44.231129+01:00",
             "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
@@ -315,7 +267,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-27T23:43:22.514996+01:00",
+            "timestamp": "2026-08-29T13:47:45.153964+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -323,7 +275,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-27T23:43:22.689251+01:00",
+            "timestamp": "2026-08-29T13:47:45.301986+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -331,7 +283,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-27T23:43:22.732614+01:00",
+            "timestamp": "2026-08-29T13:47:45.340878+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -339,7 +291,7 @@
         },
         {
             "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-27T23:43:23.140426+01:00",
+            "timestamp": "2026-08-29T13:47:45.750156+01:00",
             "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
@@ -347,7 +299,7 @@
         },
         {
             "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-08-28T00:02:43.676920+01:00",
+            "timestamp": "2026-08-29T13:48:56.924505+01:00",
             "result": "Cette action nécessite une confirmation explicite.",
             "success": false,
             "confirmation": false,
@@ -355,7 +307,7 @@
         },
         {
             "action": "DELETE_FILE",
-            "timestamp": "2026-08-28T00:02:43.684938+01:00",
+            "timestamp": "2026-08-29T13:48:56.932946+01:00",
             "result": "Cette action est bloquée par la politique de sécurité.",
             "success": false,
             "confirmation": false,
@@ -363,7 +315,7 @@
         },
         {
             "action": "PLAY_MUSIC",
-            "timestamp": "2026-08-28T00:02:44.064828+01:00",
+            "timestamp": "2026-08-29T13:48:57.402597+01:00",
             "result": "Je lance Damso.",
             "success": true,
             "confirmation": false,
@@ -371,7 +323,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-28T00:02:44.737879+01:00",
+            "timestamp": "2026-08-29T13:48:58.318921+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -379,7 +331,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-28T00:02:44.859640+01:00",
+            "timestamp": "2026-08-29T13:48:58.474492+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -387,7 +339,7 @@
         },
         {
             "action": "GREETINGS",
-            "timestamp": "2026-08-28T00:02:44.914635+01:00",
+            "timestamp": "2026-08-29T13:48:58.515603+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
             "success": true,
             "confirmation": false,
@@ -395,16 +347,64 @@
         },
         {
             "action": "OPEN_BROWSER",
-            "timestamp": "2026-08-28T00:02:45.330927+01:00",
+            "timestamp": "2026-08-29T13:48:58.944033+01:00",
             "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
             "error": null
         },
         {
-            "action": "OPEN_SPOTIFY",
-            "timestamp": "2026-08-28T00:05:00.359745+01:00",
-            "result": "J'ouvre Spotify.",
+            "action": "CLOSE_APPLICATION",
+            "timestamp": "2026-08-29T13:51:25.341949+01:00",
+            "result": "Cette action nécessite une confirmation explicite.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "DELETE_FILE",
+            "timestamp": "2026-08-29T13:51:25.351122+01:00",
+            "result": "Cette action est bloquée par la politique de sécurité.",
+            "success": false,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-08-29T13:51:25.821243+01:00",
+            "result": "Je lance Damso.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-29T13:51:26.779181+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-29T13:51:26.925765+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GREETINGS",
+            "timestamp": "2026-08-29T13:51:26.969647+01:00",
+            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "OPEN_BROWSER",
+            "timestamp": "2026-08-29T13:51:27.389246+01:00",
+            "result": "Navigateur ouvert",
             "success": true,
             "confirmation": false,
             "error": null
