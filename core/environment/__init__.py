@@ -18,6 +18,8 @@ from .intent import EnvironmentPreparationIntent, detect_environment_intent
 from .workflow import EnvironmentWorkflow, EnvironmentWorkflowReport
 from .preparation_service import EnvironmentPreparationService
 from .web_research import WebSearchClient, WebSearchResult, WebLLMResearchProvider, GroqResearchInterpreter
+from .downloader import ArtifactDownloader, DownloadResult
+from .extractor import SecureArchiveExtractor
 from .research import (OfficialSource, OfficialSourceRegistry, DEFAULT_SOURCES, EnvironmentMetadata,
                        EnvironmentResearchRequest, EnvironmentResearchResult, EnvironmentResearcher,
                        MetadataCache, validate_metadata, ResearchCandidate, ResearchProvider)
@@ -38,4 +40,5 @@ __all__ += ["EnvironmentPreparationIntent", "detect_environment_intent"]
 __all__ += ["EnvironmentWorkflow", "EnvironmentWorkflowReport"]
 __all__ += ["EnvironmentPreparationService"]
 __all__ += ["WebSearchClient", "WebSearchResult", "WebLLMResearchProvider", "GroqResearchInterpreter"]
+__all__ += ["ArtifactDownloader", "DownloadResult", "SecureArchiveExtractor"]
 __all__ += ["OfficialSource", "OfficialSourceRegistry", "DEFAULT_SOURCES", "EnvironmentMetadata", "EnvironmentResearchRequest", "EnvironmentResearchResult", "EnvironmentResearcher", "MetadataCache", "validate_metadata", "ResearchCandidate", "ResearchProvider"]
