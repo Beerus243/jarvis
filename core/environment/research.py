@@ -22,6 +22,13 @@ class EnvironmentResearchRequest:
 class EnvironmentResearchResult:
     official_sources:list[OfficialSource]=field(default_factory=list); version:str|None=None; artifacts:list[EnvironmentMetadata]=field(default_factory=list); dependencies:list[str]=field(default_factory=list); verification:dict=field(default_factory=dict); confidence:float=0.0; warnings:list[str]=field(default_factory=list); status:str='NEEDS_RESEARCH'
 
+@dataclass(frozen=True)
+class ResearchCandidate:
+    source: str; claim: str; value: str; evidence: str; confidence: float=0.0
+
+class ResearchProvider:
+    def research(self, query: str): raise NotImplementedError
+
 class OfficialSourceRegistry:
     def __init__(self): self._sources={}
     def register(self,source):
