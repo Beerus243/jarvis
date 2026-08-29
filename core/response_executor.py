@@ -48,6 +48,10 @@ def execute(response_plan, message, context=None, handlers=None):
         if source == "USER_STATE":
             return success(handlers.get("user_state", lambda msg, state: None)(message, response_plan.get("intent")))
 
+        if source == "ENVIRONMENT":
+            handler = handlers.get("environment")
+            return success(handler(response_plan.get("intent")) if handler else "Je peux préparer cet environnement. Souhaites-tu que je génère le plan ?")
+
         if source == "CLARIFICATION":
             intent = response_plan.get("intent") or {}
             if intent.get("action") == "PLAY_MUSIC":

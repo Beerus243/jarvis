@@ -12,6 +12,7 @@ from core.pc_context import answer_pc_question
 from core.task_engine import get_active_task
 from core.action_parser import parse_actions
 from core.user_state import detect_user_state
+from core.environment.intent import detect_environment_intent
 
 CONFIDENCE_HIGH = 0.90
 CONFIDENCE_CONTEXT = 0.70
@@ -92,6 +93,10 @@ def analyze(message, context=None):
     )
 
     intent = detect_intent(message)
+
+    environment_intent = detect_environment_intent(message)
+    if environment_intent:
+        return _decision("ENVIRONMENT", environment_intent, 0.99)
 
     subjective_state = detect_user_state(message)
     simple_state = (
