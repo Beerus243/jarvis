@@ -7,6 +7,7 @@ from core.environment.installers.contracts import TrustedSource
 from core.environment.installers.flutter_installer import FlutterInstaller
 from core.environment.path_config import ConfigureUserPath
 from core.environment.verifier import verify
+from core.environment.local_artifacts import LocalArtifactDiscovery
 
 def artifact(url='https://nodejs.org/dist/a.tar.xz', checksum=None):
     return InstallationArtifact('a.tar.xz','1','linux','x86_64',TrustedSource('Node.js','1','archive',url,checksum,'x86_64'),'tar',Path.home()/'x')

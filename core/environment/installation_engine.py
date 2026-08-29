@@ -31,10 +31,13 @@ class InstallationEngine:
             try:
                 if artifact is None and step.action_type in {'DOWNLOAD','VERIFY','EXTRACT','INSTALL','CONFIGURE_PATH'}: raise ValueError('InstallationArtifact requis.')
                 if step.action_type == 'DOWNLOAD':
-                    value=None
-                    for _ in range(2):
-                        value=self.downloader.download(artifact)
-                        if value.success: break
+                    if artifact.source.provider == 'local' and artifact.source.local_path:
+                        value=type('LocalDownload',(),{'success':True,'path':Path(artifact.source.local_path)})()
+                    else:
+                        value=None
+                        for _ in range(2):
+                            value=self.downloader.download(artifact)
+                            if value.success: break
                     state['download']=value
                     if not value.success: raise RuntimeError(value.error or 'Téléchargement échoué.')
                 elif step.action_type == 'VERIFY':

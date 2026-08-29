@@ -5,8 +5,8 @@ from ..execution import ExecutionResult, ExecutionStatus
 
 @dataclass(frozen=True)
 class TrustedSource:
-    provider: str; version: str; artifact_type: str; url: str|None = None; checksum: str|None = None; architecture: str|None = None
-    def approved(self) -> bool: return bool(self.provider and self.version and self.url and self.url.startswith('https://'))
+    provider: str; version: str; artifact_type: str; url: str|None = None; checksum: str|None = None; architecture: str|None = None; local_path: str|None = None
+    def approved(self) -> bool: return bool(self.provider and self.version and ((self.url and self.url.startswith('https://')) or (self.provider=='local' and self.local_path)))
 
 class EnvironmentInstaller:
     requirement=''
