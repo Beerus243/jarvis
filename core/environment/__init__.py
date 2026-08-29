@@ -12,6 +12,7 @@ from .repair_executor import execute_repair
 from .profiles import EnvironmentProfile, EnvironmentProfileRegistry, DEFAULT_PROFILES
 from .gap_analysis import GapAnalysis, analyze_gaps
 from .preparation import EnvironmentPreparationEngine, EnvironmentPreparationPlan
+from .installation_engine import InstallationState, InstallationReport, execute_installation_plan
 from .requirement_resolver import format_requirement_plan, resolve_requirements
 from .requirements import Requirement, RequirementPlan, RequirementSet, RequirementStatus
 
@@ -23,3 +24,4 @@ __all__ += ["ExecutionResult", "ExecutionStatus", "execute_action", "execute_pla
 __all__ += ["execute_plan_with_replan", "JavaEnvironmentResolver", "AndroidEnvironmentResolver", "FlutterEnvironmentResolver", "EnvironmentExecutionReport"]
 __all__ += ["execute_repair"]
 __all__ += ["EnvironmentProfile", "EnvironmentProfileRegistry", "DEFAULT_PROFILES", "GapAnalysis", "analyze_gaps", "EnvironmentPreparationEngine", "EnvironmentPreparationPlan"]
+__all__ += ["InstallationState", "InstallationReport", "execute_installation_plan"]
