@@ -17,9 +17,10 @@ from .repair_engine import RepairDecision, diagnose_failure, run_with_replan
 from .intent import EnvironmentPreparationIntent, detect_environment_intent
 from .workflow import EnvironmentWorkflow, EnvironmentWorkflowReport
 from .preparation_service import EnvironmentPreparationService
+from .web_research import WebSearchClient, WebSearchResult, WebLLMResearchProvider, GroqResearchInterpreter
 from .research import (OfficialSource, OfficialSourceRegistry, DEFAULT_SOURCES, EnvironmentMetadata,
                        EnvironmentResearchRequest, EnvironmentResearchResult, EnvironmentResearcher,
-                       MetadataCache, validate_metadata)
+                       MetadataCache, validate_metadata, ResearchCandidate, ResearchProvider)
 from .requirement_resolver import format_requirement_plan, resolve_requirements
 from .requirements import Requirement, RequirementPlan, RequirementSet, RequirementStatus
 
@@ -36,4 +37,5 @@ __all__ += ["RepairDecision", "diagnose_failure", "run_with_replan"]
 __all__ += ["EnvironmentPreparationIntent", "detect_environment_intent"]
 __all__ += ["EnvironmentWorkflow", "EnvironmentWorkflowReport"]
 __all__ += ["EnvironmentPreparationService"]
-__all__ += ["OfficialSource", "OfficialSourceRegistry", "DEFAULT_SOURCES", "EnvironmentMetadata", "EnvironmentResearchRequest", "EnvironmentResearchResult", "EnvironmentResearcher", "MetadataCache", "validate_metadata"]
+__all__ += ["WebSearchClient", "WebSearchResult", "WebLLMResearchProvider", "GroqResearchInterpreter"]
+__all__ += ["OfficialSource", "OfficialSourceRegistry", "DEFAULT_SOURCES", "EnvironmentMetadata", "EnvironmentResearchRequest", "EnvironmentResearchResult", "EnvironmentResearcher", "MetadataCache", "validate_metadata", "ResearchCandidate", "ResearchProvider"]

@@ -9,6 +9,14 @@ class OfficialSource:
     name:str; domain:str; base_url:str; metadata_url:str; artifact_domains:tuple[str,...]=(); documentation_url:str|None=None
     def accepts(self,url):
         p=urlparse(url); return p.scheme=='https' and p.hostname in ((self.domain,)+self.artifact_domains)
+    def accepts_documentation(self, url):
+        """Return whether *url* is an HTTPS page belonging to this source."""
+        p = urlparse(url)
+        hosts = (self.domain,) + self.artifact_domains
+        if self.documentation_url:
+            doc_host = urlparse(self.documentation_url).hostname
+            hosts += (doc_host,) if doc_host else ()
+        return p.scheme == 'https' and p.hostname in hosts
 
 @dataclass
 class EnvironmentMetadata:
