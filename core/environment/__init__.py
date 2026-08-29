@@ -20,6 +20,7 @@ from .preparation_service import EnvironmentPreparationService
 from .web_research import WebSearchClient, WebSearchResult, WebLLMResearchProvider, GroqResearchInterpreter
 from .downloader import ArtifactDownloader, DownloadResult
 from .extractor import SecureArchiveExtractor
+from .installation_engine import InstallationEngine
 from .path_config import ConfigureUserPath
 from .verifier import verify
 from .research import (OfficialSource, OfficialSourceRegistry, DEFAULT_SOURCES, EnvironmentMetadata,
@@ -43,5 +44,6 @@ __all__ += ["EnvironmentWorkflow", "EnvironmentWorkflowReport"]
 __all__ += ["EnvironmentPreparationService"]
 __all__ += ["WebSearchClient", "WebSearchResult", "WebLLMResearchProvider", "GroqResearchInterpreter"]
 __all__ += ["ArtifactDownloader", "DownloadResult", "SecureArchiveExtractor"]
+__all__ += ["InstallationEngine"]
 __all__ += ["ConfigureUserPath", "verify"]
 __all__ += ["OfficialSource", "OfficialSourceRegistry", "DEFAULT_SOURCES", "EnvironmentMetadata", "EnvironmentResearchRequest", "EnvironmentResearchResult", "EnvironmentResearcher", "MetadataCache", "validate_metadata", "ResearchCandidate", "ResearchProvider"]

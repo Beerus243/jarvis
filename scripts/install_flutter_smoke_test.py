@@ -4,7 +4,8 @@
 This scaffold intentionally stops before side effects until a validated
 research result and an explicit confirmation are available.
 """
-from core.environment import EnvironmentPreparationService
+from core.environment import EnvironmentPreparationService, InstallationEngine
+from core.environment.installers.flutter_installer import FlutterInstaller
 
 def main():
     service = EnvironmentPreparationService()
@@ -17,7 +18,16 @@ def main():
     if answer not in {'oui', 'o', 'yes', 'y'}:
         print('Installation annulée.')
         return
-    print('Aucune opération réelle n’est configurée dans ce smoke test.')
+    research = report['research']
+    installer = FlutterInstaller()
+    artifact = installer.artifact_from_research(research)
+    if artifact is None:
+        print('Artefact Flutter validé indisponible : aucune opération lancée.')
+        return
+    runtime = InstallationEngine()
+    result = runtime.execute(installer.plan(), artifact=artifact, dry_run=False,
+                             confirmation_handler=lambda step: True)
+    print(result.to_dict())
 
 if __name__ == '__main__':
     main()
