@@ -16,6 +16,9 @@ from .installation_engine import InstallationState, InstallationReport, execute_
 from .repair_engine import RepairDecision, diagnose_failure, run_with_replan
 from .intent import EnvironmentPreparationIntent, detect_environment_intent
 from .workflow import EnvironmentWorkflow, EnvironmentWorkflowReport
+from .research import (OfficialSource, OfficialSourceRegistry, DEFAULT_SOURCES, EnvironmentMetadata,
+                       EnvironmentResearchRequest, EnvironmentResearchResult, EnvironmentResearcher,
+                       MetadataCache, validate_metadata)
 from .requirement_resolver import format_requirement_plan, resolve_requirements
 from .requirements import Requirement, RequirementPlan, RequirementSet, RequirementStatus
 
@@ -31,3 +34,4 @@ __all__ += ["InstallationState", "InstallationReport", "execute_installation_pla
 __all__ += ["RepairDecision", "diagnose_failure", "run_with_replan"]
 __all__ += ["EnvironmentPreparationIntent", "detect_environment_intent"]
 __all__ += ["EnvironmentWorkflow", "EnvironmentWorkflowReport"]
+__all__ += ["OfficialSource", "OfficialSourceRegistry", "DEFAULT_SOURCES", "EnvironmentMetadata", "EnvironmentResearchRequest", "EnvironmentResearchResult", "EnvironmentResearcher", "MetadataCache", "validate_metadata"]
