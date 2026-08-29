@@ -4,6 +4,9 @@ from core.environment.downloader import ArtifactDownloader
 from core.environment.extractor import SecureArchiveExtractor
 from core.environment.installers.artifacts import InstallationArtifact
 from core.environment.installers.contracts import TrustedSource
+from core.environment.installers.flutter_installer import FlutterInstaller
+from core.environment.path_config import ConfigureUserPath
+from core.environment.verifier import verify
 
 def artifact(url='https://nodejs.org/dist/a.tar.xz', checksum=None):
     return InstallationArtifact('a.tar.xz','1','linux','x86_64',TrustedSource('Node.js','1','archive',url,checksum,'x86_64'),'tar',Path.home()/'x')
@@ -38,3 +41,14 @@ def test_extractor_rejects_symlink_escape(tmp_path):
     with tarfile.open(archive,'w') as tar:
         info=tarfile.TarInfo('link'); info.type=tarfile.SYMTYPE; info.linkname='/etc'; tar.addfile(info)
     assert not SecureArchiveExtractor().extract(archive,tmp_path/'out')
+
+def test_flutter_plan_contains_typed_steps():
+    assert [step.action_type for step in FlutterInstaller().plan().steps] == ['DOWNLOAD','VERIFY','EXTRACT','INSTALL','CONFIGURE_PATH','VERIFY_FLUTTER','VERIFY_DART']
+def test_flutter_artifact_requires_valid_research():
+    assert FlutterInstaller().artifact_from_research(None) is None
+def test_path_configuration_is_idempotent(tmp_path):
+    path=tmp_path/'.profile'; c=ConfigureUserPath(path, allowed_root=tmp_path); bin_path=tmp_path/'bin'; assert c.apply(bin_path); assert c.apply(bin_path); assert path.read_text().count(str(bin_path))==1
+def test_path_configuration_rejects_system_path(tmp_path):
+    assert not ConfigureUserPath(tmp_path/'.profile').apply('/usr/bin')
+def test_verifier_allowlist_blocks_unknown():
+    assert verify('rm').status.value=='BLOCKED'
