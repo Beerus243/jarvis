@@ -31,7 +31,18 @@ class AdoptiumProvider:
             return EnvironmentResearchResult(official_sources=[self.source], warnings=["Plateforme ou architecture non supportée."])
         if self.fetcher is None:
             return EnvironmentResearchResult(official_sources=[self.source], warnings=["Fetcher officiel indisponible."])
-        feature = str(request.feature_version) if request.feature_version else "latest"
+        feature = str(request.feature_version) if request.feature_version else None
+        if feature is None:
+            try:
+                releases = self.fetcher(self.source.metadata_url)
+                candidates = (releases.get("available_lts_releases") or
+                              releases.get("available_releases") or []) if isinstance(releases, dict) else []
+                candidates = [int(value) for value in candidates if str(value).isdigit()]
+                if not candidates:
+                    return EnvironmentResearchResult(official_sources=[self.source], warnings=["Releases LTS Adoptium indisponibles."])
+                feature = str(max(candidates))
+            except Exception as exc:
+                return EnvironmentResearchResult(official_sources=[self.source], warnings=[str(exc)])
         query = urlencode({"architecture": request.architecture, "image_type": request.image_type,
                            "os": request.platform, "release_type": request.release_type, "vendor": "eclipse"})
         url = f"https://api.adoptium.net/v3/assets/latest/{feature}/hotspot?{query}"

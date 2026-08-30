@@ -61,7 +61,7 @@ def test_adoptium_provider_requires_complete_official_metadata():
 def test_adoptium_provider_resolves_dynamic_metadata():
     from core.environment.adoptium_provider import AdoptiumProvider
     payload=[{'version': {'semver':'21.0.1'}, 'binary': {'package': {'name':'jdk.tar.gz','link':'https://api.adoptium.net/artifacts/jdk.tar.gz','checksum':'a'*64}}}]
-    result=AdoptiumProvider(lambda url: payload).research()
+    result=AdoptiumProvider(lambda url: {'available_lts_releases':[21]} if '/info/' in url else payload).research()
     assert result.status == 'READY' and result.artifacts[0].architecture == 'x86_64'
 
 def test_android_provider_never_trusts_missing_checksum_as_verified():
