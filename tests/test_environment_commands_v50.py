@@ -10,6 +10,7 @@ def test_flutter_android_build_intent():
 
 def test_environment_gaps_intent():
     assert detect_environment_intent("qu'est-ce qui manque ?").intent == "ENVIRONMENT_GAPS"
+    assert detect_environment_intent("résume mon environnement").intent == "ENVIRONMENT_SUMMARY"
 
 def test_natural_environment_variants():
     assert detect_environment_intent("analyse Android").intent == "ANDROID_AUDIT"

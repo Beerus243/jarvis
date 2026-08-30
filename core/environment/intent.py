@@ -25,6 +25,8 @@ def detect_environment_intent(message: str) -> EnvironmentPreparationIntent|None
             return EnvironmentPreparationIntent('Android', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
         if 'ce qu il manque' in normalized:
             return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
+        if 'environnement' in normalized or 'flutter' in normalized:
+            return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
         if 'java' in normalized or 'jdk' in normalized:
             return EnvironmentPreparationIntent('Java', 'java', intent='JDK_INSTALL')
     confirmations = {"oui", "confirme", "je confirme", "vas y", "execute", "lance", "d accord", "ok"}
@@ -34,12 +36,13 @@ def detect_environment_intent(message: str) -> EnvironmentPreparationIntent|None
     if normalized in cancellations:
         return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_CANCEL')
     checks = (
-        ("ENVIRONMENT_GAPS", ("qu est ce qui manque", "qu'est ce qui manque", "qu est ce qui ne va pas", "liste les composants manquants", "pourquoi mon environnement n est pas pret"), None),
+        ("ENVIRONMENT_GAPS", ("qu est ce qui manque", "qu'est ce qui manque", "qu est ce qui ne va pas", "liste les composants manquants", "pourquoi mon environnement n est pas pret", "pourquoi je ne peux pas compiler"), None),
         ("FLUTTER_AUDIT", ("verifie flutter", "etat de flutter", "flutter est il pret", "mon flutter fonctionne"), "flutter"),
         ("ANDROID_AUDIT", ("verifie android", "analyse android", "etat android", "environnement android", "mon android est il pret"), "android"),
         ("JDK_AUDIT", ("verifie java", "verifie mon jdk", "verifie le jdk", "ai je un jdk", "mon jdk est il pret", "javac est il installe"), "jdk"),
         ("FLUTTER_ANDROID_BUILD_CHECK", ("compiler flutter android", "build android", "flutter android est pret"), "flutter_android_build"),
         ("ENVIRONMENT_AUDIT", ("verifie mon environnement", "analyse mon environnement", "fais un audit de mon environnement", "audit de mon environnement", "etat de mon environnement", "mon environnement est il pret", "est ce que mon environnement est pret"), "flutter_android_build"),
+        ("ENVIRONMENT_SUMMARY", ("resume mon environnement", "résume mon environnement"), "flutter_android_build"),
     )
     for intent, phrases, capability in checks:
         if any(phrase in normalized for phrase in phrases):
