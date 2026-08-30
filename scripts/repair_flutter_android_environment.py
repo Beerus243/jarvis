@@ -12,10 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from core.environment import (AndroidSDKDiscovery, LocalJDKDiscovery,
+from core.environment import (AdoptiumProvider, AndroidSDKDiscovery, LocalJDKDiscovery,
                               LocalSDKDiscovery, analyze_flutter_toolchain,
-                              build_android_repair_plan)
-from core.environment.user_space_repair import preflight_user_space
+                              build_android_repair_plan, EnvironmentRepairWorkflow)
+from core.environment.user_space_repair import preflight_user_space, jdk_artifact_from_research
 
 
 def main() -> int:
@@ -32,6 +32,16 @@ def main() -> int:
         return 1
     report = analyze_flutter_toolchain(sdk, java=java, android=android)
     plan = build_android_repair_plan(android)
+    existing_jdk = next((candidate for candidate in jdks if candidate.java and candidate.javac), None)
+    artifact = None
+    if existing_jdk is None and (not java["javac"] or not java["java_home"]):
+        print("Research: recherche officielle Eclipse Adoptium...")
+        try:
+            import requests
+            research = AdoptiumProvider(fetcher=lambda url: requests.get(url, timeout=15).json()).research()
+            artifact = jdk_artifact_from_research(research)
+        except Exception as exc:
+            print(f"Research: indisponible ({exc})")
     print("JARVIS ENVIRONMENT REPAIR")
     print(f"Flutter: {'READY' if sdk.flutter else 'MISSING'}")
     print(f"Dart: {'READY' if sdk.dart else 'MISSING'}")
@@ -44,10 +54,15 @@ def main() -> int:
     print(f"Command-line tools: {android.cmdline_tools}")
     print(f"Licenses: {android.licenses}")
     print(f"Gaps: {', '.join(report.gaps) or 'NONE'}")
+    if artifact:
+        print(f"JDK artifact: {artifact.version} / {artifact.source.url}")
+        print(f"JDK checksum: {artifact.checksum}")
+    elif "MISSING_JAVAC" in report.gaps:
+        print("JDK artifact: aucune métadonnée officielle validée disponible")
     print("Planned Android actions:")
     for index, operation in enumerate(plan.operations, 1):
         print(f"  {index}. {operation.action} — {operation.reason}")
-    if not plan.operations:
+    if not plan.operations and not artifact:
         print("Environment already ready; nothing to repair.")
         return 0
     destination = Path.home() / ".local/share/jarvis/environments/jdk"
@@ -60,8 +75,13 @@ def main() -> int:
     if answer not in {"y", "yes"}:
         print("CANCELLED: aucune modification effectuée.")
         return 0
-    print("BLOCKED: aucune métadonnée officielle (version/URL/checksum) validée n'est disponible.")
-    print("Recherchez et validez un artefact Temurin/Android via le workflow avant exécution.")
+    if artifact:
+        reports = EnvironmentRepairWorkflow().execute(jdk_artifact=artifact,
+            confirmation_handler=lambda _step: True, dry_run=False)
+        success = bool(reports) and all(item.to_dict().get("success") for item in reports)
+        print("REAL EXECUTION:", "SUCCESS" if success else "FAILED")
+        return 0 if success else 4
+    print("BLOCKED: aucune métadonnée officielle Temurin validée n'est disponible.")
     return 3
 
 
