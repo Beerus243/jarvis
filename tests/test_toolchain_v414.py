@@ -53,3 +53,29 @@ def test_android_repair_operations_are_allowlisted():
     from core.environment.repair_engine import RepairEngine
     assert 'INSTALL_ANDROID_CMDLINE_TOOLS' in RepairEngine.ALLOWED
     assert 'VERIFY_FLUTTER_ANDROID_TOOLCHAIN' in RepairEngine.ALLOWED
+
+def test_adoptium_provider_requires_complete_official_metadata():
+    from core.environment.adoptium_provider import AdoptiumProvider
+    assert AdoptiumProvider(lambda url: [{}]).research().status == 'NEEDS_RESEARCH'
+
+def test_adoptium_provider_resolves_dynamic_metadata():
+    from core.environment.adoptium_provider import AdoptiumProvider
+    payload=[{'version': {'semver':'21.0.1'}, 'binary': {'package': {'name':'jdk.tar.gz','link':'https://api.adoptium.net/artifacts/jdk.tar.gz','checksum':'a'*64}}}]
+    result=AdoptiumProvider(lambda url: payload).research()
+    assert result.status == 'READY' and result.artifacts[0].architecture == 'x86_64'
+
+def test_android_provider_never_trusts_missing_checksum_as_verified():
+    from core.environment.android_provider import AndroidOfficialProvider
+    artifact=AndroidOfficialProvider(lambda *args: {'version':'35','download_url':'https://dl.google.com/android.zip'}).research('platforms')
+    assert artifact is not None and not artifact.trusted
+
+def test_artifact_resolution_is_gap_driven():
+    from core.environment.artifact_resolution import ArtifactResolutionEngine
+    engine=ArtifactResolutionEngine()
+    reqs=engine.requirements_for(('MISSING_JAVAC','MISSING_ANDROID_CMDLINE_TOOLS'))
+    assert [r.component for r in reqs] == ['JDK','cmdline-tools']
+
+def test_final_validation_requires_every_component():
+    from core.environment.final_validation import validate_final_toolchain
+    assert validate_final_toolchain(flutter=True, dart=True).state == 'PARTIAL'
+    assert validate_final_toolchain(**{name: True for name in ('flutter','dart','java','javac','java_home','android_sdk','adb','build_tools','platforms','cmdline_tools','licenses','path','flutter_doctor')}).state == 'ENVIRONMENT_READY'
