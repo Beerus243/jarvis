@@ -8,13 +8,14 @@ from .downloader import ArtifactDownloader
 from .extractor import SecureArchiveExtractor
 from .path_config import ConfigureUserPath
 from .verifier import verify
+from .user_space_repair import UserEnvironmentConfigurator
 import os
 from contextlib import contextmanager
 
 class InstallationEngine:
     """Dispatcher for typed installation steps; never accepts shell commands."""
     def __init__(self, downloader=None, extractor=None, path_config=None, verifier=verify, allowed_root=None):
-        self.downloader=downloader or ArtifactDownloader(); self.extractor=extractor or SecureArchiveExtractor(); self.path_config=path_config or ConfigureUserPath(); self.verifier=verifier; self.allowed_root=Path(allowed_root or Path.home()).resolve()
+        self.downloader=downloader or ArtifactDownloader(); self.extractor=extractor or SecureArchiveExtractor(); self.path_config=path_config or ConfigureUserPath(); self.verifier=verifier; self.allowed_root=Path(allowed_root or Path.home()).resolve(); self.environment_config=UserEnvironmentConfigurator()
     def execute(self, plan, *, artifact=None, sdk_root=None, dry_run=True, confirmation_handler=None):
         if not dry_run and artifact is not None:
             destination=Path(artifact.destination).expanduser().resolve()
@@ -45,19 +46,29 @@ class InstallationEngine:
                 elif step.action_type == 'EXTRACT':
                     value=self.extractor.extract(state['download'].path, artifact.destination, artifact.archive_type)
                     if not value: raise RuntimeError('Extraction échouée.')
-                    state['root']=self._flutter_root(artifact.destination)
+                    state['root']=self._installation_root(artifact.destination)
                 elif step.action_type == 'INSTALL':
                     if not state.get('root'): raise RuntimeError('Racine Flutter introuvable.')
                 elif step.action_type == 'CONFIGURE_PATH':
                     root=Path(sdk_root) if sdk_root else Path(state['root'])
                     state['root']=root
                     if not self.path_config.apply(root/'bin'): raise RuntimeError('Configuration PATH refusée.')
+                elif step.action_type == 'CONFIGURE_JAVA_HOME':
+                    root = Path(state.get('root') or artifact.destination).resolve()
+                    lines = self.environment_config.plan(root)
+                    if not self.environment_config.apply(lines, confirmed=True):
+                        raise RuntimeError('Configuration JAVA_HOME refusée.')
                 elif step.action_type == 'VERIFY_FLUTTER':
                     result=self.verifier('verify_flutter', executable=str(Path(state['root'])/'bin/flutter'))
                     if result.status != ExecutionStatus.SUCCESS: raise RuntimeError(result.error or result.stderr or 'Flutter invalide.')
                 elif step.action_type == 'VERIFY_DART':
                     result=self.verifier('verify_dart', executable=str(Path(state['root'])/'bin/dart'))
                     if result.status != ExecutionStatus.SUCCESS: raise RuntimeError(result.error or result.stderr or 'Dart invalide.')
+                elif step.action_type in {'VERIFY_JAVA', 'VERIFY_JAVAC'}:
+                    root = Path(state.get('root') or artifact.destination).resolve()
+                    executable = root / 'bin' / ('java' if step.action_type == 'VERIFY_JAVA' else 'javac')
+                    result = self.verifier('verify_java' if step.action_type == 'VERIFY_JAVA' else 'verify_javac', executable=str(executable))
+                    if result.status != ExecutionStatus.SUCCESS: raise RuntimeError(result.error or result.stderr or f'{step.action_type} invalide.')
                 else: raise ValueError(f'Opération inconnue: {step.action_type}')
                 results.append(ExecutionResult(step.id,ExecutionStatus.SUCCESS,metadata={'operation':step.action_type})); done.add(step.id)
             except Exception as exc:
@@ -74,6 +85,17 @@ class InstallationEngine:
         for candidate in candidates:
             if (candidate/'bin/flutter').exists(): return candidate
         raise FileNotFoundError('Répertoire Flutter extrait introuvable.')
+
+    @staticmethod
+    def _installation_root(destination):
+        destination = Path(destination).resolve()
+        for relative in ('bin/java', 'bin/javac', 'bin/flutter/bin/flutter'):
+            if (destination / relative).exists():
+                return destination
+        for candidate in destination.iterdir() if destination.exists() else ():
+            if (candidate / 'bin/java').exists() or (candidate / 'bin/javac').exists():
+                return candidate
+        return InstallationEngine._flutter_root(destination)
 
 class InstallationState(str, Enum):
     NOT_STARTED='NOT_STARTED'; PLANNED='PLANNED'; WAITING_CONFIRMATION='WAITING_CONFIRMATION'; RUNNING='RUNNING'; VERIFYING='VERIFYING'; SUCCEEDED='SUCCEEDED'; FAILED='FAILED'; BLOCKED='BLOCKED'; SKIPPED='SKIPPED'; CANCELLED='CANCELLED'
