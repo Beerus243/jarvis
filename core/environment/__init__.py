@@ -38,6 +38,8 @@ from .adoptium_provider import AdoptiumProvider, JDKRequest, ADOPTIUM_SOURCE
 from .android_provider import AndroidArtifact, AndroidOfficialProvider
 from .artifact_resolution import ArtifactRequirement, ArtifactResolutionEngine, ArtifactResolutionResult, ResolutionState
 from .final_validation import FinalToolchainReport, validate_final_toolchain
+from .readiness import EnvironmentReadiness, ReadinessState, assess_environment
+from .metadata_cache import CachePolicy, inspect_cached_metadata
 from .installers.android_installer import AndroidInstaller
 from .repair_workflow import EnvironmentRepairWorkflow
 from .research import (OfficialSource, OfficialSourceRegistry, DEFAULT_SOURCES, EnvironmentMetadata,
@@ -76,5 +78,6 @@ __all__ += ["PreflightResult", "UserEnvironmentConfigurator", "jdk_artifact_from
 __all__ += ["AdoptiumProvider", "JDKRequest", "ADOPTIUM_SOURCE", "AndroidArtifact", "AndroidOfficialProvider", "ArtifactRequirement", "ArtifactResolutionEngine", "ArtifactResolutionResult", "ResolutionState", "FinalToolchainReport", "validate_final_toolchain"]
 __all__ += ["AndroidInstaller"]
 __all__ += ["EnvironmentRepairWorkflow"]
+__all__ += ["EnvironmentReadiness", "ReadinessState", "assess_environment", "CachePolicy", "inspect_cached_metadata"]
 __all__ += ["ConfigureUserPath", "verify"]
 __all__ += ["OfficialSource", "OfficialSourceRegistry", "DEFAULT_SOURCES", "EnvironmentMetadata", "EnvironmentResearchRequest", "EnvironmentResearchResult", "EnvironmentResearcher", "MetadataCache", "validate_metadata", "ResearchCandidate", "ResearchProvider"]

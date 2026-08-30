@@ -112,8 +112,9 @@ def test_android_cmdline_requires_sdkmanager(tmp_path):
     from core.environment.android_sdk import AndroidSDKDiscovery
     root=tmp_path/'sdk'/'cmdline-tools'/'latest'; (root/'bin').mkdir(parents=True)
     status=AndroidSDKDiscovery([tmp_path/'sdk']).discover()
-    assert status.cmdline_tools == 'PRESENT'
+    assert status.cmdline_tools == 'MISSING'
     (root/'bin'/'sdkmanager').write_text('', encoding='utf-8')
+    (root/'bin'/'sdkmanager').chmod(0o755)
     assert AndroidSDKDiscovery([tmp_path/'sdk']).discover().cmdline_tools == 'PRESENT'
 
 def test_resolution_state_reports_network_unavailable():
@@ -122,3 +123,15 @@ def test_resolution_state_reports_network_unavailable():
     engine=ArtifactResolutionEngine(jdk_provider=AdoptiumProvider(lambda _url: (_ for _ in ()).throw(OSError('dns'))))
     result=engine.resolve_detailed(('MISSING_JAVAC',))
     assert result.state == ResolutionState.NETWORK_UNAVAILABLE
+
+def test_readiness_distinguishes_partial_and_network_blocked():
+    from core.environment.readiness import assess_environment, ReadinessState
+    a=android(cmdline_tools='MISSING')
+    sdk_obj=sdk()
+    result=assess_environment(sdk=sdk_obj, android=a, java={'java':True,'javac':False,'java_home':False}, provider_state='NETWORK_UNAVAILABLE')
+    assert result.state == ReadinessState.BLOCKED_NETWORK and 'MISSING_JAVAC' in result.gaps
+
+def test_cached_metadata_policy_requires_checksum_for_adoptium():
+    from core.environment.metadata_cache import inspect_cached_metadata, CachePolicy
+    payload={'state':'CACHED_OFFICIAL_METADATA','timestamp':100,'source':'https://adoptium.net','metadata':{'architecture':'x86_64','download_url':'https://api.adoptium.net/jdk.tar.gz'}}
+    assert inspect_cached_metadata(payload, provider='Eclipse Adoptium', allowed_hosts={'api.adoptium.net'}, now=100)[0] == CachePolicy.CORRUPTED_CACHE
