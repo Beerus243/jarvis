@@ -79,3 +79,13 @@ def test_final_validation_requires_every_component():
     from core.environment.final_validation import validate_final_toolchain
     assert validate_final_toolchain(flutter=True, dart=True).state == 'PARTIAL'
     assert validate_final_toolchain(**{name: True for name in ('flutter','dart','java','javac','java_home','android_sdk','adb','build_tools','platforms','cmdline_tools','licenses','path','flutter_doctor')}).state == 'ENVIRONMENT_READY'
+
+def test_android_installer_has_typed_component_plan():
+    from core.environment.installers.android_installer import AndroidInstaller
+    plan = AndroidInstaller().plan_component('cmdline-tools')
+    assert [step.action_type for step in plan.steps] == ['DOWNLOAD','VERIFY','EXTRACT','INSTALL','VERIFY_ANDROID_COMPONENT']
+
+def test_android_installer_rejects_arbitrary_component():
+    from core.environment.installers.android_installer import AndroidInstaller
+    import pytest
+    with pytest.raises(ValueError): AndroidInstaller().plan_component('run-shell')

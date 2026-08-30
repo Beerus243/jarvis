@@ -46,9 +46,18 @@ class InstallationEngine:
                 elif step.action_type == 'EXTRACT':
                     value=self.extractor.extract(state['download'].path, artifact.destination, artifact.archive_type)
                     if not value: raise RuntimeError('Extraction échouée.')
-                    state['root']=self._installation_root(artifact.destination)
+                    state['root'] = (Path(artifact.destination).resolve()
+                                     if step.requirement in {'cmdline-tools', 'platform-tools', 'build-tools', 'platforms'}
+                                     else self._installation_root(artifact.destination))
                 elif step.action_type == 'INSTALL':
                     if not state.get('root'): raise RuntimeError('Racine Flutter introuvable.')
+                elif step.action_type == 'VERIFY_ANDROID_COMPONENT':
+                    root = Path(state.get('root') or artifact.destination).resolve()
+                    component = step.requirement
+                    markers = (root / 'cmdline-tools/latest/bin/sdkmanager',
+                               root / 'cmdline-tools/bin/sdkmanager') if component == 'cmdline-tools' else ()
+                    if component == 'cmdline-tools' and not any(marker.is_file() for marker in markers):
+                        raise RuntimeError('sdkmanager introuvable après extraction.')
                 elif step.action_type == 'CONFIGURE_PATH':
                     root=Path(sdk_root) if sdk_root else Path(state['root'])
                     state['root']=root
