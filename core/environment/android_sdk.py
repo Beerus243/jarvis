@@ -15,7 +15,7 @@ class AndroidSDKDiscovery:
     def discover(self):
         root=next((p.resolve() for p in self.roots if p.is_dir()),None)
         if root is None: return AndroidSDKStatus(None,'SDK_MISSING','MISSING','MISSING','MISSING','MISSING','MISSING','UNKNOWN',False)
-        platform_tools=(root/'platform-tools').is_dir(); adb_file=root/'platform-tools/adb'; adb_path=shutil.which('adb'); adb=adb_path or (str(adb_file) if adb_file.exists() else 'MISSING')
+        platform_tools=(root/'platform-tools').is_dir(); adb_file=root/'platform-tools/adb'; adb_path=shutil.which('adb'); adb=adb_path or (str(adb_file) if adb_file.is_file() and os.access(adb_file,os.X_OK) else 'MISSING')
         build=any(p.is_dir() for p in (root/'build-tools').glob('*')) if (root/'build-tools').is_dir() else False
         platforms=any(p.is_dir() for p in (root/'platforms').glob('*')) if (root/'platforms').is_dir() else False
         cmd=any(p.is_dir() for p in (root/'cmdline-tools').glob('*')) if (root/'cmdline-tools').is_dir() else False
