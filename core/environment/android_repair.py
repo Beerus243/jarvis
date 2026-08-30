@@ -33,6 +33,8 @@ def build_android_repair_plan(status, *, java_home=None):
         gaps.append('MISSING_ANDROID_PLATFORM')
     if status.cmdline_tools == 'MISSING':
         gaps.append('MISSING_ANDROID_CMDLINE_TOOLS')
+    elif not getattr(status, 'sdkmanager_in_path', True):
+        gaps.append('MISSING_ANDROID_CMDLINE_PATH')
     if status.licenses != 'ACCEPTED':
         gaps.append('LICENSE_STATE_UNKNOWN')
 
@@ -43,6 +45,7 @@ def build_android_repair_plan(status, *, java_home=None):
         'MISSING_ANDROID_BUILD_TOOLS': ('INSTALL_ANDROID_BUILD_TOOLS', 'Build-tools absents', 'VERIFY_BUILD_TOOLS'),
         'MISSING_ANDROID_PLATFORM': ('INSTALL_ANDROID_PLATFORM', 'Platform Android absente', 'VERIFY_ANDROID_PLATFORM'),
         'MISSING_ANDROID_CMDLINE_TOOLS': ('INSTALL_ANDROID_CMDLINE_TOOLS', 'Command-line tools absents', 'VERIFY_CMDLINE_TOOLS'),
+        'MISSING_ANDROID_CMDLINE_PATH': ('CONFIGURE_ANDROID_PATH', 'sdkmanager détecté mais absent du PATH', 'VERIFY_CMDLINE_TOOLS'),
         'LICENSE_STATE_UNKNOWN': ('ACCEPT_ANDROID_LICENSES', 'Licences Android non confirmées', 'VERIFY_FLUTTER_ANDROID_TOOLCHAIN'),
     }
     for gap in gaps:

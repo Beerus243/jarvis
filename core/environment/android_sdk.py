@@ -7,6 +7,7 @@ import os, shutil
 class AndroidSDKStatus:
     root: Path|None; sdk: str; platform_tools: str; adb: str; build_tools: str
     platforms: str; cmdline_tools: str; licenses: str; adb_in_path: bool
+    sdkmanager_path: str|None = None; sdkmanager_in_path: bool = False
     def to_dict(self): return self.__dict__.copy()
 
 class AndroidSDKDiscovery:
@@ -24,6 +25,8 @@ class AndroidSDKDiscovery:
             candidates.extend(p/'bin/sdkmanager' for p in cmd_root.glob('*') if p.is_dir())
         # Older Android SDK layouts place sdkmanager directly under tools/bin.
         candidates.append(root/'tools/bin/sdkmanager')
-        cmd=any(p.is_file() and os.access(p, os.X_OK) for p in candidates)
+        executable_candidates=[p for p in candidates if p.is_file() and os.access(p, os.X_OK)]
+        sdkmanager_path=shutil.which('sdkmanager')
+        cmd=bool(executable_candidates or sdkmanager_path)
         licenses=(root/'licenses').is_dir() and any((root/'licenses').iterdir())
-        return AndroidSDKStatus(root,'PRESENT' if platform_tools else 'SDK_PARTIAL','PRESENT' if platform_tools else 'MISSING','PRESENT' if adb!='MISSING' else 'MISSING','PRESENT' if build else 'MISSING','PRESENT' if platforms else 'MISSING','PRESENT' if cmd else 'MISSING','ACCEPTED' if licenses else 'UNKNOWN',bool(adb_path))
+        return AndroidSDKStatus(root,'PRESENT' if platform_tools else 'SDK_PARTIAL','PRESENT' if platform_tools else 'MISSING','PRESENT' if adb!='MISSING' else 'MISSING','PRESENT' if build else 'MISSING','PRESENT' if platforms else 'MISSING','PRESENT' if cmd else 'MISSING','ACCEPTED' if licenses else 'UNKNOWN',bool(adb_path),sdkmanager_path,bool(sdkmanager_path))
