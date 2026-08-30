@@ -117,6 +117,19 @@ def test_android_cmdline_requires_sdkmanager(tmp_path):
     (root/'bin'/'sdkmanager').chmod(0o755)
     assert AndroidSDKDiscovery([tmp_path/'sdk']).discover().cmdline_tools == 'PRESENT'
 
+def test_android_legacy_tools_sdkmanager_is_detected(tmp_path):
+    from core.environment.android_sdk import AndroidSDKDiscovery
+    tool = tmp_path/'sdk'/'tools'/'bin'/'sdkmanager'
+    tool.parent.mkdir(parents=True)
+    tool.write_text('', encoding='utf-8'); tool.chmod(0o755)
+    assert AndroidSDKDiscovery([tmp_path/'sdk']).discover().cmdline_tools == 'PRESENT'
+
+def test_local_jdk_discovery_finds_nested_jdk(tmp_path):
+    from core.environment.local_jdks import LocalJDKDiscovery
+    root = tmp_path/'development'/'jdk-21'/'bin'; root.mkdir(parents=True)
+    (root/'java').write_text('', encoding='utf-8'); (root/'javac').write_text('', encoding='utf-8')
+    assert any(c.javac for c in LocalJDKDiscovery([tmp_path/'development']).discover())
+
 def test_resolution_state_reports_network_unavailable():
     from core.environment.artifact_resolution import ArtifactResolutionEngine, ResolutionState
     from core.environment.adoptium_provider import AdoptiumProvider
