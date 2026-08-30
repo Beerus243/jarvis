@@ -31,6 +31,7 @@ from .android_sdk import AndroidSDKDiscovery, AndroidSDKStatus
 from .local_jdks import LocalJDKCandidate, LocalJDKDiscovery
 from .toolchain import FlutterToolchainReport, analyze_flutter_toolchain
 from .repair_plan import EnvironmentRepairPlan, RepairAction, build_repair_plan
+from .android_repair import AndroidRepairPlan, build_android_repair_plan
 from .repair_engine import RepairEngine, RepairOperation, RepairReport
 from .research import (OfficialSource, OfficialSourceRegistry, DEFAULT_SOURCES, EnvironmentMetadata,
                        EnvironmentResearchRequest, EnvironmentResearchResult, EnvironmentResearcher,
@@ -62,6 +63,7 @@ __all__ += ["AndroidSDKDiscovery", "AndroidSDKStatus"]
 __all__ += ["LocalJDKCandidate", "LocalJDKDiscovery"]
 __all__ += ["FlutterToolchainReport", "analyze_flutter_toolchain"]
 __all__ += ["EnvironmentRepairPlan", "RepairAction", "build_repair_plan"]
+__all__ += ["AndroidRepairPlan", "build_android_repair_plan"]
 __all__ += ["RepairEngine", "RepairOperation", "RepairReport"]
 __all__ += ["ConfigureUserPath", "verify"]
 __all__ += ["OfficialSource", "OfficialSourceRegistry", "DEFAULT_SOURCES", "EnvironmentMetadata", "EnvironmentResearchRequest", "EnvironmentResearchResult", "EnvironmentResearcher", "MetadataCache", "validate_metadata", "ResearchCandidate", "ResearchProvider"]

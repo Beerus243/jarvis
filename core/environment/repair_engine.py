@@ -21,7 +21,16 @@ class RepairReport:
     def to_dict(self): return {'results':[r.to_dict() for r in self.results], 'success':bool(self.results) and all(r.status==ExecutionStatus.SUCCESS for r in self.results)}
 
 class RepairEngine:
-    ALLOWED={'CONFIGURE_PATH','CONFIGURE_ENVIRONMENT','INSTALL_JDK','INSTALL_ANDROID_COMPONENT','ACCEPT_ANDROID_LICENSES','VERIFY','VERIFY_TOOLCHAIN','REPAIR'}
+    ALLOWED={
+        'CONFIGURE_PATH', 'CONFIGURE_ENVIRONMENT', 'INSTALL_JDK',
+        'INSTALL_ANDROID_COMPONENT', 'ACCEPT_ANDROID_LICENSES', 'VERIFY',
+        'VERIFY_TOOLCHAIN', 'REPAIR', 'CONFIGURE_ANDROID_SDK',
+        'CONFIGURE_ANDROID_PATH', 'INSTALL_ANDROID_PLATFORM_TOOLS',
+        'INSTALL_ANDROID_BUILD_TOOLS', 'INSTALL_ANDROID_PLATFORM',
+        'INSTALL_ANDROID_CMDLINE_TOOLS', 'VERIFY_ANDROID_SDK', 'VERIFY_ADB',
+        'VERIFY_BUILD_TOOLS', 'VERIFY_ANDROID_PLATFORM',
+        'VERIFY_CMDLINE_TOOLS', 'VERIFY_FLUTTER_ANDROID_TOOLCHAIN',
+    }
     def __init__(self, handlers=None): self.handlers=handlers or {}
     def execute(self, plan, *, dry_run=True, confirmation_handler=None):
         results=[]
