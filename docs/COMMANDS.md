@@ -66,6 +66,24 @@ Ces capacités sont traitées par le brain/orchestrateur et ne sont pas toutes d
 | `montre-moi ce que tu ferais` | Dry-run | Affiche le plan sans effet | Lecture seule | Non |
 | `confirme` / `annule` | Confirmation/annulation | Exécute ou annule un plan en attente | Sensible | Contexte requis |
 
+## Environment Confirmation
+
+Un plan de réparation sensible est conservé temporairement (10 minutes) avec un identifiant unique. Il n'est jamais exécuté immédiatement.
+
+Confirmations reconnues : `oui`, `confirme`, `je confirme`, `vas-y`, `exécute`, `lance`, `d'accord`, `ok`.
+
+Annulations reconnues : `non`, `annule`, `annuler`, `pas maintenant`, `laisse tomber`, `stop`.
+
+Sans plan valide en attente, ces réponses n'exécutent aucune installation.
+
+## Environment Readiness States
+
+- `READY` : tous les prérequis sont présents.
+- `PARTIAL` : certains composants manquent mais une action est possible.
+- `REPAIRABLE_OFFLINE` : une réparation locale/cache est disponible.
+- `REPAIRABLE_ONLINE` : une source réseau officielle est nécessaire.
+- `BLOCKED_NETWORK` : aucune source validée n'est disponible hors ligne et le réseau est inaccessible.
+
 ## Non exposé ou non garanti
 
 - fermeture réelle d’une fenêtre/application ;

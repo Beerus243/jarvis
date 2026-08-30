@@ -23,6 +23,12 @@ def detect_environment_intent(message: str) -> EnvironmentPreparationIntent|None
             return EnvironmentPreparationIntent('Android', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
         if 'java' in normalized or 'jdk' in normalized:
             return EnvironmentPreparationIntent('Java', 'java', intent='JDK_INSTALL')
+    confirmations = {"oui", "confirme", "je confirme", "vas y", "execute", "lance", "d accord", "ok"}
+    cancellations = {"non", "annule", "annuler", "pas maintenant", "laisse tomber", "stop"}
+    if normalized in confirmations:
+        return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_CONFIRM')
+    if normalized in cancellations:
+        return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_CANCEL')
     checks = (
         ("ENVIRONMENT_GAPS", ("qu est ce qui manque", "qu'est ce qui manque", "qu est ce qui ne va pas"), None),
         ("FLUTTER_AUDIT", ("verifie flutter", "etat de flutter", "flutter est il pret", "mon flutter fonctionne"), "flutter"),

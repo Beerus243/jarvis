@@ -43,6 +43,7 @@ from .metadata_cache import CachePolicy, inspect_cached_metadata
 from .installers.android_installer import AndroidInstaller
 from .capabilities import EnvironmentCapabilities, discover_capabilities, check_environment, format_capability_report
 from .command_handler import handle_environment_intent
+from .pending_plan import PendingEnvironmentPlan, get_pending, set_pending, clear_pending
 from .repair_workflow import EnvironmentRepairWorkflow
 from .research import (OfficialSource, OfficialSourceRegistry, DEFAULT_SOURCES, EnvironmentMetadata,
                        EnvironmentResearchRequest, EnvironmentResearchResult, EnvironmentResearcher,
@@ -81,6 +82,7 @@ __all__ += ["AdoptiumProvider", "JDKRequest", "ADOPTIUM_SOURCE", "AndroidArtifac
 __all__ += ["AndroidInstaller"]
 __all__ += ["EnvironmentCapabilities", "discover_capabilities", "check_environment", "format_capability_report"]
 __all__ += ["handle_environment_intent"]
+__all__ += ["PendingEnvironmentPlan", "get_pending", "set_pending", "clear_pending"]
 __all__ += ["EnvironmentRepairWorkflow"]
 __all__ += ["EnvironmentReadiness", "ReadinessState", "assess_environment", "CachePolicy", "inspect_cached_metadata"]
 __all__ += ["ConfigureUserPath", "verify"]
