@@ -76,6 +76,10 @@ Annulations reconnues : `non`, `annule`, `annuler`, `pas maintenant`, `laisse to
 
 Sans plan valide en attente, ces réponses n'exécutent aucune installation.
 
+## Environment Intelligence
+
+Les demandes de diagnostic (`pourquoi je ne peux pas compiler ?`, `est-ce que je peux compiler ?`, `résume mon environnement`) restent en lecture seule. Elles expliquent les composants prêts, manquants et bloqués, sans créer de plan ni installer automatiquement.
+
 ## Environment Repair Flow
 
 `Audit → Plan → Confirmation → Revalidation → InstallationEngine → Verification → Final audit`.

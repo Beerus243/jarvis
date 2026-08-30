@@ -95,6 +95,12 @@ def analyze(message, context=None):
     intent = detect_intent(message)
 
     environment_intent = detect_environment_intent(message)
+    if environment_intent is None and normalized in {"et java", "et jdk", "et android"}:
+        previous = str(context.get("previous_user_message") or "").lower()
+        if "environnement" in previous or "android" in previous:
+            from core.environment.intent import EnvironmentPreparationIntent
+            target = "jdk" if ("java" in normalized or "jdk" in normalized) else "android"
+            environment_intent = EnvironmentPreparationIntent("Environment", "flutter_development", intent="JDK_AUDIT" if target == "jdk" else "ANDROID_AUDIT", capability=target)
     if environment_intent:
         if environment_intent.intent in {"ENVIRONMENT_CONFIRM", "ENVIRONMENT_CANCEL"}:
             from core.environment.pending_plan import get_pending
