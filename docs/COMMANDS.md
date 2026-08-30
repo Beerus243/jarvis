@@ -50,6 +50,22 @@ Catalogue basé sur `core/intent.py`, `core/dispatcher.py`, `tools/` et le brain
 
 Ces capacités sont traitées par le brain/orchestrateur et ne sont pas toutes des commandes vocales directes.
 
+## Environment Commands
+
+| Commande | Intention | Effet | Risque | Confirmation |
+|---|---|---|---|---|
+| `vérifie mon environnement` | `ENVIRONMENT_AUDIT` | Audit local des capacités | Lecture seule | Non |
+| `vérifie Flutter` | `FLUTTER_AUDIT` | État Flutter/Dart | Lecture seule | Non |
+| `vérifie Android` | `ANDROID_AUDIT` | État SDK, ADB et outils | Lecture seule | Non |
+| `vérifie Java` | `JDK_AUDIT` | État Java/JDK/javac | Lecture seule | Non |
+| `qu'est-ce qui manque ?` | `ENVIRONMENT_GAPS` | Liste des composants manquants | Lecture seule | Non |
+| `suis-je prêt pour compiler Flutter Android ?` | `FLUTTER_ANDROID_BUILD_CHECK` | Vérification de compilation | Lecture seule | Non |
+| `prépare mon environnement Android` | `ENVIRONMENT_REPAIR_PLAN` | Prépare un plan contrôlé | Planification | Non |
+| `installe le JDK` | `JDK_INSTALL` | Installation user-space validée | Modification | Oui |
+| `installe les outils Android` | `ANDROID_TOOLS_INSTALL` | Installation user-space validée | Modification | Oui |
+| `montre-moi ce que tu ferais` | Dry-run | Affiche le plan sans effet | Lecture seule | Non |
+| `confirme` / `annule` | Confirmation/annulation | Exécute ou annule un plan en attente | Sensible | Contexte requis |
+
 ## Non exposé ou non garanti
 
 - fermeture réelle d’une fenêtre/application ;

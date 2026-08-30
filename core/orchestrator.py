@@ -18,6 +18,7 @@ from personality.personality import personalize, clear_pending, remember_music_a
 from core.user_state import detect_user_state
 from core.environment.preparation import EnvironmentPreparationEngine
 from core.environment.action_planner import format_execution_plan
+from core.environment.command_handler import handle_environment_intent
 
 
 def _semantic_fallback(message, resolved_reference):
@@ -85,7 +86,7 @@ def process(message):
             "project": answer_project_question,
             "pc": answer_pc_question,
             "task": lambda msg, intent: _handle_task(msg, intent),
-            "environment": lambda intent: format_execution_plan(EnvironmentPreparationEngine().prepare(intent.profile)),
+            "environment": lambda intent: handle_environment_intent(intent),
             "semantic": lambda query: _semantic_fallback(message, query),
             "ai": lambda query: _ai_fallback(message, query),
         },
