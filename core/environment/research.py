@@ -28,7 +28,7 @@ class EnvironmentResearchRequest:
 
 @dataclass
 class EnvironmentResearchResult:
-    official_sources:list[OfficialSource]=field(default_factory=list); version:str|None=None; artifacts:list[EnvironmentMetadata]=field(default_factory=list); dependencies:list[str]=field(default_factory=list); verification:dict=field(default_factory=dict); confidence:float=0.0; warnings:list[str]=field(default_factory=list); status:str='NEEDS_RESEARCH'
+    official_sources:list[OfficialSource]=field(default_factory=list); version:str|None=None; artifacts:list[EnvironmentMetadata]=field(default_factory=list); dependencies:list[str]=field(default_factory=list); verification:dict=field(default_factory=dict); confidence:float=0.0; warnings:list[str]=field(default_factory=list); status:str='NEEDS_RESEARCH'; provider_state:str='NEEDS_RESEARCH'
 
 @dataclass(frozen=True)
 class ResearchCandidate:
@@ -79,3 +79,21 @@ class MetadataCache:
         path=self.directory/f'{key}.json'
         if not path.exists() or time.time()-path.stat().st_mtime>self.ttl: return None
         return json.loads(path.read_text(encoding='utf-8')).get('metadata')
+
+    def save_official(self, key, metadata, *, source, evidence=()):
+        """Persist metadata tagged as cached official evidence."""
+        self.directory.mkdir(parents=True, exist_ok=True)
+        payload = {'state': 'CACHED_OFFICIAL_METADATA', 'timestamp': time.time(),
+                   'source': source, 'evidence': list(evidence), 'metadata': metadata}
+        (self.directory / f'{key}.json').write_text(json.dumps(payload), encoding='utf-8')
+
+    def load_official(self, key):
+        path = self.directory / f'{key}.json'
+        try:
+            payload = json.loads(path.read_text(encoding='utf-8'))
+            if payload.get('state') != 'CACHED_OFFICIAL_METADATA': return None
+            if time.time() - float(payload.get('timestamp', 0)) > self.ttl: return None
+            if not payload.get('metadata') or not payload.get('source'): return None
+            return payload
+        except (OSError, ValueError, TypeError, json.JSONDecodeError):
+            return None

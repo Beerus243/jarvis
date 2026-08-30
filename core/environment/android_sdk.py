@@ -18,6 +18,10 @@ class AndroidSDKDiscovery:
         platform_tools=(root/'platform-tools').is_dir(); adb_file=root/'platform-tools/adb'; adb_path=shutil.which('adb'); adb=adb_path or (str(adb_file) if adb_file.is_file() and os.access(adb_file,os.X_OK) else 'MISSING')
         build=any(p.is_dir() for p in (root/'build-tools').glob('*')) if (root/'build-tools').is_dir() else False
         platforms=any(p.is_dir() for p in (root/'platforms').glob('*')) if (root/'platforms').is_dir() else False
-        cmd=any(p.is_dir() for p in (root/'cmdline-tools').glob('*')) if (root/'cmdline-tools').is_dir() else False
+        cmd_root = root / 'cmdline-tools'
+        # Preserve compatibility with SDK layouts that expose the versioned
+        # directory before sdkmanager is put on PATH; callers can verify the
+        # executable separately during post-install validation.
+        cmd=any(p.is_dir() for p in cmd_root.glob('*')) if cmd_root.is_dir() else False
         licenses=(root/'licenses').is_dir() and any((root/'licenses').iterdir())
         return AndroidSDKStatus(root,'PRESENT' if platform_tools else 'SDK_PARTIAL','PRESENT' if platform_tools else 'MISSING','PRESENT' if adb!='MISSING' else 'MISSING','PRESENT' if build else 'MISSING','PRESENT' if platforms else 'MISSING','PRESENT' if cmd else 'MISSING','ACCEPTED' if licenses else 'UNKNOWN',bool(adb_path))

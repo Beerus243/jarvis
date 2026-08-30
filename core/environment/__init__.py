@@ -36,7 +36,7 @@ from .repair_engine import RepairEngine, RepairOperation, RepairReport
 from .user_space_repair import PreflightResult, UserEnvironmentConfigurator, jdk_artifact_from_research, preflight_user_space
 from .adoptium_provider import AdoptiumProvider, JDKRequest, ADOPTIUM_SOURCE
 from .android_provider import AndroidArtifact, AndroidOfficialProvider
-from .artifact_resolution import ArtifactRequirement, ArtifactResolutionEngine
+from .artifact_resolution import ArtifactRequirement, ArtifactResolutionEngine, ArtifactResolutionResult, ResolutionState
 from .final_validation import FinalToolchainReport, validate_final_toolchain
 from .installers.android_installer import AndroidInstaller
 from .repair_workflow import EnvironmentRepairWorkflow
@@ -73,7 +73,7 @@ __all__ += ["EnvironmentRepairPlan", "RepairAction", "build_repair_plan"]
 __all__ += ["AndroidRepairPlan", "build_android_repair_plan"]
 __all__ += ["RepairEngine", "RepairOperation", "RepairReport"]
 __all__ += ["PreflightResult", "UserEnvironmentConfigurator", "jdk_artifact_from_research", "preflight_user_space"]
-__all__ += ["AdoptiumProvider", "JDKRequest", "ADOPTIUM_SOURCE", "AndroidArtifact", "AndroidOfficialProvider", "ArtifactRequirement", "ArtifactResolutionEngine", "FinalToolchainReport", "validate_final_toolchain"]
+__all__ += ["AdoptiumProvider", "JDKRequest", "ADOPTIUM_SOURCE", "AndroidArtifact", "AndroidOfficialProvider", "ArtifactRequirement", "ArtifactResolutionEngine", "ArtifactResolutionResult", "ResolutionState", "FinalToolchainReport", "validate_final_toolchain"]
 __all__ += ["AndroidInstaller"]
 __all__ += ["EnvironmentRepairWorkflow"]
 __all__ += ["ConfigureUserPath", "verify"]

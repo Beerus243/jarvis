@@ -30,28 +30,30 @@ class AdoptiumProvider:
         if request.platform != "linux" or request.architecture not in {"x64", "aarch64"}:
             return EnvironmentResearchResult(official_sources=[self.source], warnings=["Plateforme ou architecture non supportée."])
         if self.fetcher is None:
-            return EnvironmentResearchResult(official_sources=[self.source], warnings=["Fetcher officiel indisponible."])
+            return EnvironmentResearchResult(official_sources=[self.source], warnings=["Fetcher officiel indisponible."], provider_state="NETWORK_UNAVAILABLE")
         feature = str(request.feature_version) if request.feature_version else None
         if feature is None:
             try:
-                releases = self.fetcher(self.source.metadata_url)
+                releases = self._fetch(self.source.metadata_url)
                 candidates = (releases.get("available_lts_releases") or
                               releases.get("available_releases") or []) if isinstance(releases, dict) else []
                 candidates = [int(value) for value in candidates if str(value).isdigit()]
                 if not candidates:
-                    return EnvironmentResearchResult(official_sources=[self.source], warnings=["Releases LTS Adoptium indisponibles."])
+                    return EnvironmentResearchResult(official_sources=[self.source], warnings=["Releases LTS Adoptium indisponibles."], provider_state="INVALID_RESPONSE")
                 feature = str(max(candidates))
             except Exception as exc:
-                return EnvironmentResearchResult(official_sources=[self.source], warnings=[str(exc)])
+                state = "INVALID_RESPONSE" if isinstance(exc, (ValueError, KeyError, TypeError)) else "NETWORK_UNAVAILABLE"
+                return EnvironmentResearchResult(official_sources=[self.source], warnings=[str(exc)], provider_state=state)
         query = urlencode({"architecture": request.architecture, "image_type": request.image_type,
                            "os": request.platform, "release_type": request.release_type, "vendor": "eclipse"})
         url = f"https://api.adoptium.net/v3/assets/latest/{feature}/hotspot?{query}"
         try:
-            payload = self.fetcher(url)
+            payload = self._fetch(url)
         except Exception as exc:
-            return EnvironmentResearchResult(official_sources=[self.source], warnings=[str(exc)])
+            state = "INVALID_RESPONSE" if isinstance(exc, (ValueError, KeyError, TypeError)) else "NETWORK_UNAVAILABLE"
+            return EnvironmentResearchResult(official_sources=[self.source], warnings=[str(exc)], provider_state=state)
         if not isinstance(payload, list) or not payload:
-            return EnvironmentResearchResult(official_sources=[self.source], warnings=["Aucun artefact officiel."])
+            return EnvironmentResearchResult(official_sources=[self.source], warnings=["Aucun artefact officiel."], provider_state="NOT_AVAILABLE")
         item = payload[0] if isinstance(payload[0], dict) else {}
         binary = item.get("binary") or {}
         package = binary.get("package") or {}
@@ -59,15 +61,27 @@ class AdoptiumProvider:
         download = package.get("link")
         checksum = package.get("checksum")
         if not all((version, download, checksum)):
-            return EnvironmentResearchResult(official_sources=[self.source], warnings=["Métadonnées JDK incomplètes."])
+            return EnvironmentResearchResult(official_sources=[self.source], warnings=["Métadonnées JDK incomplètes."], provider_state="INVALID_ARTIFACT")
         parsed = urlparse(download)
         if parsed.scheme != "https" or parsed.hostname not in {"api.adoptium.net", "github.com", "githubusercontent.com"}:
-            return EnvironmentResearchResult(official_sources=[self.source], warnings=["URL JDK hors domaines officiels."])
+            return EnvironmentResearchResult(official_sources=[self.source], warnings=["URL JDK hors domaines officiels."], provider_state="INVALID_ARTIFACT")
         metadata = EnvironmentMetadata(str(version), "lts", "linux", "x86_64" if request.architecture == "x64" else request.architecture,
                                        package.get("name") or "temurin-jdk", download, str(checksum),
                                        source="https://adoptium.net/", verification_method="sha256")
         return EnvironmentResearchResult(official_sources=[self.source], version=str(version),
-                                         artifacts=[metadata], confidence=1.0, status="READY")
+                                         artifacts=[metadata], confidence=1.0, status="READY", provider_state="AVAILABLE")
+
+    def _fetch(self, url):
+        last = None
+        for _ in range(2):
+            try:
+                value = self.fetcher(url)
+                if not isinstance(value, (dict, list)):
+                    raise ValueError("Réponse JSON invalide.")
+                return value
+            except Exception as exc:
+                last = exc
+        raise last
 
     @staticmethod
     def _architecture():

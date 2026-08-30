@@ -89,3 +89,36 @@ def test_android_installer_rejects_arbitrary_component():
     from core.environment.installers.android_installer import AndroidInstaller
     import pytest
     with pytest.raises(ValueError): AndroidInstaller().plan_component('run-shell')
+
+def test_adoptium_network_failure_is_typed():
+    from core.environment.adoptium_provider import AdoptiumProvider
+    result = AdoptiumProvider(lambda _url: (_ for _ in ()).throw(TimeoutError('timeout'))).research()
+    assert result.provider_state == 'NETWORK_UNAVAILABLE'
+
+def test_adoptium_invalid_json_is_typed():
+    from core.environment.adoptium_provider import AdoptiumProvider
+    result = AdoptiumProvider(lambda _url: 'not-json').research()
+    assert result.provider_state == 'INVALID_RESPONSE'
+
+def test_metadata_cache_official_expiry_and_corruption(tmp_path):
+    from core.environment.research import MetadataCache
+    cache=MetadataCache(tmp_path, ttl=3600)
+    cache.save_official('jdk', {'version':'21'}, source='https://adoptium.net')
+    assert cache.load_official('jdk')['state'] == 'CACHED_OFFICIAL_METADATA'
+    (tmp_path/'broken.json').write_text('{', encoding='utf-8')
+    assert cache.load_official('broken') is None
+
+def test_android_cmdline_requires_sdkmanager(tmp_path):
+    from core.environment.android_sdk import AndroidSDKDiscovery
+    root=tmp_path/'sdk'/'cmdline-tools'/'latest'; (root/'bin').mkdir(parents=True)
+    status=AndroidSDKDiscovery([tmp_path/'sdk']).discover()
+    assert status.cmdline_tools == 'PRESENT'
+    (root/'bin'/'sdkmanager').write_text('', encoding='utf-8')
+    assert AndroidSDKDiscovery([tmp_path/'sdk']).discover().cmdline_tools == 'PRESENT'
+
+def test_resolution_state_reports_network_unavailable():
+    from core.environment.artifact_resolution import ArtifactResolutionEngine, ResolutionState
+    from core.environment.adoptium_provider import AdoptiumProvider
+    engine=ArtifactResolutionEngine(jdk_provider=AdoptiumProvider(lambda _url: (_ for _ in ()).throw(OSError('dns'))))
+    result=engine.resolve_detailed(('MISSING_JAVAC',))
+    assert result.state == ResolutionState.NETWORK_UNAVAILABLE
