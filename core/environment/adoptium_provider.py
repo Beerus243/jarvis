@@ -5,6 +5,8 @@ from urllib.parse import urlencode, urlparse
 import platform
 
 from .research import EnvironmentResearchResult, EnvironmentMetadata, OfficialSource
+from .research import MetadataCache
+from .metadata_cache import inspect_cached_metadata, CachePolicy
 
 ADOPTIUM_SOURCE = OfficialSource(
     "Eclipse Adoptium", "adoptium.net", "https://api.adoptium.net/",
@@ -21,16 +23,23 @@ class JDKRequest:
     release_type: str = "ga"
 
 class AdoptiumProvider:
-    def __init__(self, fetcher=None, source=ADOPTIUM_SOURCE):
+    def __init__(self, fetcher=None, source=ADOPTIUM_SOURCE, cache=None):
         self.fetcher = fetcher
         self.source = source
+        self.cache = cache
 
     def research(self, request: JDKRequest | None = None) -> EnvironmentResearchResult:
         request = request or JDKRequest(architecture=self._architecture())
         if request.platform != "linux" or request.architecture not in {"x64", "aarch64"}:
             return EnvironmentResearchResult(official_sources=[self.source], warnings=["Plateforme ou architecture non supportée."])
         if self.fetcher is None:
+            cached = self._cached(request)
+            if cached is not None:
+                return cached
             return EnvironmentResearchResult(official_sources=[self.source], warnings=["Fetcher officiel indisponible."], provider_state="NETWORK_UNAVAILABLE")
+        cached = self._cached(request)
+        if cached is not None:
+            return cached
         feature = str(request.feature_version) if request.feature_version else None
         if feature is None:
             try:
@@ -82,6 +91,25 @@ class AdoptiumProvider:
             except Exception as exc:
                 last = exc
         raise last
+
+    def _cached(self, request):
+        if self.cache is None:
+            return None
+        key = f"adoptium-jdk-{request.platform}-{request.architecture}"
+        payload = self.cache.load_official(key)
+        if payload is None:
+            return None
+        policy, data = inspect_cached_metadata(payload, provider="Eclipse Adoptium",
+            allowed_hosts={"api.adoptium.net", "adoptium.net", "github.com", "githubusercontent.com"},
+            architecture="x86_64" if request.architecture == "x64" else request.architecture)
+        if policy != CachePolicy.FRESH_CACHE:
+            return None
+        try:
+            item = EnvironmentMetadata(**data)
+        except (TypeError, ValueError):
+            return EnvironmentResearchResult(official_sources=[self.source], warnings=["Cache Adoptium incohérent."], provider_state="INVALID_ARTIFACT")
+        return EnvironmentResearchResult(official_sources=[self.source], version=item.version,
+            artifacts=[item], confidence=0.9, status="READY", provider_state="CACHED_OFFICIAL_METADATA")
 
     @staticmethod
     def _architecture():

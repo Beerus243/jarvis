@@ -135,3 +135,12 @@ def test_cached_metadata_policy_requires_checksum_for_adoptium():
     from core.environment.metadata_cache import inspect_cached_metadata, CachePolicy
     payload={'state':'CACHED_OFFICIAL_METADATA','timestamp':100,'source':'https://adoptium.net','metadata':{'architecture':'x86_64','download_url':'https://api.adoptium.net/jdk.tar.gz'}}
     assert inspect_cached_metadata(payload, provider='Eclipse Adoptium', allowed_hosts={'api.adoptium.net'}, now=100)[0] == CachePolicy.CORRUPTED_CACHE
+
+def test_adoptium_uses_fresh_official_cache_offline(tmp_path):
+    from core.environment.research import MetadataCache
+    from core.environment.adoptium_provider import AdoptiumProvider
+    cache=MetadataCache(tmp_path)
+    metadata={'version':'21.0.1','channel':'lts','platform':'linux','architecture':'x86_64','artifact':'jdk.tar.gz','download_url':'https://api.adoptium.net/artifacts/jdk.tar.gz','checksum':'a'*64,'checksum_algorithm':'sha256','source':'https://adoptium.net/','release_date':None,'verification_method':'sha256'}
+    cache.save_official('adoptium-jdk-linux-x64', metadata, source='https://adoptium.net/')
+    result=AdoptiumProvider(fetcher=None, cache=cache).research()
+    assert result.provider_state == 'CACHED_OFFICIAL_METADATA' and result.status == 'READY'

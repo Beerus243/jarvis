@@ -5,7 +5,7 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path: sys.path.insert(0,str(ROOT))
 from core.environment import (LocalSDKDiscovery, AndroidSDKDiscovery, analyze_flutter_toolchain,
-                              assess_environment, AdoptiumProvider)
+                              assess_environment, AdoptiumProvider, MetadataCache)
 import os, shutil
 
 sdk=next(iter(LocalSDKDiscovery().discover()),None); android=AndroidSDKDiscovery().discover()
@@ -21,7 +21,7 @@ if sdk:
     provider_state='AVAILABLE'
     try:
         import requests
-        provider_state=AdoptiumProvider(fetcher=lambda url: requests.get(url,timeout=5).json()).research().provider_state
+        provider_state=AdoptiumProvider(fetcher=lambda url: requests.get(url,timeout=5).json(), cache=MetadataCache()).research().provider_state
     except Exception: provider_state='NETWORK_UNAVAILABLE'
     readiness=assess_environment(sdk=sdk,android=android,java=java,provider_state=provider_state)
     print('READINESS:', readiness.state.value)
