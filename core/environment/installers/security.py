@@ -3,7 +3,7 @@ import hashlib
 from pathlib import Path
 from urllib.parse import urlparse
 from .contracts import TrustedSource
-def validate_source(source:TrustedSource, allowed_hosts=('storage.googleapis.com','nodejs.org','download.oracle.com')):
+def validate_source(source:TrustedSource, allowed_hosts=('storage.googleapis.com','nodejs.org','download.oracle.com','api.adoptium.net','adoptium.net')):
     p=urlparse(source.url or '')
     return source.approved() and p.hostname in allowed_hosts
 def verify_checksum(path, expected, algorithm='sha256'):

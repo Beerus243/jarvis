@@ -30,3 +30,26 @@ def test_repair_engine_requires_confirmation():
     plan=type('P',(),{'actions':[type('A',(),{'action':'CONFIGURE_PATH','requires_confirmation':True})()]})(); report=RepairEngine({'CONFIGURE_PATH':lambda op: None}).execute(plan,dry_run=False,confirmation_handler=lambda op:False); assert report.results[0].status.value=='CANCELLED'
 def test_repair_engine_stops_on_failure():
     plan=type('P',(),{'actions':[type('A',(),{'action':'VERIFY','requires_confirmation':False}),type('A',(),{'action':'CONFIGURE_PATH','requires_confirmation':False})()]})(); report=RepairEngine({'VERIFY':lambda op: (_ for _ in ()).throw(RuntimeError('x')),'CONFIGURE_PATH':lambda op: None}).execute(plan,dry_run=False); assert len(report.results)==1 and report.results[0].status.value=='FAILED'
+
+def test_jdk_research_requires_checksum_and_official_source():
+    from core.environment.user_space_repair import jdk_artifact_from_research
+    from core.environment.research import EnvironmentResearchResult, EnvironmentMetadata, OfficialSource
+    item=EnvironmentMetadata('21.0.1','lts','linux','x86_64','jdk.tar.gz','https://example.invalid/jdk.tar.gz',None)
+    research=EnvironmentResearchResult([OfficialSource('Eclipse Adoptium','adoptium.net','https://api.adoptium.net/','https://api.adoptium.net/')],artifacts=[item],status='READY')
+    assert jdk_artifact_from_research(research) is None
+
+def test_jdk_research_rejects_wrong_architecture():
+    from core.environment.user_space_repair import jdk_artifact_from_research
+    from core.environment.research import EnvironmentResearchResult, EnvironmentMetadata, OfficialSource
+    item=EnvironmentMetadata('21.0.1','lts','linux','aarch64','jdk.tar.gz','https://api.adoptium.net/jdk.tar.gz','a'*64)
+    research=EnvironmentResearchResult([OfficialSource('Eclipse Adoptium','adoptium.net','https://api.adoptium.net/','https://api.adoptium.net/')],artifacts=[item],status='READY')
+    assert jdk_artifact_from_research(research) is None
+
+def test_preflight_rejects_system_destination():
+    from core.environment.user_space_repair import preflight_user_space
+    assert not preflight_user_space('/usr/local/jarvis').ok
+
+def test_android_repair_operations_are_allowlisted():
+    from core.environment.repair_engine import RepairEngine
+    assert 'INSTALL_ANDROID_CMDLINE_TOOLS' in RepairEngine.ALLOWED
+    assert 'VERIFY_FLUTTER_ANDROID_TOOLCHAIN' in RepairEngine.ALLOWED

@@ -33,6 +33,7 @@ from .toolchain import FlutterToolchainReport, analyze_flutter_toolchain
 from .repair_plan import EnvironmentRepairPlan, RepairAction, build_repair_plan
 from .android_repair import AndroidRepairPlan, build_android_repair_plan
 from .repair_engine import RepairEngine, RepairOperation, RepairReport
+from .user_space_repair import PreflightResult, UserEnvironmentConfigurator, jdk_artifact_from_research, preflight_user_space
 from .research import (OfficialSource, OfficialSourceRegistry, DEFAULT_SOURCES, EnvironmentMetadata,
                        EnvironmentResearchRequest, EnvironmentResearchResult, EnvironmentResearcher,
                        MetadataCache, validate_metadata, ResearchCandidate, ResearchProvider)
@@ -65,5 +66,6 @@ __all__ += ["FlutterToolchainReport", "analyze_flutter_toolchain"]
 __all__ += ["EnvironmentRepairPlan", "RepairAction", "build_repair_plan"]
 __all__ += ["AndroidRepairPlan", "build_android_repair_plan"]
 __all__ += ["RepairEngine", "RepairOperation", "RepairReport"]
+__all__ += ["PreflightResult", "UserEnvironmentConfigurator", "jdk_artifact_from_research", "preflight_user_space"]
 __all__ += ["ConfigureUserPath", "verify"]
 __all__ += ["OfficialSource", "OfficialSourceRegistry", "DEFAULT_SOURCES", "EnvironmentMetadata", "EnvironmentResearchRequest", "EnvironmentResearchResult", "EnvironmentResearcher", "MetadataCache", "validate_metadata", "ResearchCandidate", "ResearchProvider"]
