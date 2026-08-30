@@ -3,6 +3,7 @@ from .preparation import EnvironmentPreparationEngine
 from .local_artifacts import LocalArtifactDiscovery
 from .local_sdks import LocalSDKDiscovery
 from .android_sdk import AndroidSDKDiscovery
+from .toolchain import analyze_flutter_toolchain
 from pathlib import Path
 class EnvironmentPreparationService:
     def __init__(self, researcher=None, engine=None, local_discovery=None, sdk_discovery=None): self.researcher=researcher or EnvironmentResearcher(); self.engine=engine or EnvironmentPreparationEngine(); self.local_discovery=local_discovery or LocalArtifactDiscovery(); self.sdk_discovery=sdk_discovery or LocalSDKDiscovery()
@@ -11,10 +12,9 @@ class EnvironmentPreparationService:
             sdks=self.sdk_discovery.discover(architecture=architecture)
             if sdks:
                 sdk=sdks[0]
-                toolchain=AndroidSDKDiscovery().discover()
+                toolchain=analyze_flutter_toolchain(sdk)
                 if sdk.state=='READY': return {'status':'ALREADY_READY','source':'LOCAL_SDK','sdk':sdk,'toolchain':toolchain,'research':None,'plan':None}
                 from .installers.flutter_installer import FlutterInstaller
-                toolchain=AndroidSDKDiscovery().discover()
                 return {'status':'SDK_PRESENT','source':'LOCAL_SDK','sdk':sdk,'toolchain':toolchain,'research':None,'plan':FlutterInstaller().plan_existing()}
             local=self.local_discovery.discover(architecture=architecture)
             if local:
