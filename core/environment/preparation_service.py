@@ -2,6 +2,7 @@ from .research import EnvironmentResearchRequest, EnvironmentResearcher
 from .preparation import EnvironmentPreparationEngine
 from .local_artifacts import LocalArtifactDiscovery
 from .local_sdks import LocalSDKDiscovery
+from .android_sdk import AndroidSDKDiscovery
 from pathlib import Path
 class EnvironmentPreparationService:
     def __init__(self, researcher=None, engine=None, local_discovery=None, sdk_discovery=None): self.researcher=researcher or EnvironmentResearcher(); self.engine=engine or EnvironmentPreparationEngine(); self.local_discovery=local_discovery or LocalArtifactDiscovery(); self.sdk_discovery=sdk_discovery or LocalSDKDiscovery()
@@ -10,9 +11,11 @@ class EnvironmentPreparationService:
             sdks=self.sdk_discovery.discover(architecture=architecture)
             if sdks:
                 sdk=sdks[0]
-                if sdk.state=='READY': return {'status':'ALREADY_READY','source':'LOCAL_SDK','sdk':sdk,'research':None,'plan':None}
+                toolchain=AndroidSDKDiscovery().discover()
+                if sdk.state=='READY': return {'status':'ALREADY_READY','source':'LOCAL_SDK','sdk':sdk,'toolchain':toolchain,'research':None,'plan':None}
                 from .installers.flutter_installer import FlutterInstaller
-                return {'status':'SDK_PRESENT','source':'LOCAL_SDK','sdk':sdk,'research':None,'plan':FlutterInstaller().plan_existing()}
+                toolchain=AndroidSDKDiscovery().discover()
+                return {'status':'SDK_PRESENT','source':'LOCAL_SDK','sdk':sdk,'toolchain':toolchain,'research':None,'plan':FlutterInstaller().plan_existing()}
             local=self.local_discovery.discover(architecture=architecture)
             if local:
                 artifact=self.local_discovery.to_installation_artifact(local[0], Path.home()/'.local/share/jarvis/environments/flutter'/ (local[0].version or 'unknown'))

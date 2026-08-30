@@ -11,10 +11,12 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from core.environment.local_artifacts import LocalArtifactDiscovery
 from core.environment.local_sdks import LocalSDKDiscovery
+from core.environment.android_sdk import AndroidSDKDiscovery
 
 def main():
     discovery=LocalArtifactDiscovery(); candidates=discovery.discover(include_invalid=True)
     sdks=LocalSDKDiscovery().discover()
+    android=AndroidSDKDiscovery().discover()
     print('JARVIS LOCAL FLUTTER AUDIT\n')
     if sdks:
         print('EXTRACTED SDK CANDIDATES')
