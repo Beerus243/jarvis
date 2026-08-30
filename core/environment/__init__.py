@@ -28,6 +28,7 @@ from .local_artifacts import LocalArtifactCandidate, LocalArtifactDiscovery
 from .local_sdks import LocalSDKCandidate, LocalSDKDiscovery
 from .shell_profile import UserShellProfile
 from .android_sdk import AndroidSDKDiscovery, AndroidSDKStatus
+from .local_jdks import LocalJDKCandidate, LocalJDKDiscovery
 from .toolchain import FlutterToolchainReport, analyze_flutter_toolchain
 from .repair_plan import EnvironmentRepairPlan, RepairAction, build_repair_plan
 from .repair_engine import RepairEngine, RepairOperation, RepairReport
@@ -58,6 +59,7 @@ __all__ += ["LocalArtifactCandidate", "LocalArtifactDiscovery"]
 __all__ += ["LocalSDKCandidate", "LocalSDKDiscovery"]
 __all__ += ["UserShellProfile"]
 __all__ += ["AndroidSDKDiscovery", "AndroidSDKStatus"]
+__all__ += ["LocalJDKCandidate", "LocalJDKDiscovery"]
 __all__ += ["FlutterToolchainReport", "analyze_flutter_toolchain"]
 __all__ += ["EnvironmentRepairPlan", "RepairAction", "build_repair_plan"]
 __all__ += ["RepairEngine", "RepairOperation", "RepairReport"]
