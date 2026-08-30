@@ -34,7 +34,7 @@ def detect_environment_intent(message: str) -> EnvironmentPreparationIntent|None
     if normalized in cancellations:
         return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_CANCEL')
     checks = (
-        ("ENVIRONMENT_GAPS", ("qu est ce qui manque", "qu'est ce qui manque", "qu est ce qui ne va pas"), None),
+        ("ENVIRONMENT_GAPS", ("qu est ce qui manque", "qu'est ce qui manque", "qu est ce qui ne va pas", "liste les composants manquants", "pourquoi mon environnement n est pas pret"), None),
         ("FLUTTER_AUDIT", ("verifie flutter", "etat de flutter", "flutter est il pret", "mon flutter fonctionne"), "flutter"),
         ("ANDROID_AUDIT", ("verifie android", "analyse android", "etat android", "environnement android", "mon android est il pret"), "android"),
         ("JDK_AUDIT", ("verifie java", "verifie mon jdk", "verifie le jdk", "ai je un jdk", "mon jdk est il pret", "javac est il installe"), "jdk"),

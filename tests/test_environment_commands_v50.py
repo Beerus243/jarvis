@@ -15,6 +15,7 @@ def test_natural_environment_variants():
     assert detect_environment_intent("analyse Android").intent == "ANDROID_AUDIT"
     assert detect_environment_intent("javac est-il installé ?").intent == "JDK_AUDIT"
     assert detect_environment_intent("prépare ce qu’il manque").intent == "ENVIRONMENT_REPAIR_PLAN"
+    assert detect_environment_intent("liste les composants manquants").intent == "ENVIRONMENT_GAPS"
 
 def test_capability_check_is_local_and_structured():
     result = check_environment("jdk", capabilities=EnvironmentCapabilities(java_runtime=True), provider_state="NETWORK_UNAVAILABLE")
