@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 """Read-only audit of locally downloaded Flutter archives (never networked)."""
 from pathlib import Path
+import sys
+
+# Lors d'une exécution directe, Python ajoute ``scripts/`` à sys.path.
+# Ajouter la racine calculée permet d'importer ``core`` sans PYTHONPATH.
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 from core.environment.local_artifacts import LocalArtifactDiscovery
 
 def main():
