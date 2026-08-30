@@ -60,8 +60,10 @@ class LocalArtifactDiscovery:
         version_match=re.search(r'(?:flutter[_-])?(\d+\.\d+(?:\.\d+)?)',path.name.lower())
         arch='x86_64' if re.search(r'(linux[_-]?x64|x86_64|amd64)',path.name.lower()) else None
         return LocalArtifactCandidate(path,path.name,kind,version=version_match.group(1) if version_match else None,architecture=arch,size=path.stat().st_size,validation_status='VALID',checksum_status='LOCAL_UNVERIFIED')
-    def discover(self, *, requested_version=None, architecture=None):
+    def discover(self, *, requested_version=None, architecture=None, include_invalid=False):
         candidates=[self.inspect(path) for root in self.search_paths for path in self._files(root)]
+        if include_invalid:
+            return candidates
         candidates=[c for c in candidates if c.validation_status=='VALID']
         if requested_version: candidates=[c for c in candidates if c.version==requested_version]
         if architecture: candidates=[c for c in candidates if c.architecture in (architecture,None)]
