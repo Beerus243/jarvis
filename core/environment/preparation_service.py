@@ -1,11 +1,15 @@
 from .research import EnvironmentResearchRequest, EnvironmentResearcher
 from .preparation import EnvironmentPreparationEngine
 from .local_artifacts import LocalArtifactDiscovery
+from .local_sdks import LocalSDKDiscovery
 from pathlib import Path
 class EnvironmentPreparationService:
-    def __init__(self, researcher=None, engine=None, local_discovery=None): self.researcher=researcher or EnvironmentResearcher(); self.engine=engine or EnvironmentPreparationEngine(); self.local_discovery=local_discovery or LocalArtifactDiscovery()
+    def __init__(self, researcher=None, engine=None, local_discovery=None, sdk_discovery=None): self.researcher=researcher or EnvironmentResearcher(); self.engine=engine or EnvironmentPreparationEngine(); self.local_discovery=local_discovery or LocalArtifactDiscovery(); self.sdk_discovery=sdk_discovery or LocalSDKDiscovery()
     def prepare(self, environment, *, dry_run=True, architecture='x86_64'):
         if str(environment).lower() == 'flutter':
+            sdks=self.sdk_discovery.discover(architecture=architecture)
+            if sdks:
+                return {'status':'ALREADY_READY' if sdks[0].state=='READY' else 'SDK_PRESENT','source':'LOCAL_SDK','sdk':sdks[0],'research':None,'plan':None}
             local=self.local_discovery.discover(architecture=architecture)
             if local:
                 artifact=self.local_discovery.to_installation_artifact(local[0], Path.home()/'.local/share/jarvis/environments/flutter'/ (local[0].version or 'unknown'))

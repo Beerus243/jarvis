@@ -24,7 +24,7 @@ def test_local_has_priority_over_web(tmp_path):
     p=tmp_path/'flutter_linux_3.24.0.tar.xz'; make_archive(p)
     class Web:
         def research(self,*a): raise AssertionError('web should not be called')
-    report=EnvironmentPreparationService(Web(),local_discovery=LocalArtifactDiscovery([tmp_path])).prepare('Flutter'); assert report['source']=='LOCAL_ARTIFACT'
+    report=EnvironmentPreparationService(Web(),local_discovery=LocalArtifactDiscovery([tmp_path]),sdk_discovery=type('D',(),{'discover':lambda *a,**k: []})()).prepare('Flutter'); assert report['source']=='LOCAL_ARTIFACT'
 def test_unknown_extension_rejected(tmp_path):
     (tmp_path/'flutter.bin').write_bytes(b'x'); assert not LocalArtifactDiscovery([tmp_path]).discover()
 def test_local_artifact_can_enter_runtime_without_downloader(tmp_path):
