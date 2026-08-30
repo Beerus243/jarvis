@@ -16,13 +16,15 @@ class EnvironmentPreparationIntent:
 
 def detect_environment_intent(message: str) -> EnvironmentPreparationIntent|None:
     text=(message or '').lower().strip()
-    normalized = ' '.join(text.replace("'", " ").replace('-', ' ').split())
+    normalized = ' '.join(text.replace("'", " ").replace("’", " ").replace('-', ' ').split())
     normalized = ''.join(ch for ch in unicodedata.normalize('NFD', normalized) if not unicodedata.combining(ch))
     if normalized.startswith(('prepare ', 'prepare moi ', 'repare ', 'installe ')):
         if normalized in ('repare mon environnement', 'répare mon environnement'):
             return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
         if 'android' in normalized:
             return EnvironmentPreparationIntent('Android', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
+        if 'ce qu il manque' in normalized:
+            return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
         if 'java' in normalized or 'jdk' in normalized:
             return EnvironmentPreparationIntent('Java', 'java', intent='JDK_INSTALL')
     confirmations = {"oui", "confirme", "je confirme", "vas y", "execute", "lance", "d accord", "ok"}
@@ -34,10 +36,10 @@ def detect_environment_intent(message: str) -> EnvironmentPreparationIntent|None
     checks = (
         ("ENVIRONMENT_GAPS", ("qu est ce qui manque", "qu'est ce qui manque", "qu est ce qui ne va pas"), None),
         ("FLUTTER_AUDIT", ("verifie flutter", "etat de flutter", "flutter est il pret", "mon flutter fonctionne"), "flutter"),
-        ("ANDROID_AUDIT", ("verifie android", "etat android", "environnement android"), "android"),
-        ("JDK_AUDIT", ("verifie java", "verifie le jdk", "ai je un jdk", "mon jdk est il pret"), "jdk"),
+        ("ANDROID_AUDIT", ("verifie android", "analyse android", "etat android", "environnement android", "mon android est il pret"), "android"),
+        ("JDK_AUDIT", ("verifie java", "verifie mon jdk", "verifie le jdk", "ai je un jdk", "mon jdk est il pret", "javac est il installe"), "jdk"),
         ("FLUTTER_ANDROID_BUILD_CHECK", ("compiler flutter android", "build android", "flutter android est pret"), "flutter_android_build"),
-        ("ENVIRONMENT_AUDIT", ("verifie mon environnement", "analyse mon environnement", "audit de mon environnement", "etat de mon environnement"), "flutter_android_build"),
+        ("ENVIRONMENT_AUDIT", ("verifie mon environnement", "analyse mon environnement", "fais un audit de mon environnement", "audit de mon environnement", "etat de mon environnement", "mon environnement est il pret", "est ce que mon environnement est pret"), "flutter_android_build"),
     )
     for intent, phrases, capability in checks:
         if any(phrase in normalized for phrase in phrases):

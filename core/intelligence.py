@@ -96,7 +96,12 @@ def analyze(message, context=None):
 
     environment_intent = detect_environment_intent(message)
     if environment_intent:
-        return _decision("ENVIRONMENT", environment_intent, 0.99)
+        if environment_intent.intent in {"ENVIRONMENT_CONFIRM", "ENVIRONMENT_CANCEL"}:
+            from core.environment.pending_plan import get_pending
+            if get_pending() is None:
+                environment_intent = None
+        if environment_intent is not None:
+            return _decision("ENVIRONMENT", environment_intent, 0.99)
 
     subjective_state = detect_user_state(message)
     simple_state = (

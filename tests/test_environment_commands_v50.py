@@ -11,6 +11,11 @@ def test_flutter_android_build_intent():
 def test_environment_gaps_intent():
     assert detect_environment_intent("qu'est-ce qui manque ?").intent == "ENVIRONMENT_GAPS"
 
+def test_natural_environment_variants():
+    assert detect_environment_intent("analyse Android").intent == "ANDROID_AUDIT"
+    assert detect_environment_intent("javac est-il installé ?").intent == "JDK_AUDIT"
+    assert detect_environment_intent("prépare ce qu’il manque").intent == "ENVIRONMENT_REPAIR_PLAN"
+
 def test_capability_check_is_local_and_structured():
     result = check_environment("jdk", capabilities=EnvironmentCapabilities(java_runtime=True), provider_state="NETWORK_UNAVAILABLE")
     assert result["status"] == "BLOCKED_NETWORK" and "javac" in result["missing"]
