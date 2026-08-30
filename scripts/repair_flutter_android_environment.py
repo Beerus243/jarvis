@@ -7,6 +7,7 @@ the environment workflow; this script never invents one.
 """
 from pathlib import Path
 import sys
+import argparse
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -18,7 +19,11 @@ from core.environment import (AdoptiumProvider, AndroidSDKDiscovery, LocalJDKDis
 from core.environment.user_space_repair import preflight_user_space, jdk_artifact_from_research
 
 
-def main() -> int:
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description="Préparation Flutter/Android user-space contrôlée")
+    parser.add_argument('--dry-run', action='store_true')
+    parser.add_argument('--component', choices=('jdk', 'android', 'all'), default='all')
+    args = parser.parse_args(argv)
     sdk = next(iter(LocalSDKDiscovery().discover()), None)
     android = AndroidSDKDiscovery().discover()
     jdks = LocalJDKDiscovery().discover()
@@ -31,10 +36,10 @@ def main() -> int:
         print("Flutter: MISSING")
         return 1
     report = analyze_flutter_toolchain(sdk, java=java, android=android)
-    plan = build_android_repair_plan(android)
+    plan = build_android_repair_plan(android) if args.component in ('android', 'all') else type('Plan', (), {'operations': ()})()
     existing_jdk = next((candidate for candidate in jdks if candidate.java and candidate.javac), None)
     artifact = None
-    if existing_jdk is None and (not java["javac"] or not java["java_home"]):
+    if args.component in ('jdk', 'all') and existing_jdk is None and (not java["javac"] or not java["java_home"]):
         print("Research: recherche officielle Eclipse Adoptium...")
         try:
             import requests
@@ -60,9 +65,11 @@ def main() -> int:
     elif "MISSING_JAVAC" in report.gaps:
         print("JDK artifact: aucune métadonnée officielle validée disponible")
     print("Planned Android actions:")
+    if args.component in ('jdk', 'all') and ('MISSING_JAVAC' in report.gaps or 'MISSING_JAVA_HOME' in report.gaps):
+        print("  JDK: INSTALL_JDK → CONFIGURE_JAVA_HOME → CONFIGURE_PATH → VERIFY_JAVA → VERIFY_JAVAC")
     for index, operation in enumerate(plan.operations, 1):
         print(f"  {index}. {operation.action} — {operation.reason}")
-    if not plan.operations and not artifact:
+    if not plan.operations and not artifact and not report.gaps:
         print("Environment already ready; nothing to repair.")
         return 0
     destination = Path.home() / ".local/share/jarvis/environments/jdk"
@@ -71,6 +78,9 @@ def main() -> int:
     if not preflight.ok:
         print("Errors:", ", ".join(preflight.errors))
         return 2
+    if args.dry_run:
+        print("DRY-RUN: aucune modification effectuée.")
+        return 0
     answer = input("Confirm user-space repair? [y/N] ").strip().lower()
     if answer not in {"y", "yes"}:
         print("CANCELLED: aucune modification effectuée.")

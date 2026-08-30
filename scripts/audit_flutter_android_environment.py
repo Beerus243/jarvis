@@ -6,10 +6,17 @@ ROOT=Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path: sys.path.insert(0,str(ROOT))
 from core.environment import (LocalSDKDiscovery, AndroidSDKDiscovery, analyze_flutter_toolchain,
                               assess_environment, AdoptiumProvider, MetadataCache)
+from core.environment.metadata_cache import inspect_cached_metadata
 import os, shutil
 
 sdk=next(iter(LocalSDKDiscovery().discover()),None); android=AndroidSDKDiscovery().discover()
 print('FLUTTER ANDROID ENVIRONMENT AUDIT')
+cache = MetadataCache(); cached = cache.load_official('adoptium-jdk-linux-x64')
+if cached:
+    policy, _ = inspect_cached_metadata(cached, provider='Eclipse Adoptium', allowed_hosts={'api.adoptium.net','adoptium.net','github.com','githubusercontent.com'})
+    print('CACHE:', policy.value)
+else:
+    print('CACHE: NO_CACHE')
 print('FLUTTER:', 'READY' if sdk and sdk.flutter else 'MISSING')
 print('DART:', 'READY' if sdk and sdk.dart else 'MISSING')
 print('ANDROID_SDK_ROOT:', android.root or 'MISSING')
