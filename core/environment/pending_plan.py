@@ -12,12 +12,14 @@ class PendingEnvironmentPlan:
     intent: object
     created_at: datetime
     sensitive: bool = True
+    plan: object | None = None
+    artifact: object | None = None
 
 _pending: PendingEnvironmentPlan | None = None
 
-def set_pending(intent):
+def set_pending(intent, *, plan=None, artifact=None):
     global _pending
-    _pending = PendingEnvironmentPlan(f"ENV-{datetime.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:8].upper()}", intent, datetime.now(timezone.utc))
+    _pending = PendingEnvironmentPlan(f"ENV-{datetime.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:8].upper()}", intent, datetime.now(timezone.utc), True, plan, artifact)
     return _pending
 
 def get_pending():

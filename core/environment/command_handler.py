@@ -1,6 +1,9 @@
 """Conversation-facing adapter for the existing environment engine."""
 from .capabilities import check_environment, format_capability_report, discover_capabilities
 from .pending_plan import set_pending, get_pending, clear_pending
+from .installation_engine import InstallationEngine
+from .lock import InstallationLock
+from pathlib import Path
 
 def handle_environment_intent(intent):
     capability = getattr(intent, "capability", None)
@@ -19,6 +22,22 @@ def handle_environment_intent(intent):
         pending = get_pending()
         if not pending:
             return "Aucun plan d'environnement n'est en attente."
+        if pending.plan is not None and pending.artifact is not None:
+            artifact = pending.artifact
+            source = getattr(artifact, "source", None)
+            approved = source.approved() if source and hasattr(source, "approved") else bool(getattr(source, "trusted", False))
+            if not approved or not getattr(artifact, "checksum", None):
+                clear_pending(); return "PLAN_INVALIDATED : artefact non validé. Aucune modification n'a été effectuée."
+            destination = Path(artifact.destination).expanduser().resolve()
+            if Path.home().resolve() not in destination.parents:
+                clear_pending(); return "PLAN_INVALIDATED : destination hors espace utilisateur."
+            try:
+                with InstallationLock():
+                    report = InstallationEngine().execute(pending.plan, artifact=artifact, dry_run=False, confirmation_handler=lambda _step: True)
+            except RuntimeError:
+                return "INSTALLATION_LOCKED : une autre réparation est déjà en cours."
+            clear_pending()
+            return "Réparation terminée." if report.to_dict().get("success") else "Réparation échouée. Aucune réussite n'est déclarée."
         clear_pending()
         return "Le plan ne peut pas démarrer : aucun artefact officiel validé n'est actuellement disponible."
     if getattr(intent, "intent", "") == "ENVIRONMENT_CANCEL":

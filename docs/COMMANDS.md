@@ -76,6 +76,11 @@ Annulations reconnues : `non`, `annule`, `annuler`, `pas maintenant`, `laisse to
 
 Sans plan valide en attente, ces réponses n'exécutent aucune installation.
 
+## Environment Repair Flow
+
+`Audit → Plan → Confirmation → Revalidation → InstallationEngine → Verification → Final audit`.
+Un plan confirmé sans artefact officiel validé est invalidé (`PLAN_INVALIDATED`) et aucune modification n'est effectuée.
+
 ## Environment Readiness States
 
 - `READY` : tous les prérequis sont présents.

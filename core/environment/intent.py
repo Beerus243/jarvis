@@ -19,6 +19,8 @@ def detect_environment_intent(message: str) -> EnvironmentPreparationIntent|None
     normalized = ' '.join(text.replace("'", " ").replace('-', ' ').split())
     normalized = ''.join(ch for ch in unicodedata.normalize('NFD', normalized) if not unicodedata.combining(ch))
     if normalized.startswith(('prepare ', 'prepare moi ', 'repare ', 'installe ')):
+        if normalized in ('repare mon environnement', 'répare mon environnement'):
+            return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
         if 'android' in normalized:
             return EnvironmentPreparationIntent('Android', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
         if 'java' in normalized or 'jdk' in normalized:
