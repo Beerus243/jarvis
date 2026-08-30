@@ -15,7 +15,7 @@ class InstallationEngine:
     """Dispatcher for typed installation steps; never accepts shell commands."""
     def __init__(self, downloader=None, extractor=None, path_config=None, verifier=verify, allowed_root=None):
         self.downloader=downloader or ArtifactDownloader(); self.extractor=extractor or SecureArchiveExtractor(); self.path_config=path_config or ConfigureUserPath(); self.verifier=verifier; self.allowed_root=Path(allowed_root or Path.home()).resolve()
-    def execute(self, plan, *, artifact=None, dry_run=True, confirmation_handler=None):
+    def execute(self, plan, *, artifact=None, sdk_root=None, dry_run=True, confirmation_handler=None):
         if not dry_run and artifact is not None:
             destination=Path(artifact.destination).expanduser().resolve()
             if not destination.is_relative_to(self.allowed_root):
@@ -29,7 +29,7 @@ class InstallationEngine:
             if step.requires_confirmation and not (confirmation_handler and confirmation_handler(step)):
                 results.append(ExecutionResult(step.id,ExecutionStatus.CANCELLED,error='Confirmation refusée ou absente.')); break
             try:
-                if artifact is None and step.action_type in {'DOWNLOAD','VERIFY','EXTRACT','INSTALL','CONFIGURE_PATH'}: raise ValueError('InstallationArtifact requis.')
+                if artifact is None and sdk_root is None and step.action_type in {'DOWNLOAD','VERIFY','EXTRACT','INSTALL','CONFIGURE_PATH'}: raise ValueError('InstallationArtifact requis.')
                 if step.action_type == 'DOWNLOAD':
                     if artifact.source.provider == 'local' and artifact.source.local_path:
                         value=type('LocalDownload',(),{'success':True,'path':Path(artifact.source.local_path)})()
@@ -49,7 +49,9 @@ class InstallationEngine:
                 elif step.action_type == 'INSTALL':
                     if not state.get('root'): raise RuntimeError('Racine Flutter introuvable.')
                 elif step.action_type == 'CONFIGURE_PATH':
-                    if not self.path_config.apply(Path(state['root'])/'bin'): raise RuntimeError('Configuration PATH refusée.')
+                    root=Path(sdk_root) if sdk_root else Path(state['root'])
+                    state['root']=root
+                    if not self.path_config.apply(root/'bin'): raise RuntimeError('Configuration PATH refusée.')
                 elif step.action_type == 'VERIFY_FLUTTER':
                     result=self.verifier('verify_flutter', executable=str(Path(state['root'])/'bin/flutter'))
                     if result.status != ExecutionStatus.SUCCESS: raise RuntimeError(result.error or result.stderr or 'Flutter invalide.')

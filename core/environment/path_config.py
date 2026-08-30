@@ -1,9 +1,10 @@
 from pathlib import Path
 import os
+from .shell_profile import UserShellProfile
 
 class ConfigureUserPath:
-    def __init__(self, path_file=None, allowed_root=None):
-        self.path_file=Path(path_file or Path.home()/'.profile').expanduser(); self.allowed_root=Path(allowed_root or Path.home()).expanduser().resolve()
+    def __init__(self, path_file=None, allowed_root=None, shell_profile=None):
+        self.path_file=Path(path_file or UserShellProfile().path_file).expanduser(); self.allowed_root=Path(allowed_root or Path.home()).expanduser().resolve()
     def apply(self, bin_path):
         bin_path=str(Path(bin_path).expanduser().resolve())
         if not Path(bin_path).is_relative_to(self.allowed_root): return False

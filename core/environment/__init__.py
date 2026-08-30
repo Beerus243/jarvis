@@ -26,6 +26,7 @@ from .verifier import verify
 from .lock import InstallationLock
 from .local_artifacts import LocalArtifactCandidate, LocalArtifactDiscovery
 from .local_sdks import LocalSDKCandidate, LocalSDKDiscovery
+from .shell_profile import UserShellProfile
 from .research import (OfficialSource, OfficialSourceRegistry, DEFAULT_SOURCES, EnvironmentMetadata,
                        EnvironmentResearchRequest, EnvironmentResearchResult, EnvironmentResearcher,
                        MetadataCache, validate_metadata, ResearchCandidate, ResearchProvider)
@@ -51,5 +52,6 @@ __all__ += ["InstallationEngine"]
 __all__ += ["InstallationLock"]
 __all__ += ["LocalArtifactCandidate", "LocalArtifactDiscovery"]
 __all__ += ["LocalSDKCandidate", "LocalSDKDiscovery"]
+__all__ += ["UserShellProfile"]
 __all__ += ["ConfigureUserPath", "verify"]
 __all__ += ["OfficialSource", "OfficialSourceRegistry", "DEFAULT_SOURCES", "EnvironmentMetadata", "EnvironmentResearchRequest", "EnvironmentResearchResult", "EnvironmentResearcher", "MetadataCache", "validate_metadata", "ResearchCandidate", "ResearchProvider"]
