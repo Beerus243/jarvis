@@ -15,6 +15,7 @@ from tools.browser import (
     search_web,
     search_wikipedia,
 )
+from core.actions import PCAction, execute_pc_action
 
 
 def dispatch(intent):
@@ -33,6 +34,10 @@ def dispatch(intent):
     if isinstance(intent, dict):
 
         action = intent.get("action")
+
+        if action == "SCREENSHOT":
+            result = execute_pc_action(PCAction("SCREENSHOT"))
+            return result.success, result.message if result.success else result.error
 
         # ----------------------------------------------------
         # APPLICATION

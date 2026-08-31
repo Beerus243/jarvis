@@ -80,6 +80,16 @@ Sans plan valide en attente, ces réponses n'exécutent aucune installation.
 
 Les demandes de diagnostic (`pourquoi je ne peux pas compiler ?`, `est-ce que je peux compiler ?`, `résume mon environnement`) restent en lecture seule. Elles expliquent les composants prêts, manquants et bloqués, sans créer de plan ni installer automatiquement.
 
+## Screen / PC Actions
+
+| Commande | Action | Résultat |
+|---|---|---|
+| `fais une capture d'écran` | `SCREENSHOT` | Capture PNG dans `~/Pictures/Jarvis/` |
+| `capture mon écran` | `SCREENSHOT` | Capture PNG dans `~/Pictures/Jarvis/` |
+| `prends une capture écran` | `SCREENSHOT` | Capture PNG dans `~/Pictures/Jarvis/` |
+
+La capture est disponible sous Wayland via Spectacle lorsqu'il est installé. L'analyse visuelle appartient à une future version V6.
+
 ## Environment Repair Flow
 
 `Audit → Plan → Confirmation → Revalidation → InstallationEngine → Verification → Final audit`.

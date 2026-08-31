@@ -80,6 +80,10 @@ def detect_intent(message):
 
     message = _normalize_text(resolve_command_terms(message)["normalized_terms"])
 
+    screenshot_phrases = ("fais une capture d ecran", "fais une capture ecran", "capture mon ecran", "capture l ecran", "prends une capture d ecran", "prends une capture ecran", "screenshot", "capture ecran")
+    if any(phrase in message for phrase in screenshot_phrases):
+        return "SCREENSHOT"
+
     # Les phrases interrogatives générales ne sont pas des commandes locales.
     if message.startswith(("pourquoi ", "comment ", "qu est ce ", "est ce que ")):
         return None
