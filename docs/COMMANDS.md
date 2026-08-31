@@ -90,6 +90,20 @@ Les demandes de diagnostic (`pourquoi je ne peux pas compiler ?`, `est-ce que je
 
 La capture est disponible sous Wayland via Spectacle lorsqu'il est installé. L'analyse visuelle appartient à une future version V6.
 
+## Actions PC contrôlées V5.8
+
+Les actions passent par `PCAction` → `ActionPolicy` → `ActionExecutor`. Les applications et URL sont allowlistées, sans shell arbitraire.
+
+| Commande | Intent/action | Confirmation | Limitation |
+|---|---|---|---|
+| `ouvre Firefox`, `lance VS Code` | `OPEN_APPLICATION` | Non | applications connues seulement |
+| `ferme Firefox` | `CLOSE_APPLICATION` | Oui | demande de terminaison gracieuse, pas de PID arbitraire |
+| `ouvre https://...` | `OPEN_URL` | Non | URL HTTP(S) autorisées uniquement |
+| créer/copier/déplacer/ouvrir un fichier | `FILE_CREATE/COPY/MOVE/OPEN` | Non | chemins limités au dossier utilisateur |
+| supprimer un fichier | `FILE_DELETE` | Oui | ne jamais supprimer hors espace utilisateur |
+| `monte/baisse/coupe le son` | `VOLUME_UP/DOWN/MUTE` | Non | dépend de `wpctl` |
+| `mets en pause`, `reprends`, `suivant` | `MEDIA_PAUSE/PLAY/NEXT` | Non | dépend de `playerctl` |
+
 ## Environment Repair Flow
 
 `Audit → Plan → Confirmation → Revalidation → InstallationEngine → Verification → Final audit`.

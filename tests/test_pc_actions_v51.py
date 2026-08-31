@@ -30,3 +30,44 @@ def test_dispatcher_propagates_screenshot_result(monkeypatch):
     expected = SimpleNamespace(success=True, message="Capture d'écran effectuée.", error=None, artifact_path="/tmp/test.png")
     monkeypatch.setattr("core.dispatcher.execute_pc_action", lambda action: expected)
     assert dispatch("SCREENSHOT") is expected
+from pathlib import Path
+from unittest.mock import patch
+from core.actions import PCAction
+from core.actions.executor import execute_pc_action
+from core.action_executor import execute_action
+from core.action_policy import CONFIRMATION_REQUIRED
+from core.intent import detect_intent
+
+def test_v58_application_intent_is_structured():
+    assert detect_intent("ouvre Firefox") == {"action": "OPEN_APPLICATION", "target": "firefox"}
+
+@patch("core.actions.executor.open_application", return_value=(True, "ouvert"))
+def test_v58_open_application_action(mock_open):
+    result = execute_pc_action(PCAction("OPEN_APPLICATION", {"application": "firefox"}))
+    assert result.success is True
+    mock_open.assert_called_once_with("firefox")
+
+def test_v58_close_application_requires_confirmation(tmp_path, monkeypatch):
+    monkeypatch.setattr("core.action_executor.MEMORY_FILE", tmp_path / "user.json")
+    result = execute_action({"action": "CLOSE_APPLICATION", "target": "firefox"})
+    assert result.policy == CONFIRMATION_REQUIRED
+    assert result.success is False
+
+@patch("core.actions.executor.open_url", return_value=(True, "ouvert"))
+def test_v58_open_url_action(mock_open):
+    result = execute_pc_action(PCAction("OPEN_URL", {"url": "https://www.google.com"}))
+    assert result.success is True
+
+def test_v58_file_copy_stays_inside_home(tmp_path):
+    source = tmp_path / "a.txt"; target = tmp_path / "b.txt"; source.write_text("ok")
+    with patch("core.actions.executor.Path.home", return_value=tmp_path):
+        result = execute_pc_action(PCAction("FILE_COPY", {"source": str(source), "target": str(target)}))
+    assert result.success is True and target.read_text() == "ok"
+
+@patch("core.actions.executor.shutil.which", return_value=None)
+def test_v58_media_action_reports_not_supported(_):
+    result = execute_pc_action(PCAction("MEDIA_NEXT"))
+    assert result.success is False and result.error == "NOT_SUPPORTED"
+
+def test_v58_unknown_pc_action_blocked():
+    assert execute_pc_action(PCAction("RAW_COMMAND", {"command": "rm -rf /"})).success is False

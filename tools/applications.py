@@ -158,6 +158,21 @@ def open_application(name, target=None):
         "sur ce système."
     )
 
+def close_application(name):
+    """Demande une fermeture gracieuse pour une application allowlistée."""
+    aliases = {"chrome": "google-chrome", "vscode": "code", "terminal": "konsole", "spotify": "spotify", "firefox": "firefox"}
+    key = str(name or "").lower().strip()
+    if key not in APPLICATIONS:
+        return False, "Je ne peux fermer que les applications autorisées."
+    executable = aliases.get(key)
+    if not executable or not shutil.which("pkill"):
+        return False, "Fermeture non disponible."
+    try:
+        result = subprocess.run(["pkill", "-TERM", "-x", executable], check=False, capture_output=True, timeout=5)
+    except (OSError, subprocess.SubprocessError):
+        return False, "Impossible de demander la fermeture."
+    return (True, f"Je demande la fermeture de {APPLICATIONS[key]['label']}.") if result.returncode == 0 else (False, f"{APPLICATIONS[key]['label']} n'est pas ouvert.")
+
 
 def list_available_applications():
 

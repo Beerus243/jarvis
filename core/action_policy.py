@@ -28,6 +28,18 @@ _POLICY = {
     "NEXT_TRACK": SAFE_ACTION,
     "PREVIOUS_TRACK": SAFE_ACTION,
     "SCREENSHOT": SAFE_ACTION,
+    "FILE_OPEN": SAFE_ACTION,
+    "FILE_CREATE": SAFE_ACTION,
+    "FILE_COPY": SAFE_ACTION,
+    "FILE_MOVE": SAFE_ACTION,
+    "FILE_DELETE": CONFIRMATION_REQUIRED,
+    "VOLUME_UP": SAFE_ACTION,
+    "VOLUME_DOWN": SAFE_ACTION,
+    "VOLUME_MUTE": SAFE_ACTION,
+    "MEDIA_PLAY": SAFE_ACTION,
+    "MEDIA_PAUSE": SAFE_ACTION,
+    "MEDIA_NEXT": SAFE_ACTION,
+    "MEDIA_PREVIOUS": SAFE_ACTION,
     "CLOSE_APPLICATION": CONFIRMATION_REQUIRED,
     "RUN_COMMAND": CONFIRMATION_REQUIRED,
     "DELETE_FILE": BLOCKED_ACTION,
@@ -43,7 +55,7 @@ def classify_action(action):
 def detect_sensitive_request(message):
     text = str(message or "").casefold()
     if any(word in text for word in ("supprime", "efface", "formatte")):
-        return "DELETE_FILE"
+        return "FILE_DELETE" if "fichier" in text else "DELETE_FILE"
     if any(word in text for word in ("ferme l application", "fermer l application", "ferme cette application")):
         return "CLOSE_APPLICATION"
     return None

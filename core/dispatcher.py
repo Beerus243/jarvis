@@ -39,6 +39,17 @@ def dispatch(intent):
 
         action = intent.get("action")
 
+        if action in {
+            "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL",
+            "FILE_OPEN", "FILE_CREATE", "FILE_COPY", "FILE_MOVE", "FILE_DELETE",
+            "VOLUME_UP", "VOLUME_DOWN", "VOLUME_MUTE", "MEDIA_PLAY", "MEDIA_PAUSE",
+            "MEDIA_NEXT", "MEDIA_PREVIOUS",
+        }:
+            params = dict(intent)
+            params.pop("action", None)
+            result = execute_pc_action(PCAction(action, params))
+            return result
+
         if action == "SCREENSHOT":
             result = execute_pc_action(PCAction("SCREENSHOT"))
             return result.success, result.message if result.success else result.error
@@ -48,10 +59,7 @@ def dispatch(intent):
         # ----------------------------------------------------
 
         if action == "OPEN_APPLICATION":
-
-            return open_application(
-                intent.get("target", "")
-            )
+            return open_application(intent.get("target", ""))
 
         # ----------------------------------------------------
         # PROJET — OUVRIR DANS VS CODE

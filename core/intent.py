@@ -88,6 +88,23 @@ def detect_intent(message):
     if message.startswith(("pourquoi ", "comment ", "qu est ce ", "est ce que ")):
         return None
 
+    # Actions PC déterministes (les paramètres restent structurés).
+    app = re.match(r"^(?:ouvre|lance|demarre|démarre|open|launch)\s+(?:mon\s+)?(firefox|vscode|vs code|visual studio code|terminal|konsole)$", message)
+    if app:
+        target = app.group(1).replace("google chrome", "chrome").replace("vs code", "vscode").replace("visual studio code", "vscode")
+        return {"action": "OPEN_APPLICATION", "target": target}
+    close = re.match(r"^(?:ferme|quitte|close|quit)\s+(?:l application|la fenetre|le logiciel|)?\s*(firefox|chrome|google chrome|spotify|vscode|vs code|terminal|konsole)$", message)
+    if close:
+        target = close.group(1).replace("google chrome", "chrome").replace("vs code", "vscode")
+        return {"action": "CLOSE_APPLICATION", "target": target}
+    if message in {"monte le son", "augmente le volume", "augmente le son"}: return {"action": "VOLUME_UP"}
+    if message in {"baisse le son", "diminue le volume", "diminue le son"}: return {"action": "VOLUME_DOWN"}
+    if message in {"coupe le son", "mets en muet", "mute"}: return {"action": "VOLUME_MUTE"}
+    if message in {"mets en pause", "pause la musique", "mets la musique en pause"}: return {"action": "MEDIA_PAUSE"}
+    if message in {"reprends", "reprends la musique", "reprends spotify"}: return {"action": "MEDIA_PLAY"}
+    if message in {"passe au morceau suivant", "morceau suivant", "suivant"}: return {"action": "MEDIA_NEXT"}
+    if message in {"morceau précédent", "morceau precedent", "précédent", "precedent"}: return {"action": "MEDIA_PREVIOUS"}
+
     # ========================================================
     # CHROME / NAVIGATEUR
     # ========================================================
