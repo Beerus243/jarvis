@@ -20,4 +20,10 @@ def settings(kind=''):
     modules = {'wifi':'kcm_networkmanagement','network':'kcm_networkmanagement','bluetooth':'kcm_bluetooth','audio':'kcm_pulseaudio','screen':'kcm_kscreen'}
     return run(['kcmshell6', modules.get(kind, 'kcm_appearance')])
 
-def volume_status(): return run(['wpctl','get-volume','@DEFAULT_AUDIO_SINK@'])
+def volume_status():
+    ok, output, err = run(['wpctl','get-volume','@DEFAULT_AUDIO_SINK@'])
+    if not ok: return ok, output, err
+    parts = output.split(); level = None
+    try: level = round(float(parts[1]) * 100, 1)
+    except (IndexError, ValueError): pass
+    return ok, {'volume_percent': level, 'muted': 'MUTED' in output, 'available': level is not None}, err

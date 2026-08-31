@@ -1,6 +1,6 @@
 """Mesures matérielles locales, tolérantes aux informations manquantes."""
 from dataclasses import dataclass, asdict
-import os, platform, shutil, subprocess
+import os, platform, shutil, subprocess, time
 
 @dataclass(frozen=True)
 class CPUStats:
@@ -12,16 +12,18 @@ class MemoryStats:
 class GPUStats:
     name: str | None; vendor: str | None; usage_percent: float | None; memory_total_bytes: int | None; memory_used_bytes: int | None; temperature_c: float | None; driver: str | None
 
-def cpu_stats():
+def _cpu_snapshot():
+    try:
+        vals = list(map(int, open('/proc/stat').readline().split()[1:5])); return sum(vals), vals[3]
+    except (OSError, ValueError): return None
+
+def cpu_stats(interval=0.1):
     usage = None
     try:
-        first = open('/proc/stat').readline().split()[1:]
-        vals = list(map(int, first[:4])); total = sum(vals); idle = vals[3]
-        cpu_stats._last = getattr(cpu_stats, '_last', (total, idle))
-        old_total, old_idle = cpu_stats._last; cpu_stats._last = (total, idle)
-        dt, di = total-old_total, idle-old_idle
+        before = _cpu_snapshot(); time.sleep(max(0.0, interval)); after = _cpu_snapshot()
+        dt, di = after[0]-before[0], after[1]-before[1]
         usage = round(100*(dt-di)/dt, 1) if dt else None
-    except (OSError, ValueError): pass
+    except (TypeError, IndexError): pass
     freq = None
     try: freq = float(open('/proc/cpuinfo').read().split('cpu MHz')[1].split(':')[1].split()[0])
     except (OSError, IndexError, ValueError): pass
