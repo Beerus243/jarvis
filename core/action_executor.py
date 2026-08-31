@@ -17,6 +17,7 @@ class ActionResult:
     error: str | None = None
     policy: str = BLOCKED_ACTION
     confirmation: bool = False
+    artifact_path: str | None = None
 
 
 def _log(result):
@@ -45,8 +46,12 @@ def execute_action(action, confirmation=False, dispatcher=None):
     else:
         try:
             response = (dispatcher or dispatch)(action)
-            ok, message = response if isinstance(response, tuple) else (bool(response), response)
-            result = ActionResult(bool(ok), action_id, message or "L'action n'a pas produit de résultat.", error=None if ok else "Aucun résultat", policy=policy, confirmation=confirmation)
+            if hasattr(response, "success") and hasattr(response, "message"):
+                result = ActionResult(bool(response.success), action_id, response.message, error=response.error,
+                                      policy=policy, confirmation=confirmation, artifact_path=getattr(response, "artifact_path", None))
+            else:
+                ok, message = response if isinstance(response, tuple) else (bool(response), response)
+                result = ActionResult(bool(ok), action_id, message or "L'action n'a pas produit de résultat.", error=None if ok else "Aucun résultat", policy=policy, confirmation=confirmation)
         except Exception as error:
             result = ActionResult(False, action_id, "L'action a échoué.", error=str(error), policy=policy, confirmation=confirmation)
     _log(result)

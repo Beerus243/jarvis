@@ -20,6 +20,10 @@ from core.actions import PCAction, execute_pc_action
 
 def dispatch(intent):
 
+    if intent == "SCREENSHOT":
+        result = execute_pc_action(PCAction("SCREENSHOT"))
+        return result
+
     # ========================================================
     # PROJETS — LISTER
     # ========================================================
