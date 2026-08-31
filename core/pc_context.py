@@ -146,4 +146,10 @@ def answer_pc_question(message, context=None):
         return f"La batterie est à {battery['level']}%."
     if "état audio" in text or "etat audio" in text:
         return "Le contexte audio local est disponible." if context["audio"]["server"] else "Aucun serveur audio local détecté."
+    if "fenêtre" in text or "fenetre" in text or "application est active" in text:
+        active = context.get("active_window") or {}
+        if not active.get("available"): return "Le contexte des fenêtres KWin est indisponible."
+        return f"La fenêtre active est {active.get('title') or active.get('application')}."
+    if "applications" in text and ("ouvert" in text or "install" in text or "dispon" in text):
+        return ", ".join(item["name"] for item in context.get("applications", []) if item.get("running")) or "Aucune application connue n'est ouverte."
     return None

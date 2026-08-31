@@ -102,3 +102,11 @@ def test_v515_missing_system_dependency_is_controlled():
     with patch("core.actions.executor.shutil.which", return_value=None):
         result = execute_pc_action(PCAction("WIFI_ENABLE"))
     assert not result.success and result.error == "NOT_SUPPORTED"
+
+def test_v60_application_discovery_is_read_only():
+    from core.pc_discovery import discover_applications
+    assert isinstance(discover_applications(), list)
+
+def test_v60_window_control_is_explicitly_unavailable():
+    result = execute_pc_action(PCAction("WINDOW_CLOSE"))
+    assert not result.success and result.error == "NOT_SUPPORTED"

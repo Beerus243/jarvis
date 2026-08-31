@@ -6,10 +6,13 @@ import subprocess
 from tools.applications import open_application, close_application
 from tools.browser import open_url
 from core.system_control import wifi, bluetooth, settings, volume_status, run
+from core.pc_discovery import discover_applications
+from core.pc_context import get_pc_context
 
 ALLOWED_ACTIONS = {
     "SCREENSHOT", "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL",
     "OPEN_FOLDER", "FILE_OPEN", "FILE_CREATE", "FILE_COPY", "FILE_MOVE", "FILE_DELETE",
+    "LIST_APPLICATIONS", "WINDOW_LIST", "WINDOW_FOCUS", "WINDOW_MINIMIZE", "WINDOW_MAXIMIZE", "WINDOW_CLOSE",
     "VOLUME_UP", "VOLUME_DOWN", "VOLUME_MUTE", "MEDIA_PLAY", "MEDIA_PAUSE",
     "MEDIA_NEXT", "MEDIA_PREVIOUS",
     "WIFI_STATUS", "WIFI_ENABLE", "WIFI_DISABLE", "WIFI_OPEN_SETTINGS",
@@ -78,6 +81,15 @@ def execute_pc_action(action: PCAction, *, capture=None):
     if not isinstance(action, PCAction) or action.action_type not in ALLOWED_ACTIONS:
         return ActionResult(getattr(action, "action_type", "UNKNOWN_ACTION"), False, "Action PC bloquée.", error="UNKNOWN_ACTION")
     if action.action_type == "SCREENSHOT": return (capture or ScreenCapture()).capture()
+    if action.action_type == "LIST_APPLICATIONS":
+        apps = discover_applications()
+        return ActionResult(action.action_type, True, ", ".join(a['name'] for a in apps) if apps else "Aucune application découverte.")
+    if action.action_type == "WINDOW_LIST":
+        windows = get_pc_context().get('windows', [])
+        if not windows: return ActionResult(action.action_type, False, "Le contexte KWin est indisponible.", error="UNAVAILABLE")
+        return ActionResult(action.action_type, True, ", ".join(str(w.get('title') or w.get('application')) for w in windows))
+    if action.action_type.startswith('WINDOW_'):
+        return ActionResult(action.action_type, False, "Le contrôle KWin n'est pas disponible.", error="NOT_SUPPORTED")
     if action.action_type == "OPEN_APPLICATION":
         target = (action.parameters or {}).get("application") or (action.parameters or {}).get("target", "")
         ok, message = open_application(target)

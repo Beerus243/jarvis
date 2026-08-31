@@ -25,6 +25,8 @@ def _pc_action(text):
     value = normalize_command(text)
     value = re.sub(r"^(?:hey\s+)?jarvis\s*[, ]*", "", value, flags=re.I)
     direct = {
+        'quelles applications sont installees':'LIST_APPLICATIONS','quelles applications sont disponibles':'LIST_APPLICATIONS','liste les applications':'LIST_APPLICATIONS',
+        'affiche mes fenetres':'WINDOW_LIST','liste les fenetres ouvertes':'WINDOW_LIST','quelle fenetre est active':'WINDOW_LIST','quelle application est active':'WINDOW_LIST',
         'active le wifi':'WIFI_ENABLE','active le wi fi':'WIFI_ENABLE','desactive le wifi':'WIFI_DISABLE','desactive le wi fi':'WIFI_DISABLE','quel est l etat du wifi':'WIFI_STATUS','quel est l etat du wi fi':'WIFI_STATUS',
         'active le bluetooth':'BLUETOOTH_ENABLE','desactive le bluetooth':'BLUETOOTH_DISABLE','le bluetooth est il active':'BLUETOOTH_STATUS',
         'quel est le volume':'VOLUME_STATUS','augmente la luminosite':'BRIGHTNESS_UP','baisse la luminosite':'BRIGHTNESS_DOWN',

@@ -108,6 +108,10 @@ Les actions passent par `PCAction` → `ActionPolicy` → `ActionExecutor`. Les 
 
 La découverte des applications desktop est en lecture seule (`core.pc_discovery`). Les contrôles Wi-Fi/Bluetooth utilisent NetworkManager et `bluetoothctl` lorsqu’ils sont disponibles. Les fenêtres restent dépendantes du bridge KWin ; une capacité indisponible retourne `NOT_SUPPORTED`.
 
+## PC CONTROL V6.0 FOUNDATION
+
+Ajouts : liste des applications installées, état/liste des fenêtres, état du volume, Wi‑Fi et Bluetooth. Le contrôle KWin avancé retourne `NOT_SUPPORTED` tant que le bridge n’est pas disponible.
+
 ## Environment Repair Flow
 
 `Audit → Plan → Confirmation → Revalidation → InstallationEngine → Verification → Final audit`.
