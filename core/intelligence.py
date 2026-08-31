@@ -52,6 +52,9 @@ def analyze(message, context=None):
     normalized = normalize_text(message)
     pending = _pending_context()
 
+    if pending and pending.get("intent") == "FILE_CREATE" and normalized not in {"annule", "annuler", "non"}:
+        return _decision("ACTION", {"action": "FILE_CREATE", "path": message.strip()}, 0.99, uses_context=True)
+
     if "sa musique" in normalized or "son dernier album" in normalized:
         artist = _last_music_artist()
         if artist:
@@ -147,7 +150,10 @@ def analyze(message, context=None):
 
     parsed_actions = parse_actions(message) if not normalized.startswith(("est ce ", "est-ce ", "quelle ", "qu est ce ", "qu'est ce ", "pourquoi ", "comment ")) else []
 
-    if parsed_actions and parsed_actions[0].get("needs_clarification") and any(marker in normalized for marker in ("mets moi", "mets-moi", "met moi", "met-moi")):
+    if parsed_actions and parsed_actions[0].get("needs_clarification") and (
+        parsed_actions[0].get("action") == "FILE_CREATE"
+        or any(marker in normalized for marker in ("mets moi", "mets-moi", "met moi", "met-moi"))
+    ):
         return _decision("CLARIFICATION", parsed_actions[0], 0.99)
 
     if len(parsed_actions) > 1:

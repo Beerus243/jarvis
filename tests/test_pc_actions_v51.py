@@ -89,3 +89,6 @@ def test_v59_open_folder_does_not_create_missing_folder(mock_popen, tmp_path):
         result = execute_pc_action(PCAction("OPEN_FOLDER", {"path": "Missing"}))
     assert not result.success
     mock_popen.assert_not_called()
+
+def test_v510_missing_file_name_requests_clarification():
+    assert detect_intent("crée un fichier") == {"action": "FILE_CREATE", "needs_clarification": True}

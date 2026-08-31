@@ -54,6 +54,8 @@ def execute(response_plan, message, context=None, handlers=None):
 
         if source == "CLARIFICATION":
             intent = response_plan.get("intent") or {}
+            if intent.get("action") == "FILE_CREATE":
+                return success("Quel nom souhaitez-vous donner au fichier ?")
             if intent.get("action") == "PLAY_MUSIC":
                 return success("Bien sûr. Tu veux quelque chose de précis ou je choisis pour toi ?")
             return success("Je ne suis pas certain de ce que tu veux dire. Donne-moi un peu plus de contexte.")

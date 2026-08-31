@@ -1891,6 +1891,10 @@ class PersonalityEngine:
         )
 
         normalized_message = self.normalize(message)
+        if base_response and "nom souhaitez" in self.normalize(str(base_response)) and "fichier" in normalized_message:
+            self.state.pending_intent = "FILE_CREATE"
+            self.state.pending_slots = {"missing": "path"}
+            return base_response
         if base_response and "mets" in normalized_message and any(value in normalized_message for value in ("une musique", "de la musique", "un morceau")):
             self.set_music_pending()
             return base_response

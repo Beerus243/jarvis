@@ -16,6 +16,12 @@ def _pc_action(text):
         match = re.match(pattern, raw, re.I)
         if match:
             return {"action": kind, "path": match.group(1).strip()}
+    folder_raw = re.match(r"^(?:ouvre|ouvrir|open)\s+(?:moi\s+)?(?:le\s+)?dossier\s+[\"']?(.+?)[\"']?$", raw, re.I)
+    if folder_raw:
+        path = folder_raw.group(1).strip()
+        return {"action": "OPEN_FOLDER", "path": path if ("/" in path or path.startswith("~")) else path.casefold()}
+    if re.match(r"^(?:cree|crée)[- ]?(?:moi\s+)?un\s+fichier$", raw, re.I):
+        return {"action": "FILE_CREATE", "needs_clarification": True}
     value = normalize_command(text)
     value = re.sub(r"^(?:hey\s+)?jarvis\s*[, ]*", "", value, flags=re.I)
     open_url = re.match(r"^(?:ouvre|ouvrir|lance|lancer|open|launch)\s+(?:moi\s+)?(youtube|google|github)$", value)
