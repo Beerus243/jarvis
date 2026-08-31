@@ -48,6 +48,7 @@ def dispatch(intent):
             "WIFI_STATUS", "WIFI_ENABLE", "WIFI_DISABLE", "WIFI_OPEN_SETTINGS",
             "BLUETOOTH_STATUS", "BLUETOOTH_ENABLE", "BLUETOOTH_DISABLE", "BLUETOOTH_OPEN_SETTINGS",
             "VOLUME_STATUS", "VOLUME_SET", "BRIGHTNESS_UP", "BRIGHTNESS_DOWN", "BRIGHTNESS_STATUS", "BRIGHTNESS_SET",
+            "VOLUME_UNMUTE", "MEDIA_STATUS", "PC_STATUS", "CPU_STATUS", "RAM_STATUS", "GPU_STATUS", "APPLICATION_LIST",
         }:
             params = dict(intent)
             params.pop("action", None)

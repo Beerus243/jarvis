@@ -8,6 +8,7 @@ from tools.browser import open_url
 from core.system_control import wifi, bluetooth, settings, volume_status, run
 from core.pc_discovery import discover_applications
 from core.pc_context import get_pc_context
+from core.hardware_monitor import pc_status, cpu_stats, memory_stats, gpu_stats
 
 ALLOWED_ACTIONS = {
     "SCREENSHOT", "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL",
@@ -18,6 +19,7 @@ ALLOWED_ACTIONS = {
     "WIFI_STATUS", "WIFI_ENABLE", "WIFI_DISABLE", "WIFI_OPEN_SETTINGS",
     "BLUETOOTH_STATUS", "BLUETOOTH_ENABLE", "BLUETOOTH_DISABLE", "BLUETOOTH_OPEN_SETTINGS",
     "VOLUME_STATUS", "VOLUME_SET", "BRIGHTNESS_UP", "BRIGHTNESS_DOWN", "BRIGHTNESS_STATUS", "BRIGHTNESS_SET",
+    "VOLUME_UNMUTE", "MEDIA_STATUS", "PC_STATUS", "CPU_STATUS", "RAM_STATUS", "GPU_STATUS", "APPLICATION_LIST",
 }
 
 def _safe_path(value):
@@ -116,6 +118,14 @@ def execute_pc_action(action: PCAction, *, capture=None):
         value = str((action.parameters or {}).get('value',''))
         if not value.isdigit() or not 0 <= int(value) <= 100: return ActionResult(action.action_type, False, 'Valeur de volume invalide.', error='INVALID_PARAMETER')
         ok, msg, err = run(['wpctl','set-volume','@DEFAULT_AUDIO_SINK@',f'{value}%']); return ActionResult(action.action_type, ok, msg or 'Volume réglé.', error=err)
+    if action.action_type == 'VOLUME_UNMUTE':
+        ok, msg, err = run(['wpctl','set-mute','@DEFAULT_AUDIO_SINK@','0']); return ActionResult(action.action_type, ok, msg or 'Son réactivé.', error=err)
+    if action.action_type in {'PC_STATUS','CPU_STATUS','RAM_STATUS','GPU_STATUS'}:
+        data = pc_status(); key={'CPU_STATUS':'cpu','RAM_STATUS':'memory','GPU_STATUS':'gpu'}.get(action.action_type)
+        selected = data.get(key, data) if key else data
+        return ActionResult(action.action_type, True, str(selected))
+    if action.action_type == 'MEDIA_STATUS':
+        ok,msg,err=run(['playerctl','status']); return ActionResult(action.action_type,ok,msg or 'Statut média indisponible.',error=err)
     if action.action_type.startswith('BRIGHTNESS_'):
         return ActionResult(action.action_type, False, 'Réglage de luminosité non disponible de façon fiable.', error='NOT_SUPPORTED')
     return ActionResult(action.action_type, False, "Action non supportée.", error="NOT_SUPPORTED")

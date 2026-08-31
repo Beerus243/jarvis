@@ -25,6 +25,10 @@ def _pc_action(text):
     value = normalize_command(text)
     value = re.sub(r"^(?:hey\s+)?jarvis\s*[, ]*", "", value, flags=re.I)
     direct = {
+        'donne moi l etat de mon pc':'PC_STATUS','quel est l etat de mon pc':'PC_STATUS','comment va mon pc':'PC_STATUS','donne moi les statistiques de mon pc':'PC_STATUS',
+        'combien utilise mon cpu':'CPU_STATUS','donne moi les stats cpu':'CPU_STATUS','quelle est ma ram':'RAM_STATUS','combien de ram ai je':'RAM_STATUS','combien de ram j ai':'RAM_STATUS',
+        'quel est mon gpu':'GPU_STATUS','combien utilise mon gpu':'GPU_STATUS','donne moi les stats gpu':'GPU_STATUS',
+        'remets le son':'VOLUME_UNMUTE','remet le son':'VOLUME_UNMUTE','quel est le statut de la musique':'MEDIA_STATUS',
         'quelles applications sont installees':'LIST_APPLICATIONS','quelles applications sont disponibles':'LIST_APPLICATIONS','liste les applications':'LIST_APPLICATIONS',
         'affiche mes fenetres':'WINDOW_LIST','liste les fenetres ouvertes':'WINDOW_LIST','quelle fenetre est active':'WINDOW_LIST','quelle application est active':'WINDOW_LIST',
         'active le wifi':'WIFI_ENABLE','active le wi fi':'WIFI_ENABLE','desactive le wifi':'WIFI_DISABLE','desactive le wi fi':'WIFI_DISABLE','quel est l etat du wifi':'WIFI_STATUS','quel est l etat du wi fi':'WIFI_STATUS',
@@ -34,6 +38,9 @@ def _pc_action(text):
         'ouvre les parametres bluetooth':'BLUETOOTH_OPEN_SETTINGS', 'ouvre les parametres audio':'WIFI_OPEN_SETTINGS',
     }
     if value in direct: return {'action': direct[value]}
+    volume = re.match(r"^(?:mets|met)\s+(?:le\s+)?volume\s+a\s+(\d{1,3})\s*%?$", value)
+    if volume and int(volume.group(1)) <= 100:
+        return {'action': 'VOLUME_SET', 'value': volume.group(1)}
     open_url = re.match(r"^(?:ouvre|ouvrir|lance|lancer|open|launch)\s+(?:moi\s+)?(youtube|google|github)$", value)
     if open_url:
         urls = {"youtube": "https://www.youtube.com", "google": "https://www.google.com", "github": "https://github.com"}

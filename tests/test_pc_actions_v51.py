@@ -110,3 +110,13 @@ def test_v60_application_discovery_is_read_only():
 def test_v60_window_control_is_explicitly_unavailable():
     result = execute_pc_action(PCAction("WINDOW_CLOSE"))
     assert not result.success and result.error == "NOT_SUPPORTED"
+
+def test_v516_hardware_stats_are_structured():
+    from core.hardware_monitor import cpu_stats, memory_stats, gpu_stats, pc_status
+    assert cpu_stats().threads is None or cpu_stats().threads > 0
+    assert memory_stats().total_bytes is None or memory_stats().total_bytes > 0
+    assert isinstance(pc_status(), dict)
+
+def test_v516_gpu_unavailable_is_explicit():
+    from core.hardware_monitor import GPUStats
+    assert GPUStats(None, None, None, None, None, None, None).usage_percent is None
