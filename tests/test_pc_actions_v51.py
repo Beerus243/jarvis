@@ -71,3 +71,21 @@ def test_v58_media_action_reports_not_supported(_):
 
 def test_v58_unknown_pc_action_blocked():
     assert execute_pc_action(PCAction("RAW_COMMAND", {"command": "rm -rf /"})).success is False
+
+def test_v59_natural_pc_parsing():
+    assert detect_intent("Hey Jarvis, ouvre YouTube") == {"action": "OPEN_URL", "url": "https://www.youtube.com"}
+    assert detect_intent("ouvre le dossier Jarvis") == {"action": "OPEN_FOLDER", "path": "jarvis"}
+    assert detect_intent("crée-moi un fichier au nom de rapport.txt") == {"action": "FILE_CREATE", "path": "rapport.txt"}
+    assert detect_intent("ouvre le fichier test.txt") == {"action": "FILE_OPEN", "path": "test.txt"}
+
+def test_v59_unsafe_file_paths_are_rejected(tmp_path):
+    with patch("core.actions.executor.Path.home", return_value=tmp_path):
+        result = execute_pc_action(PCAction("FILE_OPEN", {"path": "/etc/passwd"}))
+    assert result.success is False
+
+@patch("core.actions.executor.subprocess.Popen")
+def test_v59_open_folder_does_not_create_missing_folder(mock_popen, tmp_path):
+    with patch("core.actions.executor.Path.home", return_value=tmp_path):
+        result = execute_pc_action(PCAction("OPEN_FOLDER", {"path": "Missing"}))
+    assert not result.success
+    mock_popen.assert_not_called()

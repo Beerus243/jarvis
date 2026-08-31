@@ -77,6 +77,10 @@ def detect_work_environment_intent(message):
 
 
 def detect_intent(message):
+    # Actions PC à paramètres (dossiers, fichiers, services web).
+    from core.action_parser import _pc_action
+    if (pc_action := _pc_action(message)):
+        return pc_action
 
     message = _normalize_text(resolve_command_terms(message)["normalized_terms"])
 

@@ -2,10 +2,42 @@
 
 import re
 from core.command_understanding import resolve_command_terms
+from core.command_understanding import normalize_command
+
+
+def _pc_action(text):
+    """Parse les actions PC à paramètres structurés (sans commande shell)."""
+    raw = str(text or "").strip()
+    raw = re.sub(r"^(?:hey\s+)?jarvis\s*[, ]*", "", raw, flags=re.I)
+    for pattern, kind in (
+        (r"^(?:ouvre|ouvrir|open)\s+(?:moi\s+)?(?:le\s+)?fichier\s+[\"']?(.+?)[\"']?$", "FILE_OPEN"),
+        (r"^(?:cree|crée)[- ]?(?:moi\s+)?un\s+fichier(?:\s+(?:au\s+nom\s+de|nomme|appele|appelé))?\s+[\"']?(.+?)[\"']?$", "FILE_CREATE"),
+    ):
+        match = re.match(pattern, raw, re.I)
+        if match:
+            return {"action": kind, "path": match.group(1).strip()}
+    value = normalize_command(text)
+    value = re.sub(r"^(?:hey\s+)?jarvis\s*[, ]*", "", value, flags=re.I)
+    open_url = re.match(r"^(?:ouvre|ouvrir|lance|lancer|open|launch)\s+(?:moi\s+)?(youtube|google|github)$", value)
+    if open_url:
+        urls = {"youtube": "https://www.youtube.com", "google": "https://www.google.com", "github": "https://github.com"}
+        return {"action": "OPEN_URL", "url": urls[open_url.group(1)]}
+    folder = re.match(r"^(?:ouvre|ouvrir|open)\s+(?:moi\s+)?(?:le\s+)?dossier\s+(.+)$", value)
+    if folder:
+        return {"action": "OPEN_FOLDER", "path": folder.group(1).strip()}
+    file_open = re.match(r"^(?:ouvre|ouvrir|open)\s+(?:moi\s+)?(?:le\s+)?fichier\s+(.+)$", value)
+    if file_open:
+        return {"action": "FILE_OPEN", "path": file_open.group(1).strip()}
+    create = re.match(r"^(?:cree|crée)\s+(?:moi\s+)?un\s+fichier(?:\s+(?:au\s+nom\s+de|nomme|appele))?\s+(.+)$", value)
+    if create:
+        return {"action": "FILE_CREATE", "path": create.group(1).strip()}
+    return None
 
 
 def _one(text):
     value = text.strip()
+    if (pc := _pc_action(value)):
+        return pc
     low = resolve_command_terms(value)["normalized_terms"]
 
     # ============================================================

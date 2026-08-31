@@ -40,7 +40,7 @@ def dispatch(intent):
         action = intent.get("action")
 
         if action in {
-            "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL",
+            "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL", "OPEN_FOLDER",
             "FILE_OPEN", "FILE_CREATE", "FILE_COPY", "FILE_MOVE", "FILE_DELETE",
             "VOLUME_UP", "VOLUME_DOWN", "VOLUME_MUTE", "MEDIA_PLAY", "MEDIA_PAUSE",
             "MEDIA_NEXT", "MEDIA_PREVIOUS",

@@ -8,7 +8,7 @@ from tools.browser import open_url
 
 ALLOWED_ACTIONS = {
     "SCREENSHOT", "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL",
-    "FILE_OPEN", "FILE_CREATE", "FILE_COPY", "FILE_MOVE", "FILE_DELETE",
+    "OPEN_FOLDER", "FILE_OPEN", "FILE_CREATE", "FILE_COPY", "FILE_MOVE", "FILE_DELETE",
     "VOLUME_UP", "VOLUME_DOWN", "VOLUME_MUTE", "MEDIA_PLAY", "MEDIA_PAUSE",
     "MEDIA_NEXT", "MEDIA_PREVIOUS",
 }
@@ -25,6 +25,14 @@ def _file_action(action):
     source = _safe_path(p.get("source") or p.get("path"))
     target = _safe_path(p.get("target"))
     kind = action.action_type
+    if kind == "OPEN_FOLDER":
+        folder = _safe_path(p.get("path"))
+        if folder and not str(p.get("path", "")).startswith(("/", "~")):
+            folder = (Path.home() / str(p.get("path"))).resolve()
+        if not folder or not folder.is_dir(): return ActionResult(kind, False, "Dossier introuvable.", error="NOT_FOUND")
+        try: subprocess.Popen(["xdg-open", str(folder)])
+        except OSError as exc: return ActionResult(kind, False, "Impossible d'ouvrir le dossier.", error=str(exc))
+        return ActionResult(kind, True, f"J'ouvre le dossier {folder.name}.")
     if kind == "FILE_OPEN":
         if not source or not source.exists(): return ActionResult(kind, False, "Fichier introuvable.", error="NOT_FOUND")
         try: subprocess.Popen(["xdg-open", str(source)])
