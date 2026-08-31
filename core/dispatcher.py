@@ -44,6 +44,9 @@ def dispatch(intent):
             "FILE_OPEN", "FILE_CREATE", "FILE_COPY", "FILE_MOVE", "FILE_DELETE",
             "VOLUME_UP", "VOLUME_DOWN", "VOLUME_MUTE", "MEDIA_PLAY", "MEDIA_PAUSE",
             "MEDIA_NEXT", "MEDIA_PREVIOUS",
+            "WIFI_STATUS", "WIFI_ENABLE", "WIFI_DISABLE", "WIFI_OPEN_SETTINGS",
+            "BLUETOOTH_STATUS", "BLUETOOTH_ENABLE", "BLUETOOTH_DISABLE", "BLUETOOTH_OPEN_SETTINGS",
+            "VOLUME_STATUS", "VOLUME_SET", "BRIGHTNESS_UP", "BRIGHTNESS_DOWN", "BRIGHTNESS_STATUS", "BRIGHTNESS_SET",
         }:
             params = dict(intent)
             params.pop("action", None)

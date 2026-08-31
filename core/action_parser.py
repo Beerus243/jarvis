@@ -24,6 +24,14 @@ def _pc_action(text):
         return {"action": "FILE_CREATE", "needs_clarification": True}
     value = normalize_command(text)
     value = re.sub(r"^(?:hey\s+)?jarvis\s*[, ]*", "", value, flags=re.I)
+    direct = {
+        'active le wifi':'WIFI_ENABLE','active le wi fi':'WIFI_ENABLE','desactive le wifi':'WIFI_DISABLE','desactive le wi fi':'WIFI_DISABLE','quel est l etat du wifi':'WIFI_STATUS','quel est l etat du wi fi':'WIFI_STATUS',
+        'active le bluetooth':'BLUETOOTH_ENABLE','desactive le bluetooth':'BLUETOOTH_DISABLE','le bluetooth est il active':'BLUETOOTH_STATUS',
+        'quel est le volume':'VOLUME_STATUS','augmente la luminosite':'BRIGHTNESS_UP','baisse la luminosite':'BRIGHTNESS_DOWN',
+        'ouvre les parametres':'WIFI_OPEN_SETTINGS', 'ouvre les parametres wifi':'WIFI_OPEN_SETTINGS',
+        'ouvre les parametres bluetooth':'BLUETOOTH_OPEN_SETTINGS', 'ouvre les parametres audio':'WIFI_OPEN_SETTINGS',
+    }
+    if value in direct: return {'action': direct[value]}
     open_url = re.match(r"^(?:ouvre|ouvrir|lance|lancer|open|launch)\s+(?:moi\s+)?(youtube|google|github)$", value)
     if open_url:
         urls = {"youtube": "https://www.youtube.com", "google": "https://www.google.com", "github": "https://github.com"}

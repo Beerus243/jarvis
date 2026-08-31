@@ -109,6 +109,9 @@ def _battery():
 def _audio():
     return {"server": bool(shutil.which("pactl")), "default_sink": os.environ.get("PULSE_SINK")}
 
+def _cpu_gpu_memory():
+    return {"cpu": platform.processor() or None, "gpu": None, "ram": None}
+
 
 def get_pc_context():
     kwin = get_kwin_context()
@@ -122,6 +125,7 @@ def get_pc_context():
         "power": _battery().get("status", "unknown"),
         "network": {"available": bool(socket.gethostname())},
         "audio": _audio(),
+        "system": _cpu_gpu_memory(),
         "applications": get_known_applications(),
         "active_window": kwin["active_window"],
         "windows": kwin["windows"],

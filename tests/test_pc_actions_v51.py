@@ -92,3 +92,13 @@ def test_v59_open_folder_does_not_create_missing_folder(mock_popen, tmp_path):
 
 def test_v510_missing_file_name_requests_clarification():
     assert detect_intent("crée un fichier") == {"action": "FILE_CREATE", "needs_clarification": True}
+
+def test_v515_system_intents():
+    assert detect_intent("active le Wi-Fi") == {"action": "WIFI_ENABLE"}
+    assert detect_intent("active le Bluetooth") == {"action": "BLUETOOTH_ENABLE"}
+    assert detect_intent("quel est le volume") == {"action": "VOLUME_STATUS"}
+
+def test_v515_missing_system_dependency_is_controlled():
+    with patch("core.actions.executor.shutil.which", return_value=None):
+        result = execute_pc_action(PCAction("WIFI_ENABLE"))
+    assert not result.success and result.error == "NOT_SUPPORTED"

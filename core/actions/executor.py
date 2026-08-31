@@ -5,12 +5,16 @@ import shutil
 import subprocess
 from tools.applications import open_application, close_application
 from tools.browser import open_url
+from core.system_control import wifi, bluetooth, settings, volume_status, run
 
 ALLOWED_ACTIONS = {
     "SCREENSHOT", "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL",
     "OPEN_FOLDER", "FILE_OPEN", "FILE_CREATE", "FILE_COPY", "FILE_MOVE", "FILE_DELETE",
     "VOLUME_UP", "VOLUME_DOWN", "VOLUME_MUTE", "MEDIA_PLAY", "MEDIA_PAUSE",
     "MEDIA_NEXT", "MEDIA_PREVIOUS",
+    "WIFI_STATUS", "WIFI_ENABLE", "WIFI_DISABLE", "WIFI_OPEN_SETTINGS",
+    "BLUETOOTH_STATUS", "BLUETOOTH_ENABLE", "BLUETOOTH_DISABLE", "BLUETOOTH_OPEN_SETTINGS",
+    "VOLUME_STATUS", "VOLUME_SET", "BRIGHTNESS_UP", "BRIGHTNESS_DOWN", "BRIGHTNESS_STATUS", "BRIGHTNESS_SET",
 }
 
 def _safe_path(value):
@@ -88,4 +92,18 @@ def execute_pc_action(action: PCAction, *, capture=None):
         return ActionResult(action.action_type, bool(ok), message, error=None if ok else "FAILED")
     if action.action_type.startswith("FILE_"): return _file_action(action)
     if action.action_type.startswith("VOLUME_") or action.action_type.startswith("MEDIA_"): return _system_action(action)
+    if action.action_type.startswith('WIFI_'):
+        ok, msg, err = settings('wifi') if action.action_type == 'WIFI_OPEN_SETTINGS' else wifi(action.action_type)
+        return ActionResult(action.action_type, ok, msg or ('Wi-Fi contrôlé.' if ok else 'Le Wi-Fi est indisponible.'), error=err)
+    if action.action_type.startswith('BLUETOOTH_'):
+        ok, msg, err = settings('bluetooth') if action.action_type == 'BLUETOOTH_OPEN_SETTINGS' else bluetooth(action.action_type)
+        return ActionResult(action.action_type, ok, msg or ('Bluetooth contrôlé.' if ok else 'Bluetooth indisponible.'), error=err)
+    if action.action_type == 'VOLUME_STATUS':
+        ok, msg, err = volume_status(); return ActionResult(action.action_type, ok, msg, error=err)
+    if action.action_type == 'VOLUME_SET':
+        value = str((action.parameters or {}).get('value',''))
+        if not value.isdigit() or not 0 <= int(value) <= 100: return ActionResult(action.action_type, False, 'Valeur de volume invalide.', error='INVALID_PARAMETER')
+        ok, msg, err = run(['wpctl','set-volume','@DEFAULT_AUDIO_SINK@',f'{value}%']); return ActionResult(action.action_type, ok, msg or 'Volume réglé.', error=err)
+    if action.action_type.startswith('BRIGHTNESS_'):
+        return ActionResult(action.action_type, False, 'Réglage de luminosité non disponible de façon fiable.', error='NOT_SUPPORTED')
     return ActionResult(action.action_type, False, "Action non supportée.", error="NOT_SUPPORTED")

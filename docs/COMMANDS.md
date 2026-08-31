@@ -104,6 +104,10 @@ Les actions passent par `PCAction` → `ActionPolicy` → `ActionExecutor`. Les 
 | `monte/baisse/coupe le son` | `VOLUME_UP/DOWN/MUTE` | Non | dépend de `wpctl` |
 | `mets en pause`, `reprends`, `suivant` | `MEDIA_PAUSE/PLAY/NEXT` | Non | dépend de `playerctl` |
 
+## PC Control Engine V5.11–V5.15
+
+La découverte des applications desktop est en lecture seule (`core.pc_discovery`). Les contrôles Wi-Fi/Bluetooth utilisent NetworkManager et `bluetoothctl` lorsqu’ils sont disponibles. Les fenêtres restent dépendantes du bridge KWin ; une capacité indisponible retourne `NOT_SUPPORTED`.
+
 ## Environment Repair Flow
 
 `Audit → Plan → Confirmation → Revalidation → InstallationEngine → Verification → Final audit`.
