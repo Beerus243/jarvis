@@ -60,7 +60,12 @@ def _file_action(action):
         return ActionResult(kind, True, f"J'ouvre le dossier {folder.name}.")
     if kind == "FILE_OPEN":
         if not source or not source.exists(): return ActionResult(kind, False, "Fichier introuvable.", error="NOT_FOUND")
-        try: subprocess.Popen(["xdg-open", str(source)])
+        if source.is_dir(): return ActionResult(kind, False, "La cible est un dossier.", error="INVALID_TYPE")
+        opener = "xdg-open" if shutil.which("xdg-open") else ("gio" if shutil.which("gio") else None)
+        if not opener: return ActionResult(kind, False, "Aucun ouvreur de fichiers disponible.", error="NOT_SUPPORTED")
+        try:
+            subprocess.Popen([opener, "open", str(source)] if opener == "gio" else [opener, str(source)])
+            logging.info("Fichier ouvert via %s: %s", opener, source)
         except OSError as exc: return ActionResult(kind, False, "Impossible d'ouvrir le fichier.", error=str(exc))
         return ActionResult(kind, True, f"J'ouvre {source.name}.")
     if not source or (kind != "FILE_CREATE" and not source.exists()):
