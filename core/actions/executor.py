@@ -9,6 +9,14 @@ from core.system_control import wifi, bluetooth, settings, volume_status, run
 from core.pc_discovery import discover_applications
 from core.pc_context import get_pc_context
 from core.hardware_monitor import pc_status, cpu_stats, memory_stats, gpu_stats
+import logging
+
+def _is_protected_path(value):
+    path = Path(str(value or '')).expanduser().resolve()
+    if path.name in {'user.json','conversation.json'} and path.parent.name == 'data': return False
+    protected_dirs = {'core','personality','voice','memory','tools'}
+    if any(part in protected_dirs for part in path.parts): return True
+    return path.suffix.lower() in {'.py','.sh','.bash','.zsh','.toml','.cfg','.ini'} or path.name == 'main.py'
 
 ALLOWED_ACTIONS = {
     "SCREENSHOT", "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL",
@@ -31,9 +39,17 @@ def _safe_path(value):
 
 def _file_action(action):
     p = action.parameters or {}
+    raw_candidates = [p.get('source'), p.get('path'), p.get('target')]
+    if any(value and _is_protected_path(value) for value in raw_candidates):
+        logging.warning('Action fichier refusée sur chemin protégé: %s', raw_candidates)
+        return ActionResult(action.action_type, False, "Je ne peux pas modifier ce fichier système pour des raisons de sécurité. Je peux vous générer un patch si vous le souhaitez.", error='DENIED')
     source = _safe_path(p.get("source") or p.get("path"))
     target = _safe_path(p.get("target"))
     kind = action.action_type
+    candidates = [p for p in (source, target) if p]
+    if any(_is_protected_path(p) for p in candidates):
+        logging.warning('Action fichier refusée sur chemin protégé: %s', candidates)
+        return ActionResult(kind, False, "Je ne peux pas modifier ce fichier système pour des raisons de sécurité. Je peux vous générer un patch si vous le souhaitez.", error='DENIED')
     if kind == "OPEN_FOLDER":
         folder = _safe_path(p.get("path"))
         if folder and not str(p.get("path", "")).startswith(("/", "~")):

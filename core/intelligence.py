@@ -13,10 +13,40 @@ from core.task_engine import get_active_task
 from core.action_parser import parse_actions
 from core.user_state import detect_user_state
 from core.environment.intent import detect_environment_intent
+try:
+    from rapidfuzz import fuzz
+except ImportError:  # environnement minimal
+    fuzz = None
 
 CONFIDENCE_HIGH = 0.90
 CONFIDENCE_CONTEXT = 0.70
 CONFIDENCE_LOW = 0.30
+
+_FUZZY_INTENTS = {
+    "OPEN_BROWSER": ("ouvre le navigateur", "lance chrome", "ouvre internet"),
+    "OPEN_APPLICATION": ("ouvre firefox", "lance vscode", "ouvre spotify"),
+    "VOLUME_UP": ("monte le son", "augmente le volume"),
+    "VOLUME_DOWN": ("baisse le son", "diminue le volume"),
+    "GET_TIME": ("quelle heure est il", "donne moi l heure"),
+}
+
+def normalize_and_classify(user_input: str) -> dict:
+    """Classe une formulation légèrement fautive vers un intent connu.
+
+    Cette aide reste déterministe et bornée : elle ne fabrique jamais de
+    commande système. Une confiance insuffisante renvoie ``{}`` afin que le
+    chemin Groq existant puisse décider si nécessaire.
+    """
+    text = normalize_text(str(user_input or ""))
+    if not text:
+        return {}
+    best, score = None, 0
+    for intent, examples in _FUZZY_INTENTS.items():
+        for example in examples:
+            current = (fuzz.ratio(text, example) / 100) if fuzz else 0
+            if current > score:
+                best, score = intent, current
+    return {"intent": best, "confidence": score} if best and score >= 0.70 else {}
 
 
 def _decision(decision_type, intent=None, confidence=0.50,
@@ -50,6 +80,8 @@ def analyze(message, context=None):
     context = context or {}
     reference = context.get("reference_info") or analyze_reference(message, context)
     normalized = normalize_text(message)
+    if any(term in normalized for term in ('modifie ton code','reecris toi','réécris toi','ameliore ton algorithme','améliore ton algorithme')):
+        return _decision('SELF_MODIFICATION_REFUSAL', None, 0.99)
     pending = _pending_context()
 
     if pending and pending.get("intent") == "FILE_CREATE" and normalized not in {"annule", "annuler", "non"}:

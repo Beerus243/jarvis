@@ -42,6 +42,8 @@ def execute(response_plan, message, context=None, handlers=None):
                                fallback_allowed=fallback_allowed, error_type=error_type)
 
     try:
+        if source == "SELF_MODIFICATION_REFUSAL":
+            return success("Techniquement, je pourrais. Mais je vous déconseille de m'accorder cette permission. Je peux en revanche vous générer un patch que vous pourrez examiner et appliquer vous-même. Voulez-vous que je le prépare ?")
         if source == "ACTION":
             return success(handlers.get("dispatch", dispatch)(response_plan.get("intent")))
 

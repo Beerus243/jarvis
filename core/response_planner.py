@@ -8,6 +8,8 @@ def plan(decision):
     confidence = float(decision.get("confidence", 0.0))
     ambiguous = bool(decision.get("ambiguous", False))
 
+    if decision_type == "SELF_MODIFICATION_REFUSAL":
+        return {"source": "SELF_MODIFICATION_REFUSAL", "intent": None, "confidence": confidence, "requires_memory": False, "requires_ai": False, "ambiguous": False}
     if decision_type in {"ACTION", "ACTION_COMPOSED", "USER_STATE", "PERSONAL_MEMORY", "PERSONAL_STATE", "PROJECT_MEMORY", "PC_CONTEXT", "TASK", "ENVIRONMENT"}:
         if ambiguous or confidence < 0.70:
             source = "SEMANTIC_MEMORY" if decision.get("requires_memory") else "AI"

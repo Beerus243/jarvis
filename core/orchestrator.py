@@ -19,6 +19,11 @@ from core.user_state import detect_user_state
 from core.environment.preparation import EnvironmentPreparationEngine
 from core.environment.action_planner import format_execution_plan
 from core.environment.command_handler import handle_environment_intent
+from personality.engine import AdvancedPersonalityEngine
+
+# Instance unique du moteur avancé : il enrichit les réponses locales sans
+# remplacer le moteur historique ni le dispatcher.
+_advanced_personality = AdvancedPersonalityEngine()
 
 
 def _semantic_fallback(message, resolved_reference):
@@ -41,6 +46,11 @@ def process(message):
     context = build_decision_context(message)
     context["personal_context"] = get_personal_context()
     context["user_state"] = detect_user_state(message)
+    _advanced_personality.analyze_context(message, context.get("pc_context"), context.get("personal_context"))
+    cultural = _advanced_personality.handle_cultural_reference(message)
+    banter = _advanced_personality.handle_banter(message)
+    if cultural or banter:
+        return cultural or banter
     decision = intelligence.analyze(message, context=context)
     record_diagnostic(create_diagnostic_event(
         "INTELLIGENCE",
