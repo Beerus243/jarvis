@@ -23,7 +23,7 @@ CONFIDENCE_CONTEXT = 0.70
 CONFIDENCE_LOW = 0.30
 
 _FUZZY_INTENTS = {
-    "OPEN_BROWSER": ("ouvre le navigateur", "lance chrome", "ouvre internet"),
+    "OPEN_BROWSER": ("ouvre le navigateur", "lance le navigateur", "lance chrome", "ouvre internet"),
     "OPEN_APPLICATION": ("ouvre firefox", "lance vscode", "ouvre spotify"),
     "VOLUME_UP": ("monte le son", "augmente le volume"),
     "VOLUME_DOWN": ("baisse le son", "diminue le volume"),
@@ -46,7 +46,7 @@ def normalize_and_classify(user_input: str) -> dict:
             current = (fuzz.ratio(text, example) / 100) if fuzz else 0
             if current > score:
                 best, score = intent, current
-    return {"intent": best, "confidence": score} if best and score >= 0.70 else {}
+    return {"intent": best, "confidence": score} if best and score >= 0.85 else {}
 
 
 def _decision(decision_type, intent=None, confidence=0.50,

@@ -1,42 +1,42 @@
 [
     {
         "role": "assistant",
-        "message": "Je peux vous donner un avis. Mais je préfère vous donner le vrai plutôt que celui que vous espérez entendre."
+        "message": "Fichier créé : ben10."
     },
     {
         "role": "user",
-        "message": "j'ai sommeil"
+        "message": "augemnte le son"
+    },
+    {
+        "role": "user",
+        "message": "quel est le volume"
     },
     {
         "role": "assistant",
-        "message": "Je vois. Tu sembles fatigué. Tu préfères faire une pause ou continuer ?"
+        "message": "L'action a échoué."
     },
     {
         "role": "user",
-        "message": "pause"
-    },
-    {
-        "role": "user",
-        "message": "pause"
-    },
-    {
-        "role": "user",
-        "message": "comment tu vas"
-    },
-    {
-        "role": "user",
-        "message": "ouvre Spotify"
+        "message": "ouvre les parametres"
     },
     {
         "role": "assistant",
-        "message": "J'ouvre Spotify."
+        "message": "qrc:/qt/qml/org/kde/kcmutils/SimpleKCM.qml:70: TypeError: Cannot read property 'name' of null"
     },
     {
         "role": "user",
-        "message": "ouvre Spotify"
+        "message": "quel est le volume"
     },
     {
         "role": "assistant",
-        "message": "J'ouvre Spotify."
+        "message": "L'action a échoué."
+    },
+    {
+        "role": "user",
+        "message": "hey"
+    },
+    {
+        "role": "assistant",
+        "message": "Bonjour Fabrice. Je suis heureux de vous voir."
     }
 ]

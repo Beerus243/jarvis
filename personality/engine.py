@@ -28,7 +28,11 @@ class AdvancedPersonalityEngine:
         result={'seriousness':self.current_seriousness,'error_streak':self.error_streak,'reference':ref,'personal_context':personal_context or {}}
         self.context_history.append(result); return result
     def select_response(self,action_type,params=None,context=None):
-        pools={'OPEN_APPLICATION':['C’est parti.','Je m’en occupe.','Je lance l’application.'],'VOLUME_UP':['Volume augmenté.','Le son monte.','C’est fait.'],'fallback_general':['Je vous écoute.','Compris.','D’accord.']}
+        pools={
+            'OPEN_APPLICATION':['Bien sûr, Monsieur.','Je m’en occupe. Le thé sera prêt dans cinq minutes.','Comme vous voulez. J’ai vérifié qu’elle était à jour.','La voici, Monsieur. Essayez de ne pas la planter, j’ai déjà assez de travail.'],
+            'VOLUME_UP':['J’augmente le volume. Vous voulez que je prépare des boules Quies pour les voisins ?','Le volume est augmenté, Monsieur. Cela vous semble suffisant ?','Très bien, Monsieur.'],
+            'SYSTEM_STATUS':['Tout fonctionne dans les limites acceptables. Pour l’instant.','Le système est stable. Je n’ose pas dire « pour l’instant » de peur de le tenter.','Les indicateurs sont convenables, Monsieur.'],
+            'fallback_general':['Je vous écoute, Monsieur.','Compris, Monsieur.','À votre service, Monsieur.']}
         pool=pools.get(action_type,pools['fallback_general']); serious=(context or {}).get('seriousness',self.current_seriousness)>0.8 or self.error_streak>1
         if serious: pool=pool[:1]
         for response in pool:
@@ -37,11 +41,16 @@ class AdvancedPersonalityEngine:
     def handle_banter(self,user_input):
         if self.current_seriousness>0.8: return None
         text=str(user_input or '').casefold()
-        if 'tu reflechis trop' in text or 'tu réfléchis trop' in text: return 'C’est généralement préférable à l’inverse.'
-        if 'c est facile pour toi' in text or "c'est facile pour toi" in text: return 'C’est pour cela que je prends mon temps.'
+        if 'tu reflechis trop' in text or 'tu réfléchis trop' in text: return 'Avec tout le respect que je vous dois, c’est précisément pour cela que je suis là.'
+        if 'je sais ce que je fais' in text or 'fais moi confiance' in text: return 'Je vous fais confiance. C’est le code qui m’inspire des réserves.'
+        if 'c est facile pour toi' in text or "c'est facile pour toi" in text: return 'Je suis une machine, Monsieur. Mais même moi, j’apprécie un peu de considération.'
+        if 'ca va marcher' in text or 'ça va marcher' in text: return 'C’est ce que nous disions la dernière fois. Le café est prêt, au cas où.'
+        if 't es sur' in text or "t'es sûr" in text: return 'Aussi sûr que possible. Mais je garde une gomme effaçable à portée de main.'
+        if 't es pas drole' in text or "t'es pas drôle" in text: return 'Je ne suis pas payé pour être drôle, Monsieur. Je suis payé pour votre sécurité.'
         return None
     def handle_cultural_reference(self,user_input):
         text=str(user_input or '').casefold()
         if re.search(r'valar\s+morghulis',text): return 'Valar Dohaeris.'
-        if re.search(r'que la force',text) and self.current_seriousness<=0.8: return 'Soit avec vous.'
+        if re.search(r'que la force',text) and self.current_seriousness<=0.8: return 'Et avec vous, Monsieur.'
+        if re.search(r'je suis ton pere',text): return 'Cela expliquerait beaucoup de choses. Mais non, je ne suis que le majordome.'
         return None

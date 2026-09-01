@@ -1,7 +1,19 @@
 import json
+import threading
+import logging
+from threading import Thread
 from config.settings import CONVERSATION_FILE
 
 history = []
+_write_lock = threading.Lock()
+
+def _write_conversation(conversation):
+    try:
+        with _write_lock:
+            with open(CONVERSATION_FILE, "w") as f:
+                json.dump(conversation, f, indent=4, ensure_ascii=False)
+    except OSError as exc:
+        logging.debug("Écriture conversation échouée: %s", exc)
 
 
 def get_history():
@@ -68,14 +80,7 @@ def add_message(role, message):
     # Garder uniquement les 10 derniers messages
     conversation = conversation[-10:]
 
-    with open(CONVERSATION_FILE, "w") as f:
-
-        json.dump(
-            conversation,
-            f,
-            indent=4,
-            ensure_ascii=False
-        )
+    Thread(target=_write_conversation, args=(conversation,), daemon=True).start()
 
 
 def get_last_message():

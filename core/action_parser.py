@@ -59,6 +59,14 @@ def _pc_action(text):
 
 def _one(text):
     value = text.strip()
+    # Tolérance aux petites fautes pour les intents simples connus.
+    try:
+        from core.intelligence import normalize_and_classify
+        fuzzy = normalize_and_classify(value)
+        if fuzzy and fuzzy.get("confidence", 0) >= 0.85:
+            return {"action": fuzzy["intent"]}
+    except (ImportError, RuntimeError):
+        pass
     if (pc := _pc_action(value)):
         return pc
     low = resolve_command_terms(value)["normalized_terms"]

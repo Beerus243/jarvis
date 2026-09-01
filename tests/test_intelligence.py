@@ -107,3 +107,15 @@ def test_python_file_action_is_denied(tmp_path):
     from core.actions.executor import execute_pc_action
     result = execute_pc_action(PCAction('FILE_CREATE', {'path': str(tmp_path / 'unsafe.py')}))
     assert not result.success and result.error == 'DENIED'
+
+def test_pc_context_cache_reuses_value():
+    from core import pc_context
+    from unittest.mock import patch
+    pc_context.clear_pc_context_cache()
+    with patch('core.pc_context._process_snapshot', return_value=[]) as snap:
+        pc_context.get_pc_context(); pc_context.get_pc_context()
+        assert snap.call_count == 1
+
+def test_confidence_threshold_is_high():
+    from core.intelligence import normalize_and_classify
+    assert normalize_and_classify('ouvre firefox').get('confidence', 0) >= 0.85

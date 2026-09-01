@@ -6,6 +6,7 @@ import platform
 import shutil
 import socket
 import subprocess
+import time
 from pathlib import Path
 from core.kwin_context import get_kwin_context
 
@@ -48,6 +49,9 @@ KNOWN_APPLICATIONS = {
         "controllable": False,
     },
 }
+_CONTEXT_CACHE = None
+_CONTEXT_CACHE_TIME = 0.0
+CONTEXT_TTL = 2.0
 
 
 def _process_snapshot():
@@ -114,8 +118,12 @@ def _cpu_gpu_memory():
 
 
 def get_pc_context():
+    global _CONTEXT_CACHE, _CONTEXT_CACHE_TIME
+    now = time.time()
+    if _CONTEXT_CACHE is not None and now - _CONTEXT_CACHE_TIME < CONTEXT_TTL:
+        return _CONTEXT_CACHE
     kwin = get_kwin_context()
-    return {
+    context = {
         "os": platform.platform(),
         "hostname": socket.gethostname(),
         "user": getpass.getuser(),
@@ -130,6 +138,12 @@ def get_pc_context():
         "active_window": kwin["active_window"],
         "windows": kwin["windows"],
     }
+    _CONTEXT_CACHE, _CONTEXT_CACHE_TIME = context, now
+    return context
+
+def clear_pc_context_cache():
+    global _CONTEXT_CACHE, _CONTEXT_CACHE_TIME
+    _CONTEXT_CACHE, _CONTEXT_CACHE_TIME = None, 0.0
 
 
 def answer_pc_question(message, context=None):
