@@ -109,7 +109,7 @@ def test_main_reaches_environment(command, expected, routed, monkeypatch):
 def test_composed_commands_keep_application_targets(routed, monkeypatch):
     entries = iter(["ouvre Firefox et ouvre le terminal", "quitter"])
     monkeypatch.setattr("builtins.input", lambda _: next(entries))
-    main.main([])
+    main.main(['--no-proactive'])
     assert [call.args[0] for call in routed[0].call_args_list] == [
         {"action": "OPEN_APPLICATION", "target": "firefox"}, {"action": "OPEN_TERMINAL"},
     ]

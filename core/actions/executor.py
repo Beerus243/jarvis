@@ -19,6 +19,7 @@ def _is_protected_path(value):
     return path.suffix.lower() in {'.py','.sh','.bash','.zsh','.toml','.cfg','.ini'} or path.name == 'main.py'
 
 ALLOWED_ACTIONS = {
+    "AUDIO_OPEN_SETTINGS",
     "SCREENSHOT", "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL",
     "OPEN_FOLDER", "FILE_OPEN", "FILE_CREATE", "FILE_COPY", "FILE_MOVE", "FILE_DELETE",
     "LIST_APPLICATIONS", "WINDOW_LIST", "WINDOW_FOCUS", "WINDOW_MINIMIZE", "WINDOW_MAXIMIZE", "WINDOW_CLOSE",
@@ -75,10 +76,13 @@ def _file_action(action):
             if not source: return ActionResult(kind, False, "Chemin invalide.", error="INVALID_PATH")
             source.parent.mkdir(parents=True, exist_ok=True); source.touch(exist_ok=False)
             return ActionResult(kind, True, f"Fichier créé : {source.name}.")
+        if kind == "FILE_DELETE":
+            source.unlink()
+            return ActionResult(kind, True, "Fichier supprimé.")
         if not target: return ActionResult(kind, False, "Destination invalide.", error="INVALID_PATH")
+        if target.exists(): return ActionResult(kind, False, "La destination existe déjà ; aucun fichier écrasé.", error="DESTINATION_EXISTS")
         if kind == "FILE_COPY": shutil.copy2(source, target)
         elif kind == "FILE_MOVE": shutil.move(str(source), str(target))
-        elif kind == "FILE_DELETE": source.unlink()
         return ActionResult(kind, True, "Opération sur le fichier effectuée.")
     except (OSError, shutil.Error) as exc:
         return ActionResult(kind, False, "Opération sur le fichier échouée.", error=str(exc))
@@ -127,6 +131,9 @@ def execute_pc_action(action: PCAction, *, capture=None):
         return ActionResult(action.action_type, bool(ok), message, error=None if ok else "FAILED")
     if action.action_type.startswith("FILE_") or action.action_type == "OPEN_FOLDER": return _file_action(action)
     if action.action_type in {"VOLUME_UP", "VOLUME_DOWN", "VOLUME_MUTE", "MEDIA_PLAY", "MEDIA_PAUSE", "MEDIA_NEXT", "MEDIA_PREVIOUS"}: return _system_action(action)
+    if action.action_type == 'AUDIO_OPEN_SETTINGS':
+        ok, message, error = settings('audio')
+        return ActionResult(action.action_type, ok, message or 'Paramètres audio demandés.', error=error)
     if action.action_type.startswith('WIFI_'):
         ok, msg, err = settings('wifi') if action.action_type == 'WIFI_OPEN_SETTINGS' else wifi(action.action_type)
         return ActionResult(action.action_type, ok, msg or ('Wi-Fi contrôlé.' if ok else 'Le Wi-Fi est indisponible.'), error=err)

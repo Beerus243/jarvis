@@ -31,6 +31,20 @@ def execute(response_plan, message, context=None, handlers=None):
     source = response_plan.get("source")
 
     def success(response):
+        if isinstance(response, ExecutionResult):
+            return response
+        if hasattr(response, "success") and hasattr(response, "message"):
+            awaiting = getattr(response, "policy", None) == "CONFIRMATION_REQUIRED" and not response.success
+            return ExecutionResult(
+                bool(response.success), source or "ACTION", response=response.message,
+                error=getattr(response, "error", None), fallback_allowed=False,
+                error_type="NONE" if response.success else ("CONFIRMATION_REQUIRED" if awaiting else "ACTION_FAILED"),
+                evidence={"artifact_path": getattr(response, "artifact_path", None)},
+            )
+        if isinstance(response, tuple) and len(response) == 2:
+            ok, message = response
+            return ExecutionResult(bool(ok), source or "ACTION", response=message,
+                                   error_type="NONE" if ok else "ACTION_FAILED")
         if response is None:
             fallback = source in {"ACTION", "SEMANTIC_MEMORY", "AI"}
             return ExecutionResult(False, source or "UNKNOWN", error="Aucune réponse",
@@ -63,6 +77,8 @@ def execute(response_plan, message, context=None, handlers=None):
             return success("Je ne suis pas certain de ce que tu veux dire. Donne-moi un peu plus de contexte.")
 
         if source == "ACTION_COMPOSED":
+            if handlers.get('composed'):
+                return success(handlers['composed'](message, response_plan.get('intent', [])))
             from core.action_executor import execute_plan
             results = execute_plan(response_plan.get("intent", []), dispatcher=handlers.get("raw_dispatch", dispatch))
             if not results:
@@ -110,7 +126,7 @@ def execute(response_plan, message, context=None, handlers=None):
 
         if source == "SEMANTIC_MEMORY":
             result = handlers.get("semantic", _semantic_search)(_project_query(message, context))
-            return success(result.get("contenu", "") if result else None)
+            return success(result.get("contenu", "") if isinstance(result, dict) else result)
 
         if source == "AI":
             return success(handlers.get("ai", _ask_ai)(_project_query(message, context)))

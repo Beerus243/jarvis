@@ -5,6 +5,7 @@ from .contracts import TrustedSource
 @dataclass(frozen=True)
 class InstallationArtifact:
     name:str; version:str; platform:str; architecture:str; source:TrustedSource; archive_type:str; destination:Path; checksum:str|None=None; evidence:tuple[str,...]=()
+    checksum_algorithm: str = 'sha256'
     def validate(self):
         if self.platform not in {'linux'} or self.architecture not in {'x86_64','aarch64'}: return False
         home=Path.home().resolve(); dest=self.destination.expanduser().resolve()

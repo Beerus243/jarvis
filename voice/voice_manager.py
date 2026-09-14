@@ -9,9 +9,13 @@ def _get_engine():
     global _engine
 
     if _engine is None:
-        from voice.kokoro_engine import get_engine
-
-        _engine = get_engine()
+        try:
+            from voice.kokoro_engine import get_engine
+            _engine = get_engine()
+        except (ImportError, RuntimeError, OSError) as error:
+            from voice.fallback_engine import EspeakEngine
+            print(f"JARVIS > Synthèse locale de secours (Kokoro : {error}).")
+            _engine = EspeakEngine()
 
     return _engine
 
@@ -27,7 +31,7 @@ def _get_player():
     return _player
 
 
-def speak(text):
+def speak(text, cancel_event=None):
     """Prononce une réponse sans jamais interrompre la réponse texte."""
     if not text or not str(text).strip():
         return False
@@ -38,6 +42,9 @@ def speak(text):
         audio_path = _get_engine().generate(format_for_speech(text))
         if not audio_path:
             return False
+        if cancel_event is not None:
+            from voice.audio_player import play_interruptible
+            return play_interruptible(audio_path, cancel_event)
         return bool(_get_player()(audio_path))
     except Exception as error:  # pragma: no cover - dépend du matériel local
         print(f"⚠️ Voix indisponible : {error}")

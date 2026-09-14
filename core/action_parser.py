@@ -12,6 +12,13 @@ def _pc_action(text):
     url = re.fullmatch(r"(?:ouvre|ouvrir|lance|open)\s+(https?://\S+)", raw, re.I)
     if url:
         return {"action": "OPEN_URL", "url": url.group(1)}
+    transfer = re.fullmatch(r"(copie|d[eé]place)\s+(?:le\s+)?fichier\s+(.+?)\s+vers\s+(.+)", raw, re.I)
+    if transfer:
+        return {"action": "FILE_COPY" if transfer[1].lower() == "copie" else "FILE_MOVE",
+                "source": transfer[2].strip('\"\''), "target": transfer[3].strip('\"\'')}
+    delete = re.fullmatch(r"(?:supprime|efface)\s+(?:le\s+)?fichier\s+(.+)", raw, re.I)
+    if delete:
+        return {"action": "FILE_DELETE", "path": delete[1].strip('\"\'')}
     for pattern, kind in (
         (r"^(?:ouvre|ouvrir|open)\s+(?:moi\s+)?(?:le\s+)?fichier\s+[\"']?(.+?)[\"']?$", "FILE_OPEN"),
         (r"^(?:cree|crée)[- ]?(?:moi\s+)?un\s+fichier(?:\s+(?:au\s+nom\s+de|nomme|appele|appelé))?\s+[\"']?(.+?)[\"']?$", "FILE_CREATE"),
@@ -38,7 +45,7 @@ def _pc_action(text):
         'active le bluetooth':'BLUETOOTH_ENABLE','desactive le bluetooth':'BLUETOOTH_DISABLE','le bluetooth est il active':'BLUETOOTH_STATUS',
         'quel est le volume':'VOLUME_STATUS','augmente la luminosite':'BRIGHTNESS_UP','baisse la luminosite':'BRIGHTNESS_DOWN',
         'ouvre les parametres':'WIFI_OPEN_SETTINGS', 'ouvre les parametres wifi':'WIFI_OPEN_SETTINGS',
-        'ouvre les parametres bluetooth':'BLUETOOTH_OPEN_SETTINGS', 'ouvre les parametres audio':'WIFI_OPEN_SETTINGS',
+        'ouvre les parametres bluetooth':'BLUETOOTH_OPEN_SETTINGS', 'ouvre les parametres audio':'AUDIO_OPEN_SETTINGS',
     }
     if value in direct: return {'action': direct[value]}
     volume = re.match(r"^(?:mets|met)\s+(?:le\s+)?volume\s+a\s+(\d{1,3})\s*%?$", value)

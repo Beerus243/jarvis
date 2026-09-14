@@ -6,7 +6,7 @@ import math
 from core.command_session import GOODBYE, is_exit_command, process_command as think
 from voice.voice_manager import speak as speak_response
 
-VERSION = "V5.7"
+VERSION = "V5.18"
 
 
 def show_banner():
@@ -29,6 +29,10 @@ def run_terminal():
             if is_exit_command(message):
                 print(f"JARVIS > {GOODBYE}")
                 break
+            from core.runtime import get_runtime
+            runtime = get_runtime()
+            if runtime:
+                runtime.busy.set()
             response = think(message)
             if response:
                 print(f"JARVIS > {response}")
@@ -40,6 +44,10 @@ def run_terminal():
             break
         except Exception as error:
             print(f"JARVIS > Une erreur est survenue : {error}")
+        finally:
+            from core.runtime import get_runtime
+            if get_runtime():
+                get_runtime().busy.clear()
     return 0
 
 
@@ -73,6 +81,10 @@ def build_parser():
     parser.add_argument("--sample-rate", type=_positive_int, default=44100, help="Fréquence de capture en Hz (44100 par défaut).")
     parser.add_argument("--wake-threshold", type=_positive_float, default=0.40, help="Seuil de détection entre 0 et 1 (0.40 par défaut).")
     parser.add_argument("--command-seconds", type=_positive_float, default=5.0, help="Durée de capture après le signal, en secondes (5 par défaut).")
+    parser.add_argument("--followup-seconds", type=_positive_float, default=8.0, help="Attente d'une réponse sans répéter Hey Jarvis (8 secondes).")
+    parser.add_argument("--raw-capture", action="store_true", help="Capture fixe de diagnostic, sans détection de fin de phrase.")
+    parser.add_argument("--no-barge-in", action="store_true", help="Désactiver l'interruption de la voix par Hey Jarvis.")
+    parser.add_argument("--no-proactive", action="store_true", help="Désactiver la surveillance et les rappels pour cette session.")
     return parser
 
 
@@ -81,9 +93,16 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.wake_threshold > 1:
         parser.error("--wake-threshold doit être compris entre 0 et 1.")
-    if not args.voice and not args.list_microphones:
-        return run_terminal()
+    from core.runtime import Runtime
+    runtime = None
     try:
+        if not args.no_proactive and not args.list_microphones:
+            def notify(message):
+                print(f"\nJARVIS > {message}", flush=True)
+                return True
+            runtime = Runtime(notify=None if args.voice else notify).start()
+        if not args.voice and not args.list_microphones:
+            return run_terminal()
         from voice.voice_pipeline import LocalWakeVoicePipeline, list_microphones
 
         if args.list_microphones:
@@ -99,6 +118,8 @@ def main(argv=None):
         pipeline.run_microphone(
             device_index=args.mic_device, sample_rate=args.sample_rate,
             command_seconds=args.command_seconds,
+            endpointing=not args.raw_capture, followup_seconds=args.followup_seconds,
+            barge_in=not args.no_barge_in,
         )
         return 0
     except KeyboardInterrupt:
@@ -110,6 +131,9 @@ def main(argv=None):
     except Exception as error:
         print(f"JARVIS > Mode vocal indisponible : {error}. Vérifiez le microphone avec --list-microphones.")
         return 1
+    finally:
+        if runtime:
+            runtime.stop()
 
 
 if __name__ == "__main__":

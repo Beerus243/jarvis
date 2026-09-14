@@ -1,3 +1,4 @@
+from core.json_store import atomic_write, locked
 """Mémoire locale de l'état actuel de Fabrice."""
 
 import json
@@ -84,9 +85,7 @@ def _load():
 
 
 def _save(data):
-    MEMORY_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with MEMORY_FILE.open("w", encoding="utf-8") as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
+    atomic_write(MEMORY_FILE, data)
 
 
 def _text(message):
@@ -157,6 +156,7 @@ def detect_personal_state_question(message):
     )
 
 
+@locked(lambda: MEMORY_FILE)
 def update_personal_state(message, now=None):
     update = detect_personal_state(message)
     if not update:

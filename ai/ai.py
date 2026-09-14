@@ -21,7 +21,9 @@ def _get_client():
             raise RuntimeError("GROQ_API_KEY introuvable. Vérifie ton fichier .env.")
         client = OpenAI(
             api_key=GROQ_API_KEY,
-            base_url="https://api.groq.com/openai/v1"
+            base_url="https://api.groq.com/openai/v1",
+            timeout=20,
+            max_retries=0,
         )
     return client
 

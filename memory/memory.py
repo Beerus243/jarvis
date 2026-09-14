@@ -1,3 +1,4 @@
+from core.json_store import atomic_write, locked
 import json
 import re
 import unicodedata
@@ -35,21 +36,7 @@ def load_memory():
 # ============================================================
 
 def save_memory(user):
-
-    MEMORY_FILE.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(
-        MEMORY_FILE,
-        "w",
-        encoding="utf-8"
-    ) as f:
-
-        json.dump(
-            user,
-            f,
-            indent=4,
-            ensure_ascii=False
-        )
+    atomic_write(MEMORY_FILE, user)
 
 
 # ============================================================
@@ -99,6 +86,7 @@ def generate_memory_id(user):
 # MÉMORISER
 # ============================================================
 
+@locked(lambda: MEMORY_FILE)
 def remember(
     contenu,
     categorie,
@@ -626,6 +614,7 @@ def find_best_memory(message, debug=False):
 # ANALYSER UNE INFORMATION À MÉMORISER
 # ============================================================
 
+@locked(lambda: MEMORY_FILE)
 def analyze_memory(message):
 
     original_message = message.strip()

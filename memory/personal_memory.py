@@ -1,3 +1,4 @@
+from core.json_store import atomic_write, locked
 """Lecture et mise à jour locale des informations personnelles simples."""
 
 import json
@@ -24,9 +25,7 @@ def load_user_memory():
 
 
 def _save_user_memory(user):
-    MEMORY_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with MEMORY_FILE.open("w", encoding="utf-8") as file:
-        json.dump(user, file, indent=4, ensure_ascii=False)
+    atomic_write(MEMORY_FILE, user)
 
 
 def detect_personal_question(message):
@@ -98,6 +97,7 @@ def _update_watching_preference(message, user):
     return f"Je retiens que tu aimes regarder {value}."
 
 
+@locked(lambda: MEMORY_FILE)
 def answer_personal_question(message):
     """Répond localement, ou mémorise une préférence personnelle explicite."""
 

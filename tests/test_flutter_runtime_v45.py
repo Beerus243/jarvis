@@ -1,4 +1,4 @@
-import io, tarfile
+import io, tarfile, hashlib
 from pathlib import Path
 from core.environment.installation_engine import InstallationEngine
 from core.environment.installers.flutter_installer import FlutterInstaller
@@ -20,9 +20,11 @@ class FakePath:
 def artifact(tmp):
     from core.environment.installers.artifacts import InstallationArtifact
     from core.environment.installers.contracts import TrustedSource
-    return InstallationArtifact('flutter.tar.xz','1','linux','x86_64',TrustedSource('Flutter','1','archive','https://storage.googleapis.com/a'),'tar',tmp/'install')
+    checksum = hashlib.sha256(b'archive fixture').hexdigest()
+    return InstallationArtifact('flutter.tar.xz','1','linux','x86_64',TrustedSource('Flutter','1','archive','https://storage.googleapis.com/a',checksum),'tar',tmp/'install',checksum)
 def test_flutter_runtime_end_to_end(tmp_path):
     plan=FlutterInstaller().plan(); dl=FakeDownload(tmp_path/'a'); ex=FakeExtract(); pc=FakePath()
+    (tmp_path/'a').write_bytes(b'archive fixture')
     def verifier(name, executable=None): return ExecutionResult(name,ExecutionStatus.SUCCESS)
     report=InstallationEngine(dl,ex,pc,verifier,allowed_root=tmp_path).execute(plan,artifact=artifact(tmp_path),dry_run=False,confirmation_handler=lambda step: True)
     assert report.to_dict()['success'] and dl.calls==1 and ex.calls==1 and pc.calls==1

@@ -44,3 +44,13 @@ def test_invalid_volume_does_not_execute(monkeypatch):
     result = executor.execute_pc_action(PCAction("VOLUME_SET", {"value": "101"}))
     assert not result.success
     run.assert_not_called()
+
+
+def test_audio_settings_do_not_open_wifi_settings(monkeypatch, tmp_path):
+    from core.intent import detect_intent
+    from core.action_executor import execute_action
+    monkeypatch.setattr('core.action_executor.MEMORY_FILE', tmp_path/'user.json')
+    settings = Mock(return_value=(True, 'ouvert', None))
+    monkeypatch.setattr(executor, 'settings', settings)
+    assert execute_action(detect_intent('ouvre les paramètres audio')).success
+    settings.assert_called_once_with('audio')

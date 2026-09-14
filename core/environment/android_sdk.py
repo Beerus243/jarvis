@@ -12,7 +12,7 @@ class AndroidSDKStatus:
 
 class AndroidSDKDiscovery:
     def __init__(self, roots=None):
-        home=Path.home(); self.roots=[Path(p).expanduser() for p in (roots or [os.getenv('ANDROID_SDK_ROOT',''),os.getenv('ANDROID_HOME',''),home/'Android/Sdk',home/'Android/sdk']) if p]
+        home=Path.home(); self.roots=[Path(p).expanduser() for p in (roots or [os.getenv('ANDROID_SDK_ROOT',''),os.getenv('ANDROID_HOME',''),home/'Android/Sdk',home/'Android/sdk', *sorted((home/'.local/share/jarvis/environments/android').glob('*'), reverse=True)]) if p]
     def discover(self):
         root=next((p.resolve() for p in self.roots if p.is_dir()),None)
         if root is None: return AndroidSDKStatus(None,'SDK_MISSING','MISSING','MISSING','MISSING','MISSING','MISSING','UNKNOWN',False)

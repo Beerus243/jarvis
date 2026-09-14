@@ -16,9 +16,10 @@ def is_exit_command(message):
     if normalized in {"stop", "arrete"}:
         from core.environment.pending_plan import get_pending
         from core.task_engine import get_active_task
+        from core.pending_action import get_pending as get_pending_action
 
         # Une annulation doit atteindre le cerveau lorsqu'un plan est actif.
-        if get_pending() is not None or get_active_task():
+        if get_pending() is not None or get_pending_action() is not None or get_active_task():
             return False
     return True
 

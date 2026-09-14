@@ -21,18 +21,15 @@ class ActionResult:
 
 
 def _log(result):
+    from core.json_store import update
+    def append(data):
+        logs = data.setdefault("action_history", [])
+        logs.append({"action": result.action, "timestamp": datetime.now().astimezone().isoformat(), "result": result.message, "success": result.success, "confirmation": result.confirmation, "error": result.error})
+        data["action_history"] = logs[-50:]
+        return data
     try:
-        with MEMORY_FILE.open("r", encoding="utf-8") as file:
-            data = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
-        data = {}
-    logs = data.setdefault("action_history", [])
-    logs.append({"action": result.action, "timestamp": datetime.now().astimezone().isoformat(), "result": result.message, "success": result.success, "confirmation": result.confirmation, "error": result.error})
-    data["action_history"] = logs[-50:]
-    try:
-        with MEMORY_FILE.open("w", encoding="utf-8") as file:
-            json.dump(data, file, indent=4, ensure_ascii=False)
-    except OSError:
+        update(MEMORY_FILE, append)
+    except (OSError, ValueError):
         pass
 
 
@@ -124,10 +121,7 @@ def execute_plan(actions, confirmation=False, dispatcher=None):
 
         if (
             not result.success
-            or result.policy in {
-                BLOCKED_ACTION,
-                CONFIRMATION_REQUIRED,
-            }
+            or result.policy == BLOCKED_ACTION
         ):
             break
 

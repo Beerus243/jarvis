@@ -37,7 +37,7 @@ def discover_capabilities():
         build_tools=android.build_tools != "MISSING", platforms=android.platforms != "MISSING",
         sdkmanager=android.cmdline_tools != "MISSING", android_licenses=android.licenses == "ACCEPTED")
 
-def check_environment(capability="flutter_android_build", *, capabilities=None, provider_state="NETWORK_UNAVAILABLE"):
+def check_environment(capability="flutter_android_build", *, capabilities=None, provider_state="UNKNOWN"):
     caps = capabilities or discover_capabilities()
     requirements = {
         "flutter": ("flutter", "dart"),
@@ -59,7 +59,7 @@ def check_environment(capability="flutter_android_build", *, capabilities=None, 
         status = "PARTIAL"
     return {"capability": capability, "status": status, "satisfied": satisfied,
             "missing": missing, "capabilities": caps.to_dict(),
-            "repairability": "BLOCKED_NETWORK" if status == "BLOCKED_NETWORK" else "AVAILABLE"}
+            "repairability": "BLOCKED_NETWORK" if status == "BLOCKED_NETWORK" else ('UNKNOWN' if provider_state == 'UNKNOWN' and missing else "AVAILABLE")}
 
 def format_capability_report(result):
     lines = [f"Capacité : {result['capability']}", f"État : {result['status']}", "", "Satisfait :"]

@@ -2,6 +2,31 @@
 
 Catalogue basé sur `core/intent.py`, `core/dispatcher.py`, `tools/` et le brain actuels.
 
+## Ajouts V5.18
+
+| Commande | Effet |
+|---|---|
+| `rappelle-moi dans 10 minutes de faire une pause` | Rappel persistant |
+| `rappelle-moi demain à 9h de reprendre Jarvis` | Rappel à une heure locale |
+| `liste mes rappels` / `annule le rappel <id>` | Gestion des rappels |
+| `mode silencieux` / `reprends les notifications` | Suspendre/reprendre les annonces |
+| `rappelle-moi plus tard` | Reporter la dernière annonce de 10 minutes |
+| `mes tâches` / `où en es-tu` | Statut et progression des tâches |
+| `annule la tâche` / `pause la tâche` / `reprends la tâche` | Contrôle entre les étapes |
+| `reprends la tâche <id>` | Reprendre une ancienne tâche |
+| `configure ma routine de travail : ouvre Firefox puis ouvre GitHub` | Enregistrer la routine utilisée par `au boulot` |
+| `montre ma routine de travail` | Afficher les étapes enregistrées |
+| `mission vérifie l'état du PC` | Mission Groq, au plus 8 étapes |
+| `retiens éditeur : VS Code` / `corrige éditeur : Vim` | Mémorisation explicite |
+| `oublie éditeur` / `liste mes souvenirs` | Correction de la mémoire |
+| `confirme` / `annule` | Réponse à l'action exacte en attente, pendant 10 minutes |
+| `montre-moi ce que tu ferais` | Afficher le plan en attente sans l'exécuter |
+| `merci Jarvis` / `retour en veille` | Fermer l'échange vocal |
+
+La détection, les rappels et les tâches utilisent le runtime de `main.py`.
+La mission exige `GROQ_API_KEY` ; le STT Google exige Internet.
+Voir le [bilan d'intégration et les limites](V5_IMPLEMENTATION.md).
+
 Le terminal et `python main.py --voice` utilisent le même cerveau. Le mode
 vocal attend « Hey Jarvis », puis la commande après le signal. Voir
 l'[audit de branchement](VOICE_ACTIVATION_AUDIT.md) pour les corrections

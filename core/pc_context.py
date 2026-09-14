@@ -111,10 +111,27 @@ def _battery():
 
 
 def _audio():
-    return {"server": bool(shutil.which("pactl")), "default_sink": os.environ.get("PULSE_SINK")}
+    try:
+        result = subprocess.run(['pactl', 'info'], capture_output=True, text=True, timeout=2)
+        available = result.returncode == 0
+    except (OSError, subprocess.SubprocessError):
+        available = False
+    return {"server": available, "default_sink": os.environ.get("PULSE_SINK")}
 
 def _cpu_gpu_memory():
-    return {"cpu": platform.processor() or None, "gpu": None, "ram": None}
+    from core.hardware_monitor import memory_stats
+    from dataclasses import asdict
+    return {"cpu": platform.processor() or None, "gpu": None, "ram": asdict(memory_stats())}
+
+
+def _network():
+    try:
+        result = subprocess.run(['nmcli', '-t', '-f', 'STATE', 'general'], capture_output=True, text=True, timeout=2, env={**os.environ, 'LC_ALL': 'C'})
+        state = result.stdout.strip() if result.returncode == 0 else 'unknown'
+    except (OSError, subprocess.SubprocessError):
+        state = 'unknown'
+    return {'available': None if state == 'unknown' else state.startswith('connected'),
+            'state': state, 'source': 'NetworkManager', 'internet_verified': False}
 
 
 def get_pc_context():
@@ -131,7 +148,8 @@ def get_pc_context():
         "current_directory": os.getcwd(),
         "battery": _battery(),
         "power": _battery().get("status", "unknown"),
-        "network": {"available": bool(socket.gethostname())},
+        "network": _network(),
+        "observed_at": now,
         "audio": _audio(),
         "system": _cpu_gpu_memory(),
         "applications": get_known_applications(),

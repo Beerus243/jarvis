@@ -27,3 +27,6 @@ env/
 Thumbs.db
 models/
 data/spotify_token.json
+data/*.sqlite3*
+data/*.lock
+data/environment_metadata/

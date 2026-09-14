@@ -16,7 +16,7 @@ def test_voice_entrypoint_passes_device_and_rate(monkeypatch):
     assert main.main(["--voice", "--mic-device", "3", "--sample-rate", "16000",
                       "--wake-threshold", "0.6", "--command-seconds", "7"]) == 0
     factory.assert_called_once_with(sample_rate=16000, threshold=0.6)
-    pipeline.run_microphone.assert_called_once_with(device_index=3, sample_rate=16000, command_seconds=7.0)
+    pipeline.run_microphone.assert_called_once_with(device_index=3, sample_rate=16000, command_seconds=7.0, endpointing=True, followup_seconds=8.0, barge_in=True)
 
 
 def test_voice_defaults_use_system_microphone(monkeypatch):

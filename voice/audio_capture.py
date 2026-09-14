@@ -220,3 +220,34 @@ def write_wav(path: str, data: bytes, config: CaptureConfig | None = None) -> No
         output.setsampwidth(cfg.sample_width)
         output.setframerate(cfg.sample_rate)
         output.writeframes(data)
+
+
+def capture_command(stream, config=None):
+    """Capture une phrase sur un flux existant, sans recalibrage qui mange son début."""
+    cfg = config or CaptureConfig(device_index=None)
+    wait_frames = max(1, math.ceil(cfg.wait_timeout * cfg.sample_rate / cfg.chunk))
+    max_frames = max(1, math.ceil(cfg.maximum_duration * cfg.sample_rate / cfg.chunk))
+    silence_frames = max(1, math.ceil(cfg.silence_duration * cfg.sample_rate / cfg.chunk))
+    pre_roll = deque(maxlen=max(1, math.ceil(cfg.pre_roll * cfg.sample_rate / cfg.chunk)))
+    frames = []
+    loud = quiet = 0
+    recording = False
+    for _ in range(wait_frames + max_frames):
+        frame = stream.read(cfg.chunk, exception_on_overflow=False)
+        active = rms(frame) >= cfg.minimum_threshold
+        if not recording:
+            pre_roll.append(frame)
+            loud = loud + 1 if active else 0
+            wait_frames -= 1
+            if loud >= cfg.start_frames:
+                recording = True
+                frames.extend(pre_roll)
+            elif wait_frames <= 0:
+                break
+            continue
+        frames.append(frame)
+        quiet = 0 if active else quiet + 1
+        if len(frames) >= max_frames or quiet >= silence_frames:
+            break
+    data = b''.join(frames)
+    return {'audio': data, 'speech_detected': recording, 'duration': len(data) / (2 * cfg.sample_rate)}

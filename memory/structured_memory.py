@@ -1,3 +1,4 @@
+from core.json_store import atomic_write, locked
 import json
 
 from memory.text_normalizer import normalize_text
@@ -27,19 +28,7 @@ def load_memory():
 
 
 def save_memory(user):
-
-    with open(
-        MEMORY_FILE,
-        "w",
-        encoding="utf-8"
-    ) as f:
-
-        json.dump(
-            user,
-            f,
-            indent=4,
-            ensure_ascii=False
-        )
+    atomic_write(MEMORY_FILE, user)
 
 
 def get_project():
@@ -56,6 +45,7 @@ def get_project():
         {}
     )
 
+@locked(lambda: MEMORY_FILE)
 def update_project(attribute, value):
 
     user = load_memory()
@@ -73,6 +63,7 @@ def update_project(attribute, value):
     save_memory(user)
 
 
+@locked(lambda: MEMORY_FILE)
 def update_project_attribute(attribute, value):
 
     user = load_memory()
@@ -96,6 +87,7 @@ def get_project_attribute(attribute):
 
 
 
+@locked(lambda: MEMORY_FILE)
 def update_project_information(attribute, value):
 
     old_value = get_project_attribute(attribute)
@@ -398,6 +390,7 @@ def analyze_project_information_v2(message):
         value
     )
 
+@locked(lambda: MEMORY_FILE)
 def analyze_project_update(message):
 
     information = parse_project_information(message)

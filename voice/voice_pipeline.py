@@ -9,6 +9,7 @@ import subprocess
 import tempfile
 import time
 import wave
+import threading
 from collections import deque
 
 from core.command_session import GOODBYE, is_exit_command
@@ -138,6 +139,8 @@ class LocalWakeVoicePipeline:
         self.feedback = feedback or play_wake_feedback
         self.session = WakeWordSession()
         self.state = VoiceState.SLEEPING
+        self._speaking_handler = None
+        self._interrupted = False
 
     def start(self):
         reset = getattr(self.wake_detector, "reset", None)
@@ -190,13 +193,16 @@ class LocalWakeVoicePipeline:
                 return {"success": False, "error": "Commande vide"}
             command = str(command).strip()
             print(f"Fabrice > {command}", flush=True)
+            from core.command_understanding import normalize_command
+            if normalize_command(command) in {'retour en veille', 'mets toi en veille', 'merci jarvis'}:
+                return {'success': True, 'command': command, 'response': 'Je reste disponible.', 'sleep': True, 'exit': False}
             should_exit = is_exit_command(command)
             response = GOODBYE if should_exit else self.brain(command)
             self.state = VoiceState.SPEAKING
             self.session.state = self.state
             if response:
                 print(f"JARVIS > {response}", flush=True)
-                self.speaker(response)
+                (self._speaking_handler or self.speaker)(response)
             result = {
                 "success": bool(response),
                 "command": command,
@@ -236,7 +242,8 @@ class LocalWakeVoicePipeline:
 
     def run_microphone(self, device_index: int | None = None, sample_rate: int = 44100,
                        chunk: int = 1024, command_seconds: float = 5.0,
-                       max_cycles: int | None = None):
+                       max_cycles: int | None = None, *, endpointing=False,
+                       followup_seconds=0.0, barge_in=False):
         """Run the two-step wake → command loop on the real PyAudio stream."""
         import pyaudio
         import speech_recognition as sr
@@ -250,6 +257,7 @@ class LocalWakeVoicePipeline:
         stream = None
         results = deque(maxlen=100)
         cycles = 0
+        followup = False
 
         def open_stream():
             return pa.open(
@@ -270,14 +278,68 @@ class LocalWakeVoicePipeline:
                 finally:
                     current.close()
 
+        def speak_with_interrupt(text):
+            from voice.voice_manager import speak
+            if not barge_in or self.speaker is not speak:
+                return self.speaker(text)
+            cancelled = threading.Event()
+            errors = []
+            def output():
+                try:
+                    speak(text, cancel_event=cancelled)
+                except Exception as error:
+                    errors.append(error)
+            worker = threading.Thread(target=output, daemon=True)
+            microphone = None
+            try:
+                self.wake_detector.reset()
+                microphone = open_stream()
+                worker.start()
+                while worker.is_alive():
+                    detection = self.wake_detector.detect(microphone.read(chunk, exception_on_overflow=False))
+                    if detection.detected:
+                        self._interrupted = True
+                        cancelled.set()
+                        break
+                worker.join(timeout=3)
+            finally:
+                cancelled.set()
+                if microphone is not None:
+                    try:
+                        microphone.stop_stream()
+                    finally:
+                        microphone.close()
+            if errors:
+                raise errors[0]
+
+        self._speaking_handler = speak_with_interrupt
+
         try:
             print("JARVIS > Dites « Hey Jarvis », attendez le signal, puis votre commande.", flush=True)
             print("JARVIS > Détection locale ; la commande est transcrite en français par Google (Internet requis).", flush=True)
             while max_cycles is None or cycles < max_cycles:
                 self.start()
                 stream = open_stream()
-                print("JARVIS en veille...", flush=True)
+                if followup:
+                    self.state = self.session.state = VoiceState.COMMAND_LISTENING
+                else:
+                    print("JARVIS en veille...", flush=True)
                 while self.state == VoiceState.WAKE_WORD_LISTENING:
+                    from core.runtime import get_runtime
+                    runtime = get_runtime()
+                    if runtime:
+                        def announce(message):
+                            close_stream()
+                            print(f"JARVIS > {message}", flush=True)
+                            try:
+                                self.speaker(message)
+                            except Exception as error:
+                                print(f'JARVIS > Synthèse indisponible : {error}', flush=True)
+                            self.wake_detector.reset()
+                            return True  # La notification reste lisible si l’audio échoue.
+                        runtime.deliver(announce)
+                        if stream is None:
+                            stream = open_stream()
                     pcm = stream.read(chunk, exception_on_overflow=False)
                     self.feed_wake_chunk(pcm, feedback=False)
                 close_stream()
@@ -285,17 +347,37 @@ class LocalWakeVoicePipeline:
                     continue
                 # Fermer/réouvrir élimine l'audio accumulé pendant le signal
                 # ou la réponse précédente. Le STT ne reçoit que la commande.
-                self._play_feedback()
+                if not followup:
+                    self._play_feedback()
                 stream = open_stream()
                 print("[LISTEN] J'écoute votre commande...", flush=True)
-                frames = [
-                    stream.read(chunk, exception_on_overflow=False)
-                    for _ in range(max(1, math.ceil(command_seconds * sample_rate / chunk)))
-                ]
-                raw_command = b"".join(frames)
+                if endpointing:
+                    from voice.audio_capture import CaptureConfig, capture_command
+                    capture = capture_command(stream, CaptureConfig(sample_rate=sample_rate, chunk=chunk,
+                        device_index=device_index, maximum_duration=command_seconds,
+                        wait_timeout=followup_seconds if followup else 5.0))
+                    raw_command = capture['audio']
+                else:
+                    raw_command = b"".join(stream.read(chunk, exception_on_overflow=False)
+                        for _ in range(max(1, math.ceil(command_seconds * sample_rate / chunk))))
                 close_stream()
+                if not raw_command:
+                    self.timeout_command()
+                    followup = False
+                    cycles += 1
+                    continue
                 audio = sr.AudioData(raw_command, sample_rate, 2)
-                result = self.process_command_audio(audio)
+                from core.runtime import get_runtime
+                runtime = get_runtime()
+                if runtime:
+                    runtime.busy.set()
+                self._interrupted = False
+                try:
+                    result = self.process_command_audio(audio)
+                finally:
+                    if runtime:
+                        runtime.busy.clear()
+                followup = bool(followup_seconds and not result.get('sleep') and (result.get('success') or self._interrupted))
                 results.append(result)
                 if result.get("error"):
                     print(f"JARVIS > {result['error']}", flush=True)
@@ -305,6 +387,7 @@ class LocalWakeVoicePipeline:
                 cycles += 1
             return list(results)
         finally:
+            self._speaking_handler = None
             self.timeout_command()
             try:
                 close_stream()

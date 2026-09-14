@@ -1,5 +1,8 @@
 # JARVIS — MASTER TECHNICAL MAP
 
+> Carte historique V5.17. Pour les modifications V5.18 (runtime, stockage,
+> confirmations et voix), consulter [V5_IMPLEMENTATION.md](V5_IMPLEMENTATION.md).
+
 ## CURRENT VERSION
 
 État de référence : V5.17 (dernier commit `3b9b7d2`). Aucun fichier de version unique n’a été trouvé ; la version est déduite des commits et de la documentation.

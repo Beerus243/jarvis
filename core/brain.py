@@ -5,6 +5,7 @@ from core.decision_context import build_decision_context
 from memory.personal_state import get_personal_context
 from core.user_state import detect_user_state
 from core.task_engine import get_active_task, task_dict
+from core.execution_result import CommandResponse
 
 # Compatibilité avec les tests/intégrations qui remplaçaient cet ancien point
 # d'injection. L'appel réel est désormais géré par l'orchestrateur.
@@ -27,7 +28,7 @@ def think(message):
     # contextuelle pertinente.
     # ========================================================
 
-    personality_response = personalize(
+    personality_response = None if isinstance(response, CommandResponse) else personalize(
         message,
         response,
         context,

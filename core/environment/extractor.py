@@ -19,6 +19,9 @@ class SecureArchiveExtractor:
                         if info.is_dir(): target.mkdir(parents=True,exist_ok=True); continue
                         target.parent.mkdir(parents=True,exist_ok=True)
                         with z.open(info) as src,target.open('wb') as dst: dst.write(src.read())
+                        mode = (info.external_attr >> 16) & 0o777
+                        if mode:
+                            target.chmod(mode)
             else:
                 with tarfile.open(archive,'r:*') as tar:
                     for info in tar.getmembers():

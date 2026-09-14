@@ -10,6 +10,7 @@ from .path_config import ConfigureUserPath
 from .verifier import verify
 from .user_space_repair import UserEnvironmentConfigurator
 import os
+import hashlib
 from contextlib import contextmanager
 
 class InstallationEngine:
@@ -21,6 +22,8 @@ class InstallationEngine:
             destination=Path(artifact.destination).expanduser().resolve()
             if not destination.is_relative_to(self.allowed_root):
                 return InstallationReport([ExecutionResult('preflight',ExecutionStatus.FAILED,error='Destination hors HOME.')])
+            if destination.exists() and any(destination.iterdir()):
+                return InstallationReport([ExecutionResult('preflight',ExecutionStatus.FAILED,error='Destination non vide ; installation refusée pour éviter un écrasement.')])
         done=set(); results=[]; state={}
         for step in plan.steps:
             if any(dep not in done for dep in step.dependencies):
@@ -43,6 +46,12 @@ class InstallationEngine:
                     if not value.success: raise RuntimeError(value.error or 'Téléchargement échoué.')
                 elif step.action_type == 'VERIFY':
                     if not state.get('download') or not state['download'].success: raise RuntimeError('Téléchargement absent.')
+                    if artifact.checksum_algorithm not in {'sha1', 'sha256', 'sha512'} or not artifact.checksum:
+                        raise ValueError('Empreinte de l’archive absente ou non prise en charge.')
+                    with Path(state['download'].path).open('rb') as stream:
+                        digest = hashlib.file_digest(stream, artifact.checksum_algorithm).hexdigest()
+                    if digest.lower() != artifact.checksum.lower():
+                        raise ValueError('L’archive ne correspond plus à l’empreinte confirmée.')
                 elif step.action_type == 'EXTRACT':
                     value=self.extractor.extract(state['download'].path, artifact.destination, artifact.archive_type)
                     if not value: raise RuntimeError('Extraction échouée.')
@@ -51,6 +60,13 @@ class InstallationEngine:
                                      else self._installation_root(artifact.destination))
                 elif step.action_type == 'INSTALL':
                     if not state.get('root'): raise RuntimeError('Racine Flutter introuvable.')
+                    if step.requirement == 'cmdline-tools':
+                        root = Path(state['root']) / 'cmdline-tools'
+                        if (root / 'bin/sdkmanager').is_file():
+                            staging = root.with_name('.cmdline-tools-staging')
+                            root.rename(staging)
+                            root.mkdir()
+                            staging.rename(root / 'latest')
                 elif step.action_type == 'VERIFY_ANDROID_COMPONENT':
                     root = Path(state.get('root') or artifact.destination).resolve()
                     component = step.requirement
@@ -58,6 +74,8 @@ class InstallationEngine:
                                root / 'cmdline-tools/bin/sdkmanager') if component == 'cmdline-tools' else ()
                     if component == 'cmdline-tools' and not any(marker.is_file() for marker in markers):
                         raise RuntimeError('sdkmanager introuvable après extraction.')
+                    if component == 'cmdline-tools' and not any(os.access(marker, os.X_OK) for marker in markers):
+                        raise RuntimeError('sdkmanager présent mais non exécutable.')
                 elif step.action_type == 'CONFIGURE_PATH':
                     root=Path(sdk_root) if sdk_root else Path(state['root'])
                     state['root']=root

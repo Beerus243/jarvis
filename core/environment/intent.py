@@ -28,7 +28,10 @@ def detect_environment_intent(message: str) -> EnvironmentPreparationIntent|None
             return EnvironmentPreparationIntent('Android', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
         if 'ce qu il manque' in normalized:
             return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
-        if 'environnement' in normalized or 'flutter' in normalized:
+        if 'flutter' in normalized:
+            version = re.search(r'(?:version|\bv)\s*([0-9]+(?:\.[0-9]+)*)', text)
+            return EnvironmentPreparationIntent('Flutter', 'flutter_development', requested_version=version[1] if version else None, intent='ENVIRONMENT_REPAIR_PLAN')
+        if 'environnement' in normalized and not re.search(r'\b(node|nodejs|next|java|jdk)\b', normalized):
             return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
         if 'java' in normalized or 'jdk' in normalized:
             return EnvironmentPreparationIntent('Java', 'java', intent='JDK_INSTALL')

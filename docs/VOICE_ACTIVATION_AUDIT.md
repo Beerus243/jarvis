@@ -1,5 +1,8 @@
 # Audit des commandes et première intégration vocale
 
+> Audit historique de la première intégration. Les ajouts et limites actuels
+> de V5.18 sont décrits dans [V5_IMPLEMENTATION.md](V5_IMPLEMENTATION.md).
+
 ## Trajet depuis main.py
 
 Le terminal et `LocalWakeVoicePipeline.from_defaults()` utilisent tous deux

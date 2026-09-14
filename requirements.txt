@@ -9,6 +9,7 @@ SpeechRecognition
 PyAudio
 numpy
 soundfile
-kokoro
+# Kokoro reste optionnel sur Python 3.14 (dépendances de langue incompatibles).
+kokoro; python_version < '3.14'
 pyttsx3
 requests
