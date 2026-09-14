@@ -194,10 +194,9 @@ class LocalWakeVoicePipeline:
             command = str(command).strip()
             print(f"Fabrice > {command}", flush=True)
             from core.command_understanding import normalize_command
-            if normalize_command(command) in {'retour en veille', 'mets toi en veille', 'merci jarvis'}:
-                return {'success': True, 'command': command, 'response': 'Je reste disponible.', 'sleep': True, 'exit': False}
+            sleeping = normalize_command(command) in {'retour en veille', 'mets toi en veille', 'merci jarvis'}
             should_exit = is_exit_command(command)
-            response = GOODBYE if should_exit else self.brain(command)
+            response = 'Je reste disponible.' if sleeping else (GOODBYE if should_exit else self.brain(command))
             self.state = VoiceState.SPEAKING
             self.session.state = self.state
             if response:
@@ -211,6 +210,8 @@ class LocalWakeVoicePipeline:
                 "error": None if response else "Aucune réponse",
                 "exit": should_exit,
             }
+            if sleeping:
+                result['sleep'] = True
         except Exception as error:
             result = {"success": False, "command": command, "response": response,
                       "error": str(error) or type(error).__name__, "exit": should_exit}
@@ -221,6 +222,15 @@ class LocalWakeVoicePipeline:
     def timeout_command(self):
         self.session.timeout()
         self.state = self.session.state
+
+    def prepare_voice(self):
+        """Charge la voix avant l'écoute et annonce oralement la disponibilité."""
+        from voice.voice_manager import prepare_voice, speak
+
+        if self.speaker is speak:
+            prepare_voice()
+        if self.speaker('Bonjour Fabrice. Je suis prêt.') is False:
+            raise RuntimeError('La voix Kokoro ne peut pas être lue. Vérifiez la sortie audio.')
 
     @classmethod
     def from_defaults(cls, *, sample_rate=44100, threshold=0.40):
@@ -381,9 +391,13 @@ class LocalWakeVoicePipeline:
                 results.append(result)
                 if result.get("error"):
                     print(f"JARVIS > {result['error']}", flush=True)
+                    try:
+                        self.speaker("Je n'ai pas pu traiter la commande. Réessaie après le signal.")
+                    except Exception:
+                        pass
                 if result.get("exit"):
                     break
-                print("[SLEEP] Retour en veille", flush=True)
+                print("[LISTEN] Tu peux continuer à parler." if followup else "[SLEEP] Retour en veille", flush=True)
                 cycles += 1
             return list(results)
         finally:

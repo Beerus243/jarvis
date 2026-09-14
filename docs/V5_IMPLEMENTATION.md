@@ -1,5 +1,84 @@
 # JARVIS V5.18 — intégration avant la vision
 
+## Mise à jour : voix Kokoro par défaut
+
+`main.py` sans option écoute désormais « Hey Jarvis » ; `--text` conserve le
+clavier pour le diagnostic. Le moteur existant est préchargé puis annonce
+oralement sa disponibilité : français `f`, voix `ff_siwis`, 24 kHz et sélection
+CUDA/CPU inchangés. Les rappels et commandes passent par ce même moteur.
+
+Environnement à utiliser : `.venv-kokoro-cuda` (Python 3.12, Torch
+2.6.0+cu118, Kokoro 0.9.4). Le profil `requirements-voice-cuda.txt` préserve
+ces versions. Les constats sur eSpeak et Python 3.14 ci-dessous concernent
+uniquement l’ancienne validation dans `.venv`, pas cette configuration Kokoro.
+
+Les dépendances absentes de cet environnement — adaptateur OpenAI pour Groq,
+Sentence Transformers et RapidFuzz — ont été installées. Le correcteur des
+formulations fautives retrouve ainsi son moteur de comparaison.
+
+139 tests ciblés réussissent dans l’environnement Kokoro CUDA, dont les
+40 commandes du catalogue envoyées via le pipeline vocal de `main.py`, sans
+saisie clavier. Les tests simulent le son et les actions PC pour préserver
+les applications et données personnelles.
+
+La suite élargie a ensuite produit 568 réussites et un échec dû à un plan
+d’environnement laissé par un autre test. Après isolation de cet état,
+les 24 tests concernés (plans, tâches, voix et confirmations) passent.
+`pip check`, la compilation Python et le contrôle du diff passent aussi.
+
+Les premiers essais matériels avaient dépassé leurs limites de 120 et
+90 secondes pendant le chargement. Le nouvel essai du 15 septembre 2026,
+avec un délai plus long, atteint bien l'écoute du micro : Kokoro chargé sur
+la GeForce 930MX (CUDA 11.8), voix `ff_siwis`, annonce de 2,40 secondes
+générée en 11,91 secondes puis lue. Le lancement sans option rencontre une
+session proactive déjà active ; l'essai vocal utilise donc `--no-proactive`.
+
+Le micro système (`default`, index 12 lors de l'essai, mono 44 100 Hz) était
+saturé à 100 % de volume, avec capture et amplification interne à +30 dB
+chacune. Mesures de cinq secondes, sans conservation de l'audio :
+
+| Volume d'entrée PipeWire | RMS médian | Pic absolu | Échantillons écrêtés |
+|---|---:|---:|---:|
+| 100 % | 21 419 | 32 768 | 13,91 % |
+| 25 % | 1 130 | 5 380 | 0 % |
+| 12 % | 182 | 4 470 | 0 % |
+
+Le volume système a été réglé à 12 % (amplification interne 0 dB, capture
++4,5 dB). Ces mesures successives ne garantissent pas un environnement sonore
+identique. Le seuil de capture reste 300 RMS et le seuil Hey Jarvis 0,40 ;
+ce réglage a ensuite permis de reconnaître la parole de l'utilisateur.
+Le démarrage n'effectue pas encore de calibration automatique du bruit.
+Les 27 tests ciblés (`test_wake_word_engine`, `test_audio_capture`,
+`test_main_voice`) passent dans `.venv-kokoro-cuda` ; ils utilisent des
+doubles de test et ne prouvent pas la reconnaissance d'une voix réelle.
+
+L'essai réel a ensuite détecté « Hey Jarvis » dans `main.py` à 0,664,
+0,454 et 0,477. Les deux premiers essais n'ont pas fourni de commande
+exploitable (capture vide, puis `UnknownValueError` du STT). Au troisième,
+après le signal, la transcription est « quelle heure il est » et la réponse
+« Il est actuellement 00:10:11 ». Kokoro a généré les 2,85 secondes de
+réponse en 2,33 secondes. La chaîne micro → réveil → commande → réponse
+vocale est donc validée sur un échange réel, sans établir un taux de
+fiabilité général. L'écoute de suivi a encore produit un `UnknownValueError`
+avant l'arrêt volontaire du test ; la distinction bruit/parole reste à
+améliorer pour éviter ces relances inutiles. Le diagnostic local séparé a aussi détecté le réveil
+à 0,408 ; le niveau RMS maximal par bloc était de 4 159.
+
+Pour refaire ce réglage système (il concerne toutes les applications),
+sur cette machine :
+
+```bash
+pactl set-source-volume alsa_input.pci-0000_00_1f.3.analog-stereo 12%
+```
+
+Le volume précédent était 100 %. Ne pas le réappliquer sans vérifier la
+saturation. Après fermeture de l'autre session Jarvis, le lancement habituel
+sans `--no-proactive` réactive aussi les rappels et la surveillance.
+
+```bash
+.venv-kokoro-cuda/bin/python main.py
+```
+
 La boucle proactive et l'état durable utilisent le même point d'entrée que les
 commandes au clavier et au microphone. Le fichier `voice/wake_word_engine.py`
 et son modèle `hey_jarvis` sont réutilisés.
@@ -29,7 +108,7 @@ déclare pas le réseau indisponible sans observation.
 ## Démarrage et commandes
 
 ```bash
-.venv/bin/python main.py --voice --command-seconds 12
+.venv-kokoro-cuda/bin/python main.py --command-seconds 12
 ```
 
 Dire « Hey Jarvis », attendre le signal, puis donner la commande. Après la
@@ -60,9 +139,9 @@ de langue sur Python 3.14 ; eSpeak NG assure la synthèse locale française.
 `requirements.txt` rend Kokoro optionnel sur 3.14.
 
 ```bash
-.venv/bin/python -m scripts.test_v5
-.venv/bin/python -m scripts.check_voice
-.venv/bin/python main.py --list-microphones
+.venv-kokoro-cuda/bin/python -m scripts.test_v5
+.venv-kokoro-cuda/bin/python -m scripts.check_voice
+.venv-kokoro-cuda/bin/python main.py --list-microphones
 ```
 
 Le lanceur de tests utilise une copie temporaire des données. `pytest.ini`

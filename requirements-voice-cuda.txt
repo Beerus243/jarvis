@@ -1,0 +1,16 @@
+# Profil correspondant à .venv-kokoro-cuda ; ne pas utiliser le profil CPU ici.
+--extra-index-url https://download.pytorch.org/whl/cu118
+torch==2.6.0+cu118
+kokoro==0.9.4
+transformers==5.15.1
+sentence-transformers==5.7.0
+openwakeword==0.4.0
+SpeechRecognition
+PyAudio
+soundfile
+numpy
+python-dotenv
+openai
+requests
+rapidfuzz
+pytest

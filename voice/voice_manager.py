@@ -1,7 +1,19 @@
 """Interface de haut niveau entre JARVIS et le moteur vocal Kokoro."""
 
+import threading
+
 _engine = None
 _player = None
+_synthesis_lock = threading.Lock()
+
+
+def prepare_voice():
+    """Précharge le Kokoro configuré ; le mode vocal exige cette voix existante."""
+    global _engine
+    from voice.kokoro_engine import get_engine
+
+    _engine = get_engine()
+    return _engine
 
 
 def _get_engine():
@@ -39,7 +51,12 @@ def speak(text, cancel_event=None):
     try:
         from voice.speech_formatter import format_for_speech
 
-        audio_path = _get_engine().generate(format_for_speech(text))
+        # Une interruption peut laisser la génération CUDA en cours quelques
+        # instants ; ne pas lancer une seconde inférence sur le même modèle.
+        with _synthesis_lock:
+            if cancel_event is not None and cancel_event.is_set():
+                return False
+            audio_path = _get_engine().generate(format_for_speech(text))
         if not audio_path:
             return False
         if cancel_event is not None:

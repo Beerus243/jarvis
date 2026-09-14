@@ -1,4 +1,4 @@
-"""Point d'entrée terminal et activation vocale de JARVIS."""
+"""Point d'entrée vocal de JARVIS ; clavier facultatif pour le diagnostic."""
 
 import argparse
 import math
@@ -73,9 +73,10 @@ def _positive_float(value):
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(description="JARVIS : terminal ou activation « Hey Jarvis ».")
+    parser = argparse.ArgumentParser(description="JARVIS : Hey Jarvis et Kokoro par défaut ; --text pour le clavier.")
     modes = parser.add_mutually_exclusive_group()
-    modes.add_argument("--voice", action="store_true", help="Activer l'écoute du mot-clé local Hey Jarvis.")
+    modes.add_argument("--voice", action="store_true", help="Mode vocal (déjà activé par défaut).")
+    modes.add_argument("--text", action="store_true", help="Mode clavier explicite pour le diagnostic.")
     modes.add_argument("--list-microphones", action="store_true", help="Afficher les microphones disponibles.")
     parser.add_argument("--mic-device", type=_device_index, default=None, help="Index du microphone (par défaut : celui du système).")
     parser.add_argument("--sample-rate", type=_positive_int, default=44100, help="Fréquence de capture en Hz (44100 par défaut).")
@@ -91,6 +92,7 @@ def build_parser():
 def main(argv=None):
     parser = build_parser()
     args = parser.parse_args(argv)
+    voice_mode = not args.text and not args.list_microphones
     if args.wake_threshold > 1:
         parser.error("--wake-threshold doit être compris entre 0 et 1.")
     from core.runtime import Runtime
@@ -100,8 +102,8 @@ def main(argv=None):
             def notify(message):
                 print(f"\nJARVIS > {message}", flush=True)
                 return True
-            runtime = Runtime(notify=None if args.voice else notify).start()
-        if not args.voice and not args.list_microphones:
+            runtime = Runtime(notify=None if voice_mode else notify).start()
+        if args.text:
             return run_terminal()
         from voice.voice_pipeline import LocalWakeVoicePipeline, list_microphones
 
@@ -112,9 +114,11 @@ def main(argv=None):
             if not devices:
                 print("JARVIS > Aucun microphone disponible.")
             return 0
+        print(f"JARVIS {VERSION} — Mode vocal : Hey Jarvis + Kokoro", flush=True)
         pipeline = LocalWakeVoicePipeline.from_defaults(
             sample_rate=args.sample_rate, threshold=args.wake_threshold,
         )
+        pipeline.prepare_voice()
         pipeline.run_microphone(
             device_index=args.mic_device, sample_rate=args.sample_rate,
             command_seconds=args.command_seconds,
@@ -126,7 +130,7 @@ def main(argv=None):
         print("\nJARVIS > Arrêt demandé. À bientôt, Fabrice.")
         return 0
     except ImportError as error:
-        print(f"JARVIS > Dépendance vocale indisponible : {error}. Installez requirements.txt dans votre environnement Python.")
+        print(f"JARVIS > Dépendance indisponible : {error}. Lancez .venv-kokoro-cuda/bin/python main.py et vérifiez les dépendances de cet environnement.")
         return 1
     except Exception as error:
         print(f"JARVIS > Mode vocal indisponible : {error}. Vérifiez le microphone avec --list-microphones.")

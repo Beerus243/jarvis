@@ -8,7 +8,7 @@ def check(device=None, sample_rate=44100):
     import pyaudio
     from voice.voice_pipeline import list_microphones
     from voice.wake_word_engine import OpenWakeWordDetector
-    from voice.fallback_engine import EspeakEngine
+    from voice.voice_manager import prepare_voice
     result = {'devices': list_microphones(), 'microphone': False, 'wake_model': False, 'tts': False, 'errors': []}
     pa = pyaudio.PyAudio()
     stream = None
@@ -33,18 +33,21 @@ def check(device=None, sample_rate=44100):
     except Exception as error:
         result['errors'].append('Hey Jarvis : ' + str(error))
     try:
-        path = Path(EspeakEngine().generate('Bonjour Fabrice.'))
+        engine = prepare_voice()
+        result['voice'] = engine.voice
+        result['device'] = engine.device
+        path = Path(engine.generate('Bonjour Fabrice.'))
         try:
             result['tts'] = path.stat().st_size > 44
         finally:
             path.unlink(missing_ok=True)
     except Exception as error:
-        result['errors'].append('Synthèse de secours : ' + str(error))
+        result['errors'].append('Kokoro : ' + str(error))
     return result
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Capture 250 ms localement puis les oublie ; aucun envoi ni installation.')
+    parser = argparse.ArgumentParser(description='Capture 250 ms puis les oublie, sans envoi audio ; teste le moteur Kokoro configuré.')
     parser.add_argument('--mic-device', type=int)
     parser.add_argument('--sample-rate', type=int, default=44100)
     args = parser.parse_args()

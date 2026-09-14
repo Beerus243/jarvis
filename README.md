@@ -1,6 +1,6 @@
 # JARVIS
 
-Assistant personnel Python V5.18, utilisable au clavier ou avec « Hey Jarvis » :
+Assistant personnel Python V5.18, vocal par défaut avec « Hey Jarvis » et Kokoro :
 actions PC, mémoire corrigible, tâches persistantes et rappels proactifs.
 
 Le [bilan V5](docs/V5_IMPLEMENTATION.md) décrit les ajouts, les validations et les limites avant la vision.
@@ -8,29 +8,36 @@ Le [bilan V5](docs/V5_IMPLEMENTATION.md) décrit les ajouts, les validations et 
 ## Installation
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+source .venv-kokoro-cuda/bin/activate
+python -m pip install -r requirements-voice-cuda.txt
 ```
 
 Pour Groq, définir `GROQ_API_KEY` dans `.env`. Le modèle par défaut est
 `openai/gpt-oss-120b` et peut être changé avec `MODEL`.
+
+Le profil `requirements-voice-cuda.txt` conserve Torch 2.6.0 + CUDA 11.8,
+Kokoro 0.9.4 et Transformers 5.15.1. `requirements.txt` est le profil CPU
+historique ; ne pas l’installer dans cet environnement CUDA.
 
 ## Lancement
 
 Depuis la racine du projet :
 
 ```bash
-.venv/bin/python main.py
+.venv-kokoro-cuda/bin/python main.py
 ```
 
-Pour l'activation vocale en deux temps :
+Sans option, `main.py` démarre maintenant le mode vocal, précharge Kokoro et
+annonce « Bonjour Fabrice. Je suis prêt. ». Aucune saisie clavier n’est requise.
+Le chargement initial peut prendre plusieurs dizaines de secondes.
+
+Options disponibles :
 
 ```bash
-.venv/bin/python main.py --list-microphones
-.venv/bin/python main.py --voice
+.venv-kokoro-cuda/bin/python main.py --list-microphones
+.venv-kokoro-cuda/bin/python main.py --text  # clavier uniquement sur demande
 # Facultatif : choisir un microphone et adapter la capture
-.venv/bin/python main.py --voice --sample-rate 44100 --wake-threshold 0.4 --command-seconds 12
+.venv-kokoro-cuda/bin/python main.py --voice --sample-rate 44100 --wake-threshold 0.4 --command-seconds 12
 ```
 
 Dites **« Hey Jarvis »**, attendez le signal et l'affichage **« J'écoute votre
@@ -48,10 +55,13 @@ et nécessite Internet. `PyAudio` doit pouvoir accéder au microphone ; le
 périphérique système est sélectionné par défaut. Le microphone est fermé
 pendant le signal et la transcription ; il est rouvert pendant la réponse pour
 détecter une interruption. `--no-barge-in` désactive ce comportement.
-Kokoro est utilisé s'il est disponible ; sinon eSpeak NG produit la voix française
-localement. Sur le `.venv` Python 3.14 réparé, eSpeak NG sert actuellement de secours.
+Le mode vocal utilise le moteur Kokoro existant : français `f`, voix `ff_siwis`,
+sortie 24 kHz et CUDA si disponible, sinon CPU. Les réponses, confirmations et
+rappels sont prononcés par ce même moteur. Si sa préparation échoue, le
+programme signale l’erreur sans basculer au clavier ni remplacer la voix.
+Le secours eSpeak reste limité aux anciens chemins de diagnostic.
 
-Les dépendances figurent dans `requirements.txt`. Si `.venv/bin/python` est
+Les dépendances vocales CUDA figurent dans `requirements-voice-cuda.txt`. Si `.venv-kokoro-cuda/bin/python` est
 absent ou si un module vocal manque, réparez l'environnement Python avant
 l'essai au microphone. `--help` et le terminal ne chargent pas les modèles de
 détection vocale. Le mode « Hey Jarvis, commande » sans pause n'est pas encore
@@ -60,7 +70,7 @@ pris en charge.
 Diagnostic local du micro (250 ms oubliées aussitôt), du modèle et de la synthèse :
 
 ```bash
-.venv/bin/python -m scripts.check_voice
+.venv-kokoro-cuda/bin/python -m scripts.check_voice
 ```
 
 ## Proactivité et tâches
@@ -135,7 +145,7 @@ python -m scripts.clean_memory
 ## Tests
 
 ```bash
-.venv/bin/python -m scripts.test_v5
+.venv-kokoro-cuda/bin/python -m scripts.test_v5
 ```
 
 Ce lanceur utilise une copie temporaire pour préserver les données personnelles.

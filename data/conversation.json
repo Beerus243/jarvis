@@ -38,5 +38,49 @@
     {
         "role": "user",
         "message": "oui"
+    },
+    {
+        "role": "user",
+        "message": "hey jarvis"
+    },
+    {
+        "role": "user",
+        "message": "quelle heure est il"
+    },
+    {
+        "role": "assistant",
+        "message": "Il est actuellement 23:25:14"
+    },
+    {
+        "role": "user",
+        "message": "rappelle moi dans une minute de faire une pause"
+    },
+    {
+        "role": "assistant",
+        "message": "Rappel 6aa87b4f enregistré pour 14/09 à 23:29:53."
+    },
+    {
+        "role": "user",
+        "message": "quelle heure il est"
+    },
+    {
+        "role": "assistant",
+        "message": "Il est actuellement 00:10:11"
+    },
+    {
+        "role": "user",
+        "message": "quelle heure est-il"
+    },
+    {
+        "role": "assistant",
+        "message": "Il est actuellement 00:14:19"
+    },
+    {
+        "role": "user",
+        "message": "rappelle-moi de faire une pause dans 15 minutes"
+    },
+    {
+        "role": "assistant",
+        "message": "Précise le délai : « rappelle-moi dans 10 minutes de faire une pause » ou « rappelle-moi demain à 9h de reprendre mon projet »."
     }
 ]

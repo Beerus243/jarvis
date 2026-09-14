@@ -10,22 +10,6 @@
     },
     "action_history": [
         {
-            "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-09-01T01:03:14.264405+01:00",
-            "result": "Cette action nécessite une confirmation explicite.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "DELETE_FILE",
-            "timestamp": "2026-09-01T01:03:14.267234+01:00",
-            "result": "Cette action est bloquée par la politique de sécurité.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
             "action": "PLAY_MUSIC",
             "timestamp": "2026-09-01T01:03:14.405588+01:00",
             "result": "Je lance Damso.",
@@ -397,6 +381,30 @@
             "action": "OPEN_BROWSER",
             "timestamp": "2026-09-01T01:38:12.561141+01:00",
             "result": "Navigateur ouvert",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-09-14T23:25:14.838968+01:00",
+            "result": "Il est actuellement 23:25:14",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-09-15T00:10:11.174747+01:00",
+            "result": "Il est actuellement 00:10:11",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "GET_TIME",
+            "timestamp": "2026-09-15T00:14:19.958573+01:00",
+            "result": "Il est actuellement 00:14:19",
             "success": true,
             "confirmation": false,
             "error": null

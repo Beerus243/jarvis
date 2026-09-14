@@ -33,3 +33,22 @@ def test_speak_ignores_empty_text():
     with patch("voice.voice_manager._get_engine") as get_engine:
         assert voice_manager.speak("   ") is False
         get_engine.assert_not_called()
+
+
+def test_prepare_voice_uses_existing_kokoro_without_fallback(monkeypatch):
+    import sys
+    from types import SimpleNamespace
+    engine = Mock(voice='ff_siwis')
+    factory = Mock(return_value=engine)
+    monkeypatch.setitem(sys.modules, 'voice.kokoro_engine', SimpleNamespace(get_engine=factory))
+    assert voice_manager.prepare_voice() is engine
+    assert voice_manager._engine.voice == 'ff_siwis'
+
+
+def test_cancelled_speech_skips_synthesis():
+    from threading import Event
+    cancelled = Event()
+    cancelled.set()
+    with patch('voice.voice_manager._get_engine') as engine:
+        assert voice_manager.speak('Ancienne réponse', cancel_event=cancelled) is False
+        engine.assert_not_called()

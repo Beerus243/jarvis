@@ -81,9 +81,31 @@ COMMANDS = [
 def test_main_reaches_action_with_parameters(command, expected, routed, monkeypatch):
     entries = iter([command, "quitter"])
     monkeypatch.setattr("builtins.input", lambda _: next(entries))
-    assert main.main([]) == 0
+    assert main.main(['--text']) == 0
     routed[0].assert_called_once_with(expected)
     routed[1].assert_not_called()
+
+
+@pytest.mark.parametrize('command,expected', COMMANDS)
+def test_default_main_voice_reaches_same_actions(command, expected, routed, monkeypatch):
+    from voice.voice_pipeline import LocalWakeVoicePipeline
+    from voice.wake_word_engine import WakeDetection
+    detector = Mock()
+    detector.detect.return_value = WakeDetection(True, .9, 'hey_jarvis', 1.0)
+    speaker = Mock(return_value=True)
+    pipeline = LocalWakeVoicePipeline(detector, lambda _: command, main.think,
+                                      speaker=speaker, feedback=lambda: None)
+    def microphone(**_):
+        pipeline.feed_wake_chunk(b'wake')
+        assert pipeline.process_command_audio(b'commande')['success']
+    monkeypatch.setattr(pipeline, 'run_microphone', microphone)
+    monkeypatch.setattr(LocalWakeVoicePipeline, 'from_defaults', lambda **_: pipeline)
+    keyboard = Mock(side_effect=AssertionError('Aucune saisie clavier attendue'))
+    monkeypatch.setattr('builtins.input', keyboard)
+    assert main.main(['--no-proactive']) == 0
+    routed[0].assert_called_once_with(expected)
+    speaker.assert_any_call('Action reçue')
+    keyboard.assert_not_called()
 
 
 @pytest.mark.parametrize("command,expected", [
@@ -100,7 +122,7 @@ def test_main_reaches_action_with_parameters(command, expected, routed, monkeypa
 def test_main_reaches_environment(command, expected, routed, monkeypatch):
     entries = iter([command, "quitter"])
     monkeypatch.setattr("builtins.input", lambda _: next(entries))
-    main.main([])
+    main.main(['--text'])
     routed[1].assert_called_once()
     assert routed[1].call_args.args[0].intent == expected
     routed[0].assert_not_called()
@@ -109,7 +131,7 @@ def test_main_reaches_environment(command, expected, routed, monkeypatch):
 def test_composed_commands_keep_application_targets(routed, monkeypatch):
     entries = iter(["ouvre Firefox et ouvre le terminal", "quitter"])
     monkeypatch.setattr("builtins.input", lambda _: next(entries))
-    main.main(['--no-proactive'])
+    main.main(['--text', '--no-proactive'])
     assert [call.args[0] for call in routed[0].call_args_list] == [
         {"action": "OPEN_APPLICATION", "target": "firefox"}, {"action": "OPEN_TERMINAL"},
     ]
@@ -121,7 +143,7 @@ def test_stop_reaches_pending_environment_cancellation(monkeypatch, routed):
     pending_plan.set_pending(object())
     entries = iter(["Stop !", "quitter"])
     monkeypatch.setattr("builtins.input", lambda _: next(entries))
-    main.main([])
+    main.main(['--text'])
     assert routed[1].call_args.args[0].intent == "ENVIRONMENT_CANCEL"
 
 
@@ -135,4 +157,4 @@ def test_normalized_exit_commands(command, monkeypatch):
 
 def test_terminal_eof_exits_cleanly(monkeypatch):
     monkeypatch.setattr("builtins.input", Mock(side_effect=EOFError))
-    assert main.main([]) == 0
+    assert main.main(['--text']) == 0

@@ -1,5 +1,8 @@
 # Catalogue des commandes — JARVIS
 
+`main.py` utilise le microphone par défaut, avec Kokoro `ff_siwis` dans
+`.venv-kokoro-cuda`. Le clavier nécessite `--text`.
+
 Catalogue basé sur `core/intent.py`, `core/dispatcher.py`, `tools/` et le brain actuels.
 
 ## Ajouts V5.18

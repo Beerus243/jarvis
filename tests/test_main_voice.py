@@ -22,8 +22,28 @@ def test_voice_entrypoint_passes_device_and_rate(monkeypatch):
 def test_voice_defaults_use_system_microphone(monkeypatch):
     pipeline = Mock()
     monkeypatch.setattr(LocalWakeVoicePipeline, "from_defaults", Mock(return_value=pipeline))
-    assert main.main(["--voice"]) == 0
+    keyboard = Mock(side_effect=AssertionError('Le mode par défaut ne doit pas lire le clavier'))
+    monkeypatch.setattr('builtins.input', keyboard)
+    assert main.main([]) == 0
+    pipeline.prepare_voice.assert_called_once()
+    keyboard.assert_not_called()
     assert pipeline.run_microphone.call_args.kwargs["device_index"] is None
+
+
+def test_modes_are_mutually_exclusive():
+    with pytest.raises(SystemExit):
+        main.main(['--text', '--voice'])
+
+
+def test_voice_startup_failure_never_falls_back_to_keyboard(monkeypatch):
+    keyboard = Mock(side_effect=AssertionError('Pas de retour implicite au clavier'))
+    monkeypatch.setattr('builtins.input', keyboard)
+    pipeline = Mock()
+    pipeline.prepare_voice.side_effect = RuntimeError('Kokoro indisponible')
+    monkeypatch.setattr(LocalWakeVoicePipeline, 'from_defaults', lambda **_: pipeline)
+    assert main.main([]) == 1
+    pipeline.run_microphone.assert_not_called()
+    keyboard.assert_not_called()
 
 
 @pytest.mark.parametrize("args", [["--sample-rate", "0"], ["--mic-device", "-1"],
@@ -63,3 +83,15 @@ def test_list_microphones_filters_outputs_and_releases_audio(monkeypatch):
     monkeypatch.setitem(sys.modules, "pyaudio", SimpleNamespace(PyAudio=lambda: pa))
     assert list_microphones() == [{"index": 1, "name": "Mic", "sample_rate": 48000}]
     pa.terminate.assert_called_once()
+
+
+def test_voice_preparation_uses_configured_engine_and_greets(monkeypatch):
+    from voice import voice_manager
+    prepare = Mock()
+    speaker = Mock(return_value=True)
+    monkeypatch.setattr(voice_manager, 'prepare_voice', prepare)
+    monkeypatch.setattr(voice_manager, 'speak', speaker)
+    pipeline = LocalWakeVoicePipeline(Mock(), Mock(), Mock(), speaker=speaker)
+    pipeline.prepare_voice()
+    prepare.assert_called_once()
+    speaker.assert_called_once_with('Bonjour Fabrice. Je suis prêt.')
