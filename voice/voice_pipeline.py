@@ -9,8 +9,27 @@ import subprocess
 import tempfile
 import time
 import wave
+from collections import deque
 
+from core.command_session import GOODBYE, is_exit_command
 from voice.wake_word_engine import VoiceState, WakeWordSession
+
+
+def list_microphones():
+    """List input devices without loading STT or wake-word models."""
+    import pyaudio
+
+    pa = pyaudio.PyAudio()
+    try:
+        devices = []
+        for index in range(pa.get_device_count()):
+            info = pa.get_device_info_by_index(index)
+            if info.get("maxInputChannels", 0) > 0:
+                devices.append({"index": index, "name": info["name"],
+                                "sample_rate": int(info["defaultSampleRate"])})
+        return devices
+    finally:
+        pa.terminate()
 
 
 def play_wake_feedback(duration: float = 0.12, frequency: int = 880) -> bool:
@@ -109,11 +128,7 @@ class VoicePipeline:
 
 
 class LocalWakeVoicePipeline:
-    """Isolated two-step local wake-word pipeline.
-
-    It is intentionally not wired into ``main.py`` yet. Dependencies are
-    injectable so state transitions can be tested without a microphone.
-    """
+    """Two-step local wake → command pipeline used by ``main.py --voice``."""
 
     def __init__(self, wake_detector, stt, brain, speaker=None, feedback=None):
         self.wake_detector = wake_detector
@@ -125,10 +140,13 @@ class LocalWakeVoicePipeline:
         self.state = VoiceState.SLEEPING
 
     def start(self):
+        reset = getattr(self.wake_detector, "reset", None)
+        if reset:
+            reset()
         self.session.start()
         self.state = self.session.state
 
-    def feed_wake_chunk(self, chunk: bytes):
+    def feed_wake_chunk(self, chunk: bytes, *, feedback=True):
         """Feed one PCM chunk; never calls STT while sleeping."""
         if self.state == VoiceState.SLEEPING:
             self.start()
@@ -142,36 +160,42 @@ class LocalWakeVoicePipeline:
             print(f"score: {detection.score:.3f}")
             print("state: WAKE_DETECTED → COMMAND_LISTENING")
             print("=" * 50)
-            self.feedback()
+            if feedback:
+                self._play_feedback()
             self.session.begin_command()
             self.state = self.session.state
         return detection
+
+    def _play_feedback(self):
+        try:
+            self.feedback()
+        except Exception as error:
+            print(f"JARVIS > Signal sonore indisponible : {error}", flush=True)
 
     def process_command_audio(self, audio_data):
         """Transcribe only audio supplied after a successful wake detection."""
         if self.state != VoiceState.COMMAND_LISTENING:
             return {"success": False, "error": "Wake word non détecté"}
-        print("[STT] envoi Google", flush=True)
         self.state = VoiceState.THINKING
+        self.session.state = self.state
         started = time.monotonic()
+        command = None
+        response = None
+        should_exit = False
         try:
-            try:
-                command = self.stt(audio_data)
-            except Exception as error:
-                print(f"[STT] {type(error).__name__}: {error}", flush=True)
-                raise
-            print(f"[STT] résultat: {command!r}", flush=True)
+            command = self.stt(audio_data)
             if not command or not str(command).strip():
                 self.session.timeout()
                 self.state = self.session.state
                 return {"success": False, "error": "Commande vide"}
             command = str(command).strip()
-            print(f"[BRAIN] texte reçu: {command!r}", flush=True)
-            response = self.brain(command)
-            print(f"[DISPATCH] réponse brain: {response!r}", flush=True)
+            print(f"Fabrice > {command}", flush=True)
+            should_exit = is_exit_command(command)
+            response = GOODBYE if should_exit else self.brain(command)
             self.state = VoiceState.SPEAKING
+            self.session.state = self.state
             if response:
-                print("[ACTION] réponse exécutée/envoyée", flush=True)
+                print(f"JARVIS > {response}", flush=True)
                 self.speaker(response)
             result = {
                 "success": bool(response),
@@ -179,11 +203,13 @@ class LocalWakeVoicePipeline:
                 "response": response,
                 "elapsed": time.monotonic() - started,
                 "error": None if response else "Aucune réponse",
+                "exit": should_exit,
             }
         except Exception as error:
-            result = {"success": False, "error": str(error)}
-        self.session.timeout()
-        self.state = self.session.state
+            result = {"success": False, "command": command, "response": response,
+                      "error": str(error) or type(error).__name__, "exit": should_exit}
+        finally:
+            self.timeout_command()
         return result
 
     def timeout_command(self):
@@ -191,35 +217,42 @@ class LocalWakeVoicePipeline:
         self.state = self.session.state
 
     @classmethod
-    def from_defaults(cls):
+    def from_defaults(cls, *, sample_rate=44100, threshold=0.40):
         """Build the real pipeline dependencies lazily for ``--voice``."""
         import speech_recognition as sr
 
-        from core.brain import think
+        from core.command_session import process_command
         from voice.voice_manager import speak
         from voice.wake_word_engine import OpenWakeWordDetector
 
         recognizer = sr.Recognizer()
+        recognizer.operation_timeout = 10
         return cls(
-            OpenWakeWordDetector(sample_rate=44100, threshold=0.40),
+            OpenWakeWordDetector(sample_rate=sample_rate, threshold=threshold),
             lambda audio: recognizer.recognize_google(audio, language="fr-FR"),
-            think,
+            process_command,
             speaker=speak,
         )
 
-    def run_microphone(self, device_index: int = 12, sample_rate: int = 44100,
+    def run_microphone(self, device_index: int | None = None, sample_rate: int = 44100,
                        chunk: int = 1024, command_seconds: float = 5.0,
                        max_cycles: int | None = None):
         """Run the two-step wake → command loop on the real PyAudio stream."""
         import pyaudio
         import speech_recognition as sr
 
+        if (sample_rate <= 0 or chunk <= 0 or not math.isfinite(command_seconds)
+                or command_seconds <= 0):
+            raise ValueError("Fréquence, taille des blocs et durée doivent être positives")
+        if getattr(self.wake_detector, "sample_rate", sample_rate) != sample_rate:
+            raise ValueError("La fréquence du microphone doit correspondre au détecteur")
         pa = pyaudio.PyAudio()
         stream = None
-        results = []
+        results = deque(maxlen=100)
         cycles = 0
-        try:
-            stream = pa.open(
+
+        def open_stream():
+            return pa.open(
                 format=pyaudio.paInt16,
                 channels=1,
                 rate=sample_rate,
@@ -227,43 +260,53 @@ class LocalWakeVoicePipeline:
                 input_device_index=device_index,
                 frames_per_buffer=chunk,
             )
-            print("JARVIS en veille...", flush=True)
+
+        def close_stream():
+            nonlocal stream
+            if stream is not None:
+                current, stream = stream, None
+                try:
+                    current.stop_stream()
+                finally:
+                    current.close()
+
+        try:
+            print("JARVIS > Dites « Hey Jarvis », attendez le signal, puis votre commande.", flush=True)
+            print("JARVIS > Détection locale ; la commande est transcrite en français par Google (Internet requis).", flush=True)
             while max_cycles is None or cycles < max_cycles:
                 self.start()
+                stream = open_stream()
+                print("JARVIS en veille...", flush=True)
                 while self.state == VoiceState.WAKE_WORD_LISTENING:
                     pcm = stream.read(chunk, exception_on_overflow=False)
-                    self.feed_wake_chunk(pcm)
+                    self.feed_wake_chunk(pcm, feedback=False)
+                close_stream()
                 if self.state != VoiceState.COMMAND_LISTENING:
                     continue
+                # Fermer/réouvrir élimine l'audio accumulé pendant le signal
+                # ou la réponse précédente. Le STT ne reçoit que la commande.
+                self._play_feedback()
+                stream = open_stream()
                 print("[LISTEN] J'écoute votre commande...", flush=True)
-                print(f"[COMMAND_CAPTURE] début — stream actif: {stream.is_active()} arrêté: {stream.is_stopped()}", flush=True)
                 frames = [
                     stream.read(chunk, exception_on_overflow=False)
-                    for _ in range(max(1, round(command_seconds * sample_rate / chunk)))
+                    for _ in range(max(1, math.ceil(command_seconds * sample_rate / chunk)))
                 ]
                 raw_command = b"".join(frames)
-                samples = len(raw_command) // 2
-                values = struct.unpack("<" + "h" * samples, raw_command) if samples else ()
-                command_rms = ((sum(value * value for value in values) / samples) ** 0.5
-                               if samples else 0.0)
-                command_peak = max((abs(value) for value in values), default=0)
-                print(f"[COMMAND_CAPTURE] durée: {samples / sample_rate:.3f}s", flush=True)
-                print(f"[COMMAND_CAPTURE] RMS: {command_rms:.1f}", flush=True)
-                print(f"[COMMAND_CAPTURE] peak: {command_peak}", flush=True)
-                print(f"[COMMAND_CAPTURE] nombre de samples: {samples}", flush=True)
-                print(f"[COMMAND_CAPTURE] stream actif: {stream.is_active()} arrêté: {stream.is_stopped()}", flush=True)
+                close_stream()
                 audio = sr.AudioData(raw_command, sample_rate, 2)
                 result = self.process_command_audio(audio)
                 results.append(result)
-                if result.get("command", "").casefold().strip() in {
-                    "quitter", "quit", "exit", "stop",
-                }:
+                if result.get("error"):
+                    print(f"JARVIS > {result['error']}", flush=True)
+                if result.get("exit"):
                     break
                 print("[SLEEP] Retour en veille", flush=True)
                 cycles += 1
-            return results
+            return list(results)
         finally:
-            if stream is not None:
-                stream.stop_stream()
-                stream.close()
-            pa.terminate()
+            self.timeout_command()
+            try:
+                close_stream()
+            finally:
+                pa.terminate()

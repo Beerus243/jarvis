@@ -48,6 +48,10 @@ class OpenWakeWordDetector:
         sample_rate: int = 44100,
         model=None,
     ):
+        if sample_rate <= 0:
+            raise ValueError("La fréquence de capture doit être positive")
+        if not 0 < threshold <= 1:
+            raise ValueError("Le seuil wake word doit être compris entre 0 et 1")
         self.model_name = model_name
         self.threshold = threshold
         self.sample_rate = sample_rate
@@ -59,6 +63,13 @@ class OpenWakeWordDetector:
             raise ValueError(f"Modèle wake word indisponible : {model_name}")
         self.model = model
         self._audio_buffer = np.empty(0, dtype=np.int16)
+
+    def reset(self):
+        """Discard pending audio and scores before a new wake session."""
+        self._audio_buffer = np.empty(0, dtype=np.int16)
+        reset = getattr(self.model, "reset", None)
+        if reset:
+            reset()
 
     def detect(self, pcm_chunk: bytes) -> WakeDetection:
         pcm16 = _resample_to_16khz(pcm_chunk, self.sample_rate)

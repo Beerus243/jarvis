@@ -18,6 +18,9 @@ def detect_environment_intent(message: str) -> EnvironmentPreparationIntent|None
     text=(message or '').lower().strip()
     normalized = ' '.join(text.replace("'", " ").replace("’", " ").replace('-', ' ').split())
     normalized = ''.join(ch for ch in unicodedata.normalize('NFD', normalized) if not unicodedata.combining(ch))
+    normalized = ' '.join(re.sub(r'[^\w\s]', ' ', normalized).split())
+    if normalized in {'installe les outils android', 'installe outils android'}:
+        return EnvironmentPreparationIntent('Android', 'flutter_development', intent='ANDROID_TOOLS_INSTALL')
     if normalized.startswith(('prepare ', 'prepare moi ', 'repare ', 'installe ')):
         if normalized in ('repare mon environnement', 'répare mon environnement'):
             return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_REPAIR_PLAN')
@@ -30,7 +33,7 @@ def detect_environment_intent(message: str) -> EnvironmentPreparationIntent|None
         if 'java' in normalized or 'jdk' in normalized:
             return EnvironmentPreparationIntent('Java', 'java', intent='JDK_INSTALL')
     confirmations = {"oui", "confirme", "je confirme", "vas y", "execute", "lance", "d accord", "ok"}
-    cancellations = {"non", "annule", "annuler", "pas maintenant", "laisse tomber", "stop"}
+    cancellations = {"non", "annule", "annuler", "pas maintenant", "laisse tomber", "stop", "arrete"}
     if normalized in confirmations:
         return EnvironmentPreparationIntent('Environment', 'flutter_development', intent='ENVIRONMENT_CONFIRM')
     if normalized in cancellations:

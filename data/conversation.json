@@ -1,34 +1,6 @@
 [
     {
         "role": "assistant",
-        "message": "Fichier créé : ben10."
-    },
-    {
-        "role": "user",
-        "message": "augemnte le son"
-    },
-    {
-        "role": "user",
-        "message": "quel est le volume"
-    },
-    {
-        "role": "assistant",
-        "message": "L'action a échoué."
-    },
-    {
-        "role": "user",
-        "message": "ouvre les parametres"
-    },
-    {
-        "role": "assistant",
-        "message": "qrc:/qt/qml/org/kde/kcmutils/SimpleKCM.qml:70: TypeError: Cannot read property 'name' of null"
-    },
-    {
-        "role": "user",
-        "message": "quel est le volume"
-    },
-    {
-        "role": "assistant",
         "message": "L'action a échoué."
     },
     {
@@ -38,5 +10,33 @@
     {
         "role": "assistant",
         "message": "Bonjour Fabrice. Je suis heureux de vous voir."
+    },
+    {
+        "role": "user",
+        "message": "\"Quelle est la fenêtre active ?"
+    },
+    {
+        "role": "user",
+        "message": "Quelle est la fenêtre active ?"
+    },
+    {
+        "role": "user",
+        "message": "clear"
+    },
+    {
+        "role": "user",
+        "message": "prepare mon environement"
+    },
+    {
+        "role": "user",
+        "message": "prepare mon environement flutter"
+    },
+    {
+        "role": "assistant",
+        "message": "Plan ENV-20260906-5EB04073 préparé. Aucune modification n'a encore été effectuée. Confirmez-vous son exécution ?"
+    },
+    {
+        "role": "user",
+        "message": "oui"
     }
 ]

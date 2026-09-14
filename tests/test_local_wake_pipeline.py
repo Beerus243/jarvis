@@ -84,3 +84,125 @@ def test_command_is_not_sent_before_wake():
     pipeline = make_pipeline(Detector(False), stt=lambda audio: calls.append(audio))
     assert pipeline.process_command_audio(b"ouvre Spotify")["success"] is False
     assert calls == []
+
+
+# Regression coverage for the production --voice microphone lifecycle.
+import sys
+from types import SimpleNamespace
+from unittest.mock import Mock
+import pytest
+
+
+@pytest.fixture(autouse=True)
+def no_real_feedback(monkeypatch):
+    monkeypatch.setattr("voice.voice_pipeline.play_wake_feedback", lambda: True)
+
+
+@pytest.mark.parametrize("command", ["Quitter !", "AU REVOIR.", "Arrête !"])
+def test_exit_is_handled_before_brain(command, monkeypatch):
+    monkeypatch.setattr("core.environment.pending_plan.get_pending", lambda: None)
+    monkeypatch.setattr("core.task_engine.get_active_task", lambda: None)
+    brain = Mock()
+    pipeline = make_pipeline(stt=lambda _: command, brain=brain)
+    pipeline.feed_wake_chunk(b"wake")
+    assert pipeline.process_command_audio(b"audio")["exit"] is True
+    brain.assert_not_called()
+    assert pipeline.state == pipeline.session.state == VoiceState.SLEEPING
+
+
+@pytest.mark.parametrize("stage", ["stt", "brain", "speaker"])
+def test_failure_returns_to_sleep_and_next_command_works(stage):
+    pipeline = make_pipeline()
+    failing = Mock(side_effect=RuntimeError("unavailable"))
+    setattr(pipeline, stage, failing)
+    pipeline.feed_wake_chunk(b"wake")
+    assert pipeline.process_command_audio(b"audio")["success"] is False
+    assert pipeline.state == pipeline.session.state == VoiceState.SLEEPING
+    setattr(pipeline, stage, lambda _: "ok")
+    pipeline.feed_wake_chunk(b"wake")
+    assert pipeline.process_command_audio(b"audio")["success"] is True
+
+
+def test_empty_command_never_calls_brain():
+    brain = Mock()
+    pipeline = make_pipeline(stt=lambda _: " ", brain=brain)
+    pipeline.feed_wake_chunk(b"wake")
+    assert pipeline.process_command_audio(b"audio")["success"] is False
+    brain.assert_not_called()
+    assert pipeline.state == VoiceState.SLEEPING
+
+
+def fake_audio(monkeypatch, *, fail_read=False, fail_close=False):
+    streams = []
+
+    class Stream:
+        closed = False
+
+        def read(self, count, **kwargs):
+            if fail_read:
+                raise OSError("microphone disconnected")
+            return b"\0\0" * count
+
+        def stop_stream(self):
+            if fail_close:
+                raise OSError("stop failed")
+
+        def close(self):
+            self.closed = True
+
+    def open_stream(**kwargs):
+        stream = Stream()
+        streams.append(stream)
+        return stream
+
+    pa = Mock()
+    pa.open.side_effect = open_stream
+    monkeypatch.setitem(sys.modules, "pyaudio", SimpleNamespace(PyAudio=lambda: pa, paInt16=8))
+    monkeypatch.setitem(sys.modules, "speech_recognition", SimpleNamespace(
+        AudioData=lambda data, rate, width: (data, rate, width)))
+    return pa, streams
+
+
+def test_microphone_closed_during_feedback_stt_and_response(monkeypatch):
+    pa, streams = fake_audio(monkeypatch)
+    phases = []
+
+    def assert_closed(phase):
+        assert streams and all(stream.closed for stream in streams)
+        phases.append(phase)
+
+    def transcribe(audio):
+        assert_closed("stt")
+        assert audio == (b"\0\0" * 1024, 44100, 2)
+        return "quitter"
+
+    pipeline = make_pipeline(stt=transcribe, feedback=lambda: assert_closed("feedback"))
+    pipeline.speaker = lambda _: assert_closed("speaker")
+    result = pipeline.run_microphone(command_seconds=0.01)
+    assert result[0]["exit"] is True
+    assert phases == ["feedback", "stt", "speaker"]
+    assert len(streams) == 2
+    assert all(call.kwargs["input_device_index"] is None for call in pa.open.call_args_list)
+    pa.terminate.assert_called_once()
+
+
+@pytest.mark.parametrize("fail_close", [False, True])
+def test_microphone_failure_releases_resources(monkeypatch, fail_close):
+    pa, streams = fake_audio(monkeypatch, fail_read=True, fail_close=fail_close)
+    pipeline = make_pipeline()
+    with pytest.raises(OSError):
+        pipeline.run_microphone(max_cycles=1)
+    assert streams[0].closed
+    pa.terminate.assert_called_once()
+    assert pipeline.state == VoiceState.SLEEPING
+
+
+def test_mic_loop_recovers_after_stt_error(monkeypatch):
+    pa, streams = fake_audio(monkeypatch)
+    pipeline = make_pipeline(stt=Mock(side_effect=[RuntimeError("network down"), "quitter"]))
+    results = pipeline.run_microphone(command_seconds=0.01, max_cycles=2)
+    assert results[0]["success"] is False
+    assert results[1]["exit"] is True
+    assert len(streams) == 4
+    assert all(stream.closed for stream in streams)
+    pa.terminate.assert_called_once()

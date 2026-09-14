@@ -2,6 +2,12 @@
 
 Catalogue basé sur `core/intent.py`, `core/dispatcher.py`, `tools/` et le brain actuels.
 
+Le terminal et `python main.py --voice` utilisent le même cerveau. Le mode
+vocal attend « Hey Jarvis », puis la commande après le signal. Voir
+l'[audit de branchement](VOICE_ACTIVATION_AUDIT.md) pour les corrections
+vérifiées et les limites constatées ; les états ci-dessous ne constituent pas
+une validation des actions sur le matériel réel.
+
 ## Commandes opérationnelles
 
 ### Système
@@ -99,8 +105,9 @@ Les actions passent par `PCAction` → `ActionPolicy` → `ActionExecutor`. Les 
 | `ouvre Firefox`, `lance VS Code` | `OPEN_APPLICATION` | Non | applications connues seulement |
 | `ferme Firefox` | `CLOSE_APPLICATION` | Oui | demande de terminaison gracieuse, pas de PID arbitraire |
 | `ouvre https://...` | `OPEN_URL` | Non | URL HTTP(S) autorisées uniquement |
-| créer/copier/déplacer/ouvrir un fichier | `FILE_CREATE/COPY/MOVE/OPEN` | Non | chemins limités au dossier utilisateur |
-| supprimer un fichier | `FILE_DELETE` | Oui | ne jamais supprimer hors espace utilisateur |
+| `crée un fichier rapport.txt`, `ouvre le fichier rapport.txt` | `FILE_CREATE/OPEN` | Non | chemins limités au dossier utilisateur |
+| copier/déplacer un fichier | `FILE_COPY/MOVE` | Non | exécuteurs présents, grammaire naturelle à compléter |
+| supprimer un fichier | `FILE_DELETE` | Oui | dialogue de confirmation PC à compléter |
 | `monte/baisse/coupe le son` | `VOLUME_UP/DOWN/MUTE` | Non | dépend de `wpctl` |
 | `mets en pause`, `reprends`, `suivant` | `MEDIA_PAUSE/PLAY/NEXT` | Non | dépend de `playerctl` |
 

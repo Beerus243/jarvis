@@ -125,8 +125,8 @@ def execute_pc_action(action: PCAction, *, capture=None):
         url = (action.parameters or {}).get("url", "")
         ok, message = open_url(url)
         return ActionResult(action.action_type, bool(ok), message, error=None if ok else "FAILED")
-    if action.action_type.startswith("FILE_"): return _file_action(action)
-    if action.action_type.startswith("VOLUME_") or action.action_type.startswith("MEDIA_"): return _system_action(action)
+    if action.action_type.startswith("FILE_") or action.action_type == "OPEN_FOLDER": return _file_action(action)
+    if action.action_type in {"VOLUME_UP", "VOLUME_DOWN", "VOLUME_MUTE", "MEDIA_PLAY", "MEDIA_PAUSE", "MEDIA_NEXT", "MEDIA_PREVIOUS"}: return _system_action(action)
     if action.action_type.startswith('WIFI_'):
         ok, msg, err = settings('wifi') if action.action_type == 'WIFI_OPEN_SETTINGS' else wifi(action.action_type)
         return ActionResult(action.action_type, ok, msg or ('Wi-Fi contrôlé.' if ok else 'Le Wi-Fi est indisponible.'), error=err)

@@ -77,12 +77,23 @@ def detect_work_environment_intent(message):
 
 
 def detect_intent(message):
+    message = re.sub(r"^(?:hey\s+)?jarvis\s*[, ]*", "", message.strip(), flags=re.I)
     # Actions PC à paramètres (dossiers, fichiers, services web).
     from core.action_parser import _pc_action
     if (pc_action := _pc_action(message)):
         return pc_action
 
     message = _normalize_text(resolve_command_terms(message)["normalized_terms"])
+    # Les alias produisent des tokens anglais ; les règles ci-dessous
+    # utilisent historiquement les verbes français.
+    canonical = {"open": "ouvre", "play": "mets", "search": "cherche", "browser": "navigateur"}
+    message = " ".join(canonical.get(word, word) for word in message.split())
+    message = message.replace("google navigateur", "navigateur")
+
+    # Laisser le parseur conserver la requête au lieu d'ouvrir simplement
+    # le navigateur lorsqu'une recherche contient « internet » ou « chrome ».
+    if message.startswith(("cherche ", "search ")):
+        return None
 
     screenshot_phrases = ("fais une capture d ecran", "fais une capture ecran", "capture mon ecran", "capture l ecran", "prends une capture d ecran", "prends une capture ecran", "screenshot", "capture ecran")
     if any(phrase in message for phrase in screenshot_phrases):
@@ -290,7 +301,7 @@ def detect_intent(message):
     # ========================================================
 
     project_match = re.match(
-        r'^(?:open|launch|start) '
+        r'^(?:ouvre|open|launch|start) '
         r'(?:(?:mon|my|le|the) )?'
         r'(?:projet|project) '
         r'["\']?(.+?)["\']?$',

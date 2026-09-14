@@ -9,6 +9,9 @@ def _pc_action(text):
     """Parse les actions PC à paramètres structurés (sans commande shell)."""
     raw = str(text or "").strip()
     raw = re.sub(r"^(?:hey\s+)?jarvis\s*[, ]*", "", raw, flags=re.I)
+    url = re.fullmatch(r"(?:ouvre|ouvrir|lance|open)\s+(https?://\S+)", raw, re.I)
+    if url:
+        return {"action": "OPEN_URL", "url": url.group(1)}
     for pattern, kind in (
         (r"^(?:ouvre|ouvrir|open)\s+(?:moi\s+)?(?:le\s+)?fichier\s+[\"']?(.+?)[\"']?$", "FILE_OPEN"),
         (r"^(?:cree|crée)[- ]?(?:moi\s+)?un\s+fichier(?:\s+(?:au\s+nom\s+de|nomme|appele|appelé))?\s+[\"']?(.+?)[\"']?$", "FILE_CREATE"),
@@ -59,14 +62,6 @@ def _pc_action(text):
 
 def _one(text):
     value = text.strip()
-    # Tolérance aux petites fautes pour les intents simples connus.
-    try:
-        from core.intelligence import normalize_and_classify
-        fuzzy = normalize_and_classify(value)
-        if fuzzy and fuzzy.get("confidence", 0) >= 0.85:
-            return {"action": fuzzy["intent"]}
-    except (ImportError, RuntimeError):
-        pass
     if (pc := _pc_action(value)):
         return pc
     low = resolve_command_terms(value)["normalized_terms"]
@@ -130,8 +125,8 @@ def _one(text):
     # ============================================================
 
     if re.search(
-        r"(?:ouvre|ouvrir|lance|lancer|demarre)\s+"
-        r"(?:mon\s+)?"
+        r"(?:open|ouvre|ouvrir|lance|lancer|demarre)\s+"
+        r"(?:(?:mon|le)\s+)?"
         r"(?:browser|navigateur|chrome|google chrome)",
         low,
     ):
@@ -333,6 +328,20 @@ def _one(text):
             "url": "https://fr.wikipedia.org",
         }
 
+    # Les commandes d'une séquence gardent les mêmes paramètres qu'une
+    # commande isolée (notamment la cible d'une application ou d'un projet).
+    from core.intent import detect_intent
+
+    intent = detect_intent(value)
+    if intent:
+        return intent if isinstance(intent, dict) else {"action": intent}
+    # Le fallback approximatif est limité aux actions sans paramètres :
+    # OPEN_APPLICATION sans cible ne constitue pas une commande exécutable.
+    from core.intelligence import normalize_and_classify
+
+    fuzzy = normalize_and_classify(value)
+    if fuzzy.get("intent") in {"OPEN_BROWSER", "GET_TIME", "VOLUME_UP", "VOLUME_DOWN"}:
+        return {"action": fuzzy["intent"]}
     return None
 
 

@@ -58,3 +58,15 @@ def test_session_rejects_wake_in_wrong_state():
     detection = WakeDetection(True, 0.9, "hey_jarvis", 1.0)
     assert session.accept(detection) is False
     assert session.state == VoiceState.SLEEPING
+
+
+def test_reset_discards_pending_audio_and_model_scores():
+    from unittest.mock import Mock
+    model = FakeModel(0.9)
+    model.reset = Mock()
+    detector = OpenWakeWordDetector(model=model, sample_rate=16000)
+    assert not detector.detect(b"\0\0" * 1000).detected
+    detector.reset()
+    model.reset.assert_called_once()
+    assert not detector.detect(b"\0\0" * 1000).detected
+    assert detector.detect(b"\0\0" * 280).detected

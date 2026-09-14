@@ -32,17 +32,17 @@ def test_dispatch_open_browser_calls_tool():
         mock_open.return_value = "mocked"
         result = dispatcher.dispatch("OPEN_BROWSER")
         mock_open.assert_called_once()
-        assert result == "mocked"
+        assert result == (True, "mocked")
 
 
 def test_detect_spotify_and_terminal_phrases():
     assert detect_intent("ouvre spotify") == "OPEN_SPOTIFY"
     assert detect_intent("lance spotify") == "OPEN_SPOTIFY"
     assert detect_intent("ouvre le terminal") == "OPEN_TERMINAL"
-    assert detect_intent("ouvre terminal") == "OPEN_TERMINAL"
+    assert detect_intent("ouvre terminal") == {"action": "OPEN_APPLICATION", "target": "terminal"}
 
 
 def test_dispatch_spotify_calls_tool():
     with patch("core.dispatcher.open_musique", return_value="mocked") as mock_open:
-        assert dispatcher.dispatch("OPEN_SPOTIFY") == "mocked"
+        assert dispatcher.dispatch("OPEN_SPOTIFY") == (True, "mocked")
         mock_open.assert_called_once()

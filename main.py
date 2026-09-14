@@ -1,169 +1,116 @@
-# ============================================================
-# main.py - JARVIS V3.2
-# Mode terminal
-# ============================================================
+"""Point d'entrée terminal et activation vocale de JARVIS."""
 
-# ============================================================
-# IMPORTS
-# ============================================================
+import argparse
+import math
 
-# Cerveau principal
-from core.brain import think
-
-# Mémoire utilisateur
-import json
-import sys
-from config.settings import MEMORY_FILE
-
-# Modules conservés pour l'architecture de JARVIS
-from core.habits import analyze_habit
-from core.history import save_message
-from tools.tools import open_browser, get_time, open_musique
-from personality.personality import speak
-from core.intent import detect_intent
-from core.dispatcher import dispatch
+from core.command_session import GOODBYE, is_exit_command, process_command as think
 from voice.voice_manager import speak as speak_response
 
-
-# ============================================================
-# MÉMOIRE UTILISATEUR
-# ============================================================
-
-def load_memory():
-
-    with open(MEMORY_FILE, "r", encoding="utf-8") as f:
-
-        user = json.load(f)
-
-    return user
-
-
-user = load_memory()
-
-
-def save_memory():
-
-    with open(MEMORY_FILE, "w", encoding="utf-8") as f:
-
-        json.dump(user, f, indent=4)
-
-
-# ============================================================
-# CONFIGURATION
-# ============================================================
-
 VERSION = "V5.7"
-EXIT_COMMANDS = {
-    "quitter",
-    "quit",
-    "exit",
-    "stop",
-    "au revoir",
-    "bye",
-    "adieu",
-    "arrete",
-    "q",
-}
 
-
-def is_exit_command(message):
-    """Reconnaît une commande d'arrêt malgré casse, accents ou ponctuation."""
-
-    import re
-    import unicodedata
-
-    normalized = unicodedata.normalize("NFD", message.casefold())
-    normalized = "".join(
-        character
-        for character in normalized
-        if unicodedata.category(character) != "Mn"
-    )
-    normalized = re.sub(r"[^\w\s]", " ", normalized)
-    normalized = " ".join(normalized.split())
-    return normalized in EXIT_COMMANDS
-
-
-# ============================================================
-# AFFICHAGE
-# ============================================================
 
 def show_banner():
-
     print("================================")
     print(f"          JARVIS {VERSION}")
     print("          Mode Terminal")
     print("================================")
     print("Bonjour Fabrice.")
     print("JARVIS est opérationnel.")
-    print("Tapez 'quitter' pour arrêter.")
-    print()
+    print("Tapez 'quitter' pour arrêter.\n")
 
 
-# ============================================================
-# BOUCLE PRINCIPALE
-# ============================================================
-
-def main():
-
+def run_terminal():
     show_banner()
-
     while True:
-
         try:
-
             message = input("Fabrice > ").strip()
-
-            # Ignorer une entrée vide
             if not message:
                 continue
-
-            # Commandes d'arrêt
             if is_exit_command(message):
-
-                print("JARVIS > Au revoir Fabrice. À bientôt.")
+                print(f"JARVIS > {GOODBYE}")
                 break
-
-            # ------------------------------------------------
-            # ENVOI AU CERVEAU
-            # ------------------------------------------------
-
             response = think(message)
-
-            # ------------------------------------------------
-            # AFFICHAGE DE LA RÉPONSE
-            # ------------------------------------------------
-
             if response:
-
                 print(f"JARVIS > {response}")
                 speak_response(response)
-
             else:
-
                 print("JARVIS > Je n'ai pas de réponse.")
-
-        except KeyboardInterrupt:
-
+        except (KeyboardInterrupt, EOFError):
             print("\nJARVIS > Arrêt demandé. À bientôt, Fabrice.")
             break
-
         except Exception as error:
-
             print(f"JARVIS > Une erreur est survenue : {error}")
+    return 0
 
 
-# ============================================================
-# POINT D'ENTRÉE
-# ============================================================
+def _positive_int(value):
+    number = int(value)
+    if number <= 0:
+        raise argparse.ArgumentTypeError("La valeur doit être positive.")
+    return number
+
+
+def _device_index(value):
+    number = int(value)
+    if number < 0:
+        raise argparse.ArgumentTypeError("L'index du microphone doit être positif ou nul.")
+    return number
+
+
+def _positive_float(value):
+    number = float(value)
+    if not math.isfinite(number) or number <= 0:
+        raise argparse.ArgumentTypeError("La valeur doit être positive et finie.")
+    return number
+
+
+def build_parser():
+    parser = argparse.ArgumentParser(description="JARVIS : terminal ou activation « Hey Jarvis ».")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--voice", action="store_true", help="Activer l'écoute du mot-clé local Hey Jarvis.")
+    modes.add_argument("--list-microphones", action="store_true", help="Afficher les microphones disponibles.")
+    parser.add_argument("--mic-device", type=_device_index, default=None, help="Index du microphone (par défaut : celui du système).")
+    parser.add_argument("--sample-rate", type=_positive_int, default=44100, help="Fréquence de capture en Hz (44100 par défaut).")
+    parser.add_argument("--wake-threshold", type=_positive_float, default=0.40, help="Seuil de détection entre 0 et 1 (0.40 par défaut).")
+    parser.add_argument("--command-seconds", type=_positive_float, default=5.0, help="Durée de capture après le signal, en secondes (5 par défaut).")
+    return parser
+
+
+def main(argv=None):
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if args.wake_threshold > 1:
+        parser.error("--wake-threshold doit être compris entre 0 et 1.")
+    if not args.voice and not args.list_microphones:
+        return run_terminal()
+    try:
+        from voice.voice_pipeline import LocalWakeVoicePipeline, list_microphones
+
+        if args.list_microphones:
+            devices = list_microphones()
+            for device in devices:
+                print(f"{device['index']} : {device['name']} ({device['sample_rate']} Hz)")
+            if not devices:
+                print("JARVIS > Aucun microphone disponible.")
+            return 0
+        pipeline = LocalWakeVoicePipeline.from_defaults(
+            sample_rate=args.sample_rate, threshold=args.wake_threshold,
+        )
+        pipeline.run_microphone(
+            device_index=args.mic_device, sample_rate=args.sample_rate,
+            command_seconds=args.command_seconds,
+        )
+        return 0
+    except KeyboardInterrupt:
+        print("\nJARVIS > Arrêt demandé. À bientôt, Fabrice.")
+        return 0
+    except ImportError as error:
+        print(f"JARVIS > Dépendance vocale indisponible : {error}. Installez requirements.txt dans votre environnement Python.")
+        return 1
+    except Exception as error:
+        print(f"JARVIS > Mode vocal indisponible : {error}. Vérifiez le microphone avec --list-microphones.")
+        return 1
+
 
 if __name__ == "__main__":
-
-    if "--voice" in sys.argv[1:]:
-        from voice.voice_pipeline import LocalWakeVoicePipeline
-
-        try:
-            LocalWakeVoicePipeline.from_defaults().run_microphone()
-        except KeyboardInterrupt:
-            print("\nJARVIS > Arrêt demandé. À bientôt, Fabrice.")
-    else:
-        main()
+    raise SystemExit(main())

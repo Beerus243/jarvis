@@ -48,3 +48,19 @@ def test_pc_context_contains_kwin_sections():
         context = get_pc_context()
     assert context["active_window"]["available"] is False
     assert context["windows"] == []
+
+def test_kwin_dbus_reader_parses_read_only_payload():
+    from core.kwin_context import _fetch_via_dbus
+    values = {
+        ('/KWin', 'org.kde.KWin.windowList'): 'uint32 42 43',
+        ('/KWin', 'org.kde.KWin.activeWindow'): 'uint32 43',
+        ('/Window_42', 'org.kde.KWin.Window.caption'): '"Terminal"',
+        ('/Window_42', 'org.kde.KWin.Window.windowClass'): '"konsole"',
+        ('/Window_42', 'org.kde.KWin.Window.geometry'): '0,0,100,100',
+        ('/Window_43', 'org.kde.KWin.Window.caption'): '"Firefox"',
+        ('/Window_43', 'org.kde.KWin.Window.windowClass'): '"firefox"',
+        ('/Window_43', 'org.kde.KWin.Window.geometry'): '0,0,100,100',
+    }
+    with patch('core.kwin_context._dbus_call', side_effect=lambda p,m: values.get((p,m))), patch('core.kwin_context.shutil.which', return_value='/usr/bin/dbus-send'):
+        result = _fetch_via_dbus()
+    assert result['active_window_id'] == 43 and result['windows'][1]['active'] is True
