@@ -6,7 +6,7 @@ import math
 from core.command_session import GOODBYE, is_exit_command, process_command as think
 from voice.voice_manager import speak as speak_response
 
-VERSION = "V5.18"
+VERSION = "V6.2"
 
 
 def show_banner():
@@ -136,6 +136,10 @@ def main(argv=None):
         print(f"JARVIS > Mode vocal indisponible : {error}. Vérifiez le microphone avec --list-microphones.")
         return 1
     finally:
+        from core.capture.recording import screen_recorder
+        screen_recorder.close()
+        from core.vision.context import visual_session
+        visual_session.clear()
         if runtime:
             runtime.stop()
 

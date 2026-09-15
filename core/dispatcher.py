@@ -40,6 +40,7 @@ def dispatch(intent):
         action = intent.get("action")
 
         if action in {
+            "SCREENSHOT", "RECORDING_START", "RECORDING_STOP", "RECORDING_STATUS",
             "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL", "OPEN_FOLDER",
             "AUDIO_OPEN_SETTINGS",
             "LIST_APPLICATIONS", "WINDOW_LIST", "WINDOW_FOCUS", "WINDOW_MINIMIZE", "WINDOW_MAXIMIZE", "WINDOW_CLOSE",
@@ -55,10 +56,6 @@ def dispatch(intent):
             params.pop("action", None)
             result = execute_pc_action(PCAction(action, params))
             return result
-
-        if action == "SCREENSHOT":
-            result = execute_pc_action(PCAction("SCREENSHOT"))
-            return result.success, result.message if result.success else result.error
 
         # ----------------------------------------------------
         # APPLICATION

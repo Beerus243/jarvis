@@ -27,3 +27,6 @@ CATEGORY_WEIGHT = 0.15
 SPECIFICITY_WEIGHT = 0.20
 
 MODEL = "openai/gpt-oss-120b"
+
+# Le fournisseur de vision est choisi séparément du modèle de conversation.
+VISION_PROVIDER = 'groq'

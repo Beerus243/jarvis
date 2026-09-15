@@ -1,9 +1,14 @@
 # JARVIS
 
-Assistant personnel Python V5.18, vocal par défaut avec « Hey Jarvis » et Kokoro :
-actions PC, mémoire corrigible, tâches persistantes et rappels proactifs.
+Assistant personnel Python V6.2, vocal par défaut avec « Hey Jarvis » et Kokoro :
+actions PC, mémoire corrigible, tâches persistantes, rappels proactifs et
+vision ponctuelle de l'écran ou de la webcam après configuration.
 
 Le [bilan V5](docs/V5_IMPLEMENTATION.md) décrit les ajouts, les validations et les limites avant la vision.
+La [vision V6](docs/V6_VISION.md) décrit les nouvelles commandes et le choix du
+fournisseur d'analyse des images.
+La [roadmap V6.2 à V6.9](docs/ROADMAP_V6.md) distingue le lot actuel des
+capacités prévues pour les prochaines versions.
 
 ## Installation
 
@@ -14,6 +19,27 @@ python -m pip install -r requirements-voice-cuda.txt
 
 Pour Groq, définir `GROQ_API_KEY` dans `.env`. Le modèle par défaut est
 `openai/gpt-oss-120b` et peut être changé avec `MODEL`.
+
+La vision réutilise cette clé avec son propre modèle, `qwen/qwen3.6-27b`.
+« Regarde mon écran » ou « regarde avec ma webcam » envoie une image à Groq,
+puis lit l'analyse avec Kokoro. Les fichiers temporaires sont supprimés après
+l'analyse ; une seule image reste en mémoire vive pendant deux minutes pour
+« explique cette erreur » ou « lis ce texte ». « Regarde à nouveau » reprend
+une capture, « oublie ce que tu as vu » efface ce contexte temporaire.
+Les options sont détaillées dans le [guide V6](docs/V6_VISION.md).
+
+« Surveille cette compilation pendant cinq minutes » active une surveillance
+d'écran limitée : au moins 30 secondes entre observations, 10 analyses Groq
+maximum, deux résultats concordants avant une alerte. « Que surveilles-tu »
+donne son état ; « arrête la surveillance » l'arrête. Le runtime doit être
+actif (lancement habituel sans `--no-proactive`).
+
+« Capture la fenêtre active », « capture une zone de l'écran » et
+« enregistre mon écran pendant trente secondes » enregistrent des fichiers
+locaux. « Arrête la vidéo » termine l'enregistrement. Les images vont dans
+`~/Pictures/Jarvis`, les vidéos dans `~/Videos/Jarvis`, avec des noms uniques.
+La sélection vidéo et de zone utilise Spectacle sous KDE Wayland.
+Voir les [commandes de capture et leurs limites](docs/CAPTURES.md).
 
 Le profil `requirements-voice-cuda.txt` conserve Torch 2.6.0 + CUDA 11.8,
 Kokoro 0.9.4 et Transformers 5.15.1. `requirements.txt` est le profil CPU

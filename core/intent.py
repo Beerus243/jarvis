@@ -78,6 +78,9 @@ def detect_work_environment_intent(message):
 
 def detect_intent(message):
     message = re.sub(r"^(?:hey\s+)?jarvis\s*[, ]*", "", message.strip(), flags=re.I)
+    from core.capture.commands import parse_capture_command
+    if (capture_action := parse_capture_command(message)):
+        return capture_action
     # Actions PC à paramètres (dossiers, fichiers, services web).
     from core.action_parser import _pc_action
     if (pc_action := _pc_action(message)):
@@ -94,10 +97,6 @@ def detect_intent(message):
     # le navigateur lorsqu'une recherche contient « internet » ou « chrome ».
     if message.startswith(("cherche ", "search ")):
         return None
-
-    screenshot_phrases = ("fais une capture d ecran", "fais une capture ecran", "capture mon ecran", "capture l ecran", "prends une capture d ecran", "prends une capture ecran", "screenshot", "capture ecran")
-    if any(phrase in message for phrase in screenshot_phrases):
-        return "SCREENSHOT"
 
     # Les phrases interrogatives générales ne sont pas des commandes locales.
     if message.startswith(("pourquoi ", "comment ", "qu est ce ", "est ce que ")):

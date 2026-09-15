@@ -82,5 +82,45 @@
     {
         "role": "assistant",
         "message": "Précise le délai : « rappelle-moi dans 10 minutes de faire une pause » ou « rappelle-moi demain à 9h de reprendre mon projet »."
+    },
+    {
+        "role": "user",
+        "message": "regarde mon écran"
+    },
+    {
+        "role": "assistant",
+        "message": "J'ouvre https://www.google.com/search?q=mon%20ecran."
+    },
+    {
+        "role": "user",
+        "message": "fais une capture d'écran"
+    },
+    {
+        "role": "assistant",
+        "message": "Capture enregistrée dans le dossier Pictures, Jarvis."
+    },
+    {
+        "role": "user",
+        "message": "fais une capture d'écran"
+    },
+    {
+        "role": "assistant",
+        "message": "Capture enregistrée dans le dossier Pictures, Jarvis."
+    },
+    {
+        "role": "user",
+        "message": "mets Jarvis"
+    },
+    {
+        "role": "assistant",
+        "message": "Aucun appareil Spotify disponible."
+    },
+    {
+        "role": "user",
+        "message": "Jarvis"
+    },
+    {
+        "role": "assistant",
+        "message": "Oui, je suis là. Que puis‑je faire pour vous ?"
     }
 ]

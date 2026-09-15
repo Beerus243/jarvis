@@ -14,11 +14,21 @@ NUMBERS = {'un': 1, 'une': 1, 'deux': 2, 'trois': 3, 'cinq': 5, 'dix': 10, 'quin
 def _reminder(message):
     from core.runtime import add_reminder
     raw = message.strip()
-    match = re.fullmatch(r'rappelle[- ]moi\s+dans\s+(\d+|un|une|deux|trois|cinq|dix|quinze|trente)\s+(secondes?|minutes?|heures?|jours?)\s+(?:de\s+|que\s+)?(.+)', raw, re.I)
+    prefix = r'rappelle[- ]moi\s+'
+    amount = r'(?P<amount>\d+|' + '|'.join(NUMBERS) + r')'
+    delay = rf'dans\s+{amount}\s+(?P<unit>secondes?|minutes?|heures?|jours?)'
+    body = r"(?:de\s+|d['’]\s*|que\s+)?(?P<message>.+)"
+    # Accepter le délai avant ou après le texte, sans normaliser son contenu.
+    match = re.fullmatch(prefix + delay + r'\s+' + body, raw, re.I)
+    if match is None:
+        match = re.fullmatch(prefix + body + r'\s+' + delay + r'[.!?]?', raw, re.I)
     if match:
-        amount = int(match[1]) if match[1].isdigit() else NUMBERS[match[1].lower()]
-        multiplier = {'seconde': 1, 'minute': 60, 'heure': 3600, 'jour': 86400}[match[2].lower().rstrip('s')]
-        item = add_reminder(match[3], time.time() + amount * multiplier)
+        amount = int(match['amount']) if match['amount'].isdigit() else NUMBERS[match['amount'].lower()]
+        multiplier = {'seconde': 1, 'minute': 60, 'heure': 3600, 'jour': 86400}[match['unit'].lower().rstrip('s')]
+        reminder_text = match['message'].strip()
+        if reminder_text.lower() in {'de', 'que', "d'", 'd’'}:
+            return 'Précise ce que je dois te rappeler.'
+        item = add_reminder(reminder_text, time.time() + amount * multiplier)
         return f"Rappel {item['id']} enregistré pour {datetime.fromtimestamp(item['due_at']).astimezone():%d/%m à %H:%M:%S}."
     match = re.fullmatch(r'rappelle[- ]moi\s+(demain|aujourd.hui)\s+[aà]\s+(\d{1,2})[h:]?(\d{2})?\s+(?:de\s+|que\s+)?(.+)', raw, re.I)
     if match:

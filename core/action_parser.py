@@ -7,6 +7,10 @@ from core.command_understanding import normalize_command
 
 def _pc_action(text):
     """Parse les actions PC à paramètres structurés (sans commande shell)."""
+    from core.capture.commands import parse_capture_command
+    capture = parse_capture_command(text)
+    if isinstance(capture, dict):
+        return capture
     raw = str(text or "").strip()
     raw = re.sub(r"^(?:hey\s+)?jarvis\s*[, ]*", "", raw, flags=re.I)
     url = re.fullmatch(r"(?:ouvre|ouvrir|lance|open)\s+(https?://\S+)", raw, re.I)

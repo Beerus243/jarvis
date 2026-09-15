@@ -45,6 +45,12 @@ def _ai_fallback(message, resolved_reference, memory_context=""):
 
 def process(message):
     clear_diagnostics()
+    # Les commandes visuelles précises précèdent notamment le « oublie ... »
+    # générique de la mémoire personnelle.
+    from core.vision.commands import handle_vision_command
+    vision_response = handle_vision_command(message)
+    if vision_response is not None:
+        return CommandResponse(vision_response)
     from core.session_service import handle_message
     session_response = handle_message(message, dispatcher=dispatch)
     if session_response is not None:

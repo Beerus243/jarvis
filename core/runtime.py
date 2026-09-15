@@ -35,6 +35,10 @@ class Runtime:
         self._process_lock = None
         self._last_observation = 0
         self.threads = []
+        from core.vision.watch import VisualWatch
+        from core.vision.service import _vision_enabled
+        self.visual_watch = VisualWatch(self.enqueue, self.cancel_visual_notifications,
+                                       busy=self.busy, enabled=_vision_enabled)
 
     def start(self):
         global _runtime
@@ -50,13 +54,18 @@ class Runtime:
             self._process_lock = None
             raise RuntimeError('Une session Jarvis proactive utilise déjà cette base. Ferme-la ou utilise --no-proactive.')
         _runtime = self
+        # Les surveillances ne reprennent pas après un redémarrage, et leurs
+        # annonces non lues ne doivent pas sembler concerner la nouvelle session.
+        self.cancel_visual_notifications()
         # Les tâches interrompues ne sont jamais relancées sans commande explicite.
         from core.task_engine import list_tasks, pause_task
         for task in list_tasks():
             if task.status == 'RUNNING':
                 pause_task(task.id)
-        for target in (self._clock, self._worker):
-            thread = threading.Thread(target=target, daemon=True)
+        for target in (self._clock, self._worker, self._watch_loop):
+            # La surveillance finit son appel borné et nettoie ses captures
+            # avant la sortie du processus, même si stop() rend la main avant.
+            thread = threading.Thread(target=target, daemon=target != self._watch_loop)
             thread.start()
             self.threads.append(thread)
         return self
@@ -64,6 +73,7 @@ class Runtime:
     def stop(self):
         global _runtime
         self.stopping.set()
+        self.visual_watch.stop()
         from core.task_engine import list_tasks, pause_task
         for task in list_tasks():
             if task.status == 'RUNNING':
@@ -104,14 +114,24 @@ class Runtime:
                     self._scheduled.discard(task_id)
                 self.jobs.task_done()
 
-    def enqueue(self, key, message, *, reminder_id=None, now=None):
+    def enqueue(self, key, message, *, reminder_id=None, now=None, visual_watch_id=None):
         now = time.time() if now is None else now
         def insert(value):
             return value or {'id': key, 'message': message, 'status': 'PENDING',
-                             'created_at': now, 'reminder_id': reminder_id}
+                             'created_at': now, 'reminder_id': reminder_id,
+                             'visual_watch_id': visual_watch_id}
         return get_store().mutate('notifications', key, insert)
 
+    def cancel_visual_notifications(self, watch_id=None):
+        with self._delivery_lock:
+            store = get_store()
+            for key, notice in store.items('notifications'):
+                if (notice.get('visual_watch_id') and notice['status'] == 'PENDING'
+                        and (watch_id is None or notice['visual_watch_id'] == watch_id)):
+                    store.mutate('notifications', key, lambda n: {**n, 'status': 'CANCELLED'} if n else None)
+
     def tick(self, now=None):
+        self.visual_watch.expire()
         now = time.time() if now is None else now
         store = get_store()
         # Notification durable : un redémarrage ne perd pas un rappel échu.
@@ -180,6 +200,14 @@ class Runtime:
             except Exception as error:
                 # Un capteur absent ne doit pas tuer l'horloge des rappels.
                 get_store().put('health', 'runtime', {'error': str(error), 'at': time.time()})
+
+    def _watch_loop(self):
+        while not self.stopping.wait(0.25):
+            try:
+                self.visual_watch.step()
+            except Exception:
+                self.visual_watch.stop()
+                get_store().put('health', 'vision_watch', {'error': 'Surveillance interrompue.', 'at': time.time()})
 
 
 def get_runtime():

@@ -10,38 +10,6 @@
     },
     "action_history": [
         {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-09-01T01:03:14.405588+01:00",
-            "result": "Je lance Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-09-01T01:03:14.594466+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-09-01T01:03:14.631888+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "GREETINGS",
-            "timestamp": "2026-09-01T01:03:14.640111+01:00",
-            "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
             "action": "OPEN_BROWSER",
             "timestamp": "2026-09-01T01:03:15.609241+01:00",
             "result": "Navigateur ouvert",
@@ -408,6 +376,38 @@
             "success": true,
             "confirmation": false,
             "error": null
+        },
+        {
+            "action": "SEARCH_WEB",
+            "timestamp": "2026-09-15T00:57:52.799921+01:00",
+            "result": "J'ouvre https://www.google.com/search?q=mon%20ecran.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "SCREENSHOT",
+            "timestamp": "2026-09-15T02:03:06.303234+01:00",
+            "result": "Capture enregistrée dans le dossier Pictures, Jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "SCREENSHOT",
+            "timestamp": "2026-09-15T02:04:36.180263+01:00",
+            "result": "Capture enregistrée dans le dossier Pictures, Jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "PLAY_MUSIC",
+            "timestamp": "2026-09-15T02:05:02.074724+01:00",
+            "result": "Aucun appareil Spotify disponible.",
+            "success": false,
+            "confirmation": false,
+            "error": "Aucun résultat"
         }
     ],
     "personal_state": {

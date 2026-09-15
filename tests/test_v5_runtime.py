@@ -3,6 +3,8 @@ from concurrent.futures import ThreadPoolExecutor
 from unittest.mock import Mock
 import time
 
+import pytest
+
 from core.state_store import StateStore, get_store
 from core.runtime import Runtime, add_reminder
 from core.session_service import handle_message
@@ -79,6 +81,57 @@ def test_french_reminder_dialogue(monkeypatch):
     assert reminder['due_at'] == 1120
     assert reminder['message'] == 'boire de l’eau'
     assert 'boire' in handle_message('liste mes rappels')
+
+
+@pytest.mark.parametrize('message,seconds,expected', [
+    ('rappelle-moi de faire une pause dans 15 minutes', 900, 'faire une pause'),
+    ('rappelle-moi de faire une pause dans quinze minutes', 900, 'faire une pause'),
+    ('Rappelle moi de faire une pause dans QUINZE minutes.', 900, 'faire une pause'),
+    ('rappelle-moi dans quinze minutes de faire une pause', 900, 'faire une pause'),
+    ('rappelle-moi dans 15 minutes de faire une pause', 900, 'faire une pause'),
+    ("rappelle-moi d'appeler Élodie dans une heure", 3600, 'appeler Élodie'),
+    ('rappelle-moi d’arroser les plantes dans deux jours', 172800, 'arroser les plantes'),
+    ('rappelle-moi que le thé est prêt dans trente secondes', 30, 'le thé est prêt'),
+    ('rappelle-moi de vérifier dans le four dans une minute', 60, 'vérifier dans le four'),
+])
+def test_relative_reminder_accepts_both_word_orders(monkeypatch, message, seconds, expected):
+    monkeypatch.setattr(time, 'time', lambda: 1000)
+    assert 'enregistré' in handle_message(message)
+    items = get_store().items('reminders')
+    assert len(items) == 1
+    reminder = items[0][1]
+    assert reminder['message'] == expected
+    assert reminder['due_at'] == 1000 + seconds
+    assert reminder['status'] == 'SCHEDULED'
+    sink = Mock(return_value=True)
+    runtime = Runtime(notify=sink, pc_provider=lambda: {}, personal_provider=lambda: {})
+    runtime.tick(1000 + seconds - 1)
+    sink.assert_not_called()
+    runtime.tick(1000 + seconds)
+    runtime.tick(1000 + seconds + 1)
+    sink.assert_called_once_with('Rappel : ' + expected)
+
+
+@pytest.mark.parametrize('message', [
+    'rappelle-moi de faire une pause dans 0 minutes',
+    'rappelle-moi de faire une pause dans -15 minutes',
+    'rappelle-moi de faire une pause dans quinze',
+    'rappelle-moi dans quinze minutes',
+    'rappelle-moi de dans quinze minutes',
+])
+def test_incomplete_or_invalid_reminder_does_not_schedule(message):
+    assert 'enregistré' not in handle_message(message)
+    assert get_store().items('reminders') == []
+
+
+def test_dated_reminder_still_works():
+    expected = datetime.now().astimezone().replace(hour=9, minute=0, second=0, microsecond=0)
+    from datetime import timedelta
+    expected += timedelta(days=1)
+    assert 'enregistré' in handle_message('rappelle-moi demain à 9h de reprendre Jarvis')
+    reminder = get_store().items('reminders')[0][1]
+    assert reminder['message'] == 'reprendre Jarvis'
+    assert reminder['due_at'] == expected.timestamp()
 
 
 def test_live_runtime_delivers_without_user_input(monkeypatch, tmp_path):

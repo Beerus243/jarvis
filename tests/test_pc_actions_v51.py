@@ -13,13 +13,13 @@ def test_unknown_action_blocked():
     assert not result.success and result.error == "UNKNOWN_ACTION"
 
 def test_capture_success_creates_artifact(tmp_path, monkeypatch):
-    target = tmp_path / "screenshot.png"
     def fake_run(*args, **kwargs):
+        target = Path(args[0][-1])
         target.write_bytes(b"png")
         return SimpleNamespace(returncode=0)
     monkeypatch.setattr("shutil.which", lambda _: "/usr/bin/spectacle")
     result = ScreenCapture(tmp_path, runner=fake_run).capture()
-    assert result.success and target.exists()
+    assert result.success and Path(result.artifact_path).exists()
 
 def test_capture_failure_is_structured(tmp_path, monkeypatch):
     monkeypatch.setattr("shutil.which", lambda _: None)

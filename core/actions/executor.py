@@ -19,6 +19,7 @@ def _is_protected_path(value):
     return path.suffix.lower() in {'.py','.sh','.bash','.zsh','.toml','.cfg','.ini'} or path.name == 'main.py'
 
 ALLOWED_ACTIONS = {
+    "RECORDING_START", "RECORDING_STOP", "RECORDING_STATUS",
     "AUDIO_OPEN_SETTINGS",
     "SCREENSHOT", "OPEN_APPLICATION", "CLOSE_APPLICATION", "OPEN_URL",
     "OPEN_FOLDER", "FILE_OPEN", "FILE_CREATE", "FILE_COPY", "FILE_MOVE", "FILE_DELETE",
@@ -107,7 +108,15 @@ def _system_action(action):
 def execute_pc_action(action: PCAction, *, capture=None):
     if not isinstance(action, PCAction) or action.action_type not in ALLOWED_ACTIONS:
         return ActionResult(getattr(action, "action_type", "UNKNOWN_ACTION"), False, "Action PC bloquée.", error="UNKNOWN_ACTION")
-    if action.action_type == "SCREENSHOT": return (capture or ScreenCapture()).capture()
+    if action.action_type == "SCREENSHOT":
+        params = action.parameters or {}
+        return (capture or ScreenCapture()).capture(**({"scope": params["scope"]} if "scope" in params else {}))
+    if action.action_type.startswith("RECORDING_"):
+        from core.capture.recording import screen_recorder
+        params = action.parameters or {}
+        if action.action_type == "RECORDING_START":
+            return screen_recorder.start(scope=params.get("scope", "screen"), duration=params.get("duration", 60))
+        return screen_recorder.stop() if action.action_type == "RECORDING_STOP" else screen_recorder.status()
     if action.action_type == "LIST_APPLICATIONS":
         apps = discover_applications()
         return ActionResult(action.action_type, True, ", ".join(a['name'] for a in apps) if apps else "Aucune application découverte.")

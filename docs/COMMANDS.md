@@ -5,11 +5,23 @@
 
 Catalogue basé sur `core/intent.py`, `core/dispatcher.py`, `tools/` et le brain actuels.
 
-## Ajouts V5.18
+## Ajouts V5 et V6.2
 
 | Commande | Effet |
 |---|---|
 | `rappelle-moi dans 10 minutes de faire une pause` | Rappel persistant |
+| `rappelle-moi de faire une pause dans quinze minutes` | Même rappel, avec le délai à la fin ; chiffres ou nombres reconnus en lettres |
+| `regarde mon écran` / `analyse mon écran` | Analyse visuelle ponctuelle, fournisseur de vision configuré |
+| `lis le texte à l'écran` / `explique cette erreur sur mon écran` | Lecture ou explication à partir d'une nouvelle capture |
+| `regarde avec ma webcam` / `que vois-tu devant la webcam` | Analyse d'une image de la webcam, puis fermeture |
+| `explique cette erreur` / `lis ce texte` / `décris cet objet` | Question sur la dernière image, conservée deux minutes en mémoire vive |
+| `regarde à nouveau` / `actualise la vue` | Nouvelle capture de la dernière source écran ou webcam |
+| `oublie ce que tu as vu` / `efface le contexte visuel` | Effacer l'image et le contexte visuel temporaires |
+| `surveille cette compilation pendant cinq minutes` | Surveiller l'écran jusqu'à la fin ou une erreur, avec limites de durée et d'analyses |
+| `surveille ce téléchargement` | Même surveillance pour un téléchargement, cinq minutes par défaut |
+| `préviens-moi si une erreur apparaît à l'écran` | Surveiller l'apparition d'un message d'erreur explicite |
+| `que surveilles-tu` / `statut de la surveillance` | Objectif, état, nombre d'analyses et temps restant |
+| `arrête la surveillance` / `arrête de surveiller` | Arrêter les prochaines captures et annuler les annonces en attente de cette surveillance |
 | `rappelle-moi demain à 9h de reprendre Jarvis` | Rappel à une heure locale |
 | `liste mes rappels` / `annule le rappel <id>` | Gestion des rappels |
 | `mode silencieux` / `reprends les notifications` | Suspendre/reprendre les annonces |
@@ -159,6 +171,15 @@ Un plan confirmé sans artefact officiel validé est invalidé (`PLAN_INVALIDATE
 - `REPAIRABLE_OFFLINE` : une réparation locale/cache est disponible.
 - `REPAIRABLE_ONLINE` : une source réseau officielle est nécessaire.
 - `BLOCKED_NETWORK` : aucune source validée n'est disponible hors ligne et le réseau est inaccessible.
+
+## Captures locales
+
+Les nouvelles captures sont détaillées dans [Captures locales](CAPTURES.md) :
+« capture la fenêtre active », « capture une zone de l'écran »,
+« enregistre mon écran pendant trente secondes », « arrête la vidéo » et
+« statut de l'enregistrement ». Images PNG et vidéos WebM conservées
+localement avec des noms uniques ; sélection native de Spectacle pour la zone
+et pour la cible vidéo.
 
 ## Non exposé ou non garanti
 

@@ -15,3 +15,11 @@ def no_real_environment_downloads(monkeypatch):
     def offline(_url):
         raise OSError('offline test fixture')
     monkeypatch.setattr('core.environment.conversation_plan.fetch_metadata', offline)
+
+
+@pytest.fixture(autouse=True)
+def isolated_visual_context():
+    from core.vision.context import visual_session
+    visual_session.clear()
+    yield
+    visual_session.clear()
