@@ -81,7 +81,9 @@ def build_parser():
     parser.add_argument("--mic-device", type=_device_index, default=None, help="Index du microphone (par défaut : celui du système).")
     parser.add_argument("--sample-rate", type=_positive_int, default=44100, help="Fréquence de capture en Hz (44100 par défaut).")
     parser.add_argument("--wake-threshold", type=_positive_float, default=0.40, help="Seuil de détection entre 0 et 1 (0.40 par défaut).")
-    parser.add_argument("--command-seconds", type=_positive_float, default=5.0, help="Durée de capture après le signal, en secondes (5 par défaut).")
+    parser.add_argument("--command-seconds", type=_positive_float, default=20.0, help="Durée maximale d'une commande, en secondes (20 par défaut).")
+    parser.add_argument("--silence-seconds", type=_positive_float, default=1.5, help="Pause qui termine une phrase, en secondes (1,5 par défaut).")
+    parser.add_argument("--speech-threshold", type=_positive_float, default=120.0, help="Seuil d'énergie de début de parole (120 par défaut).")
     parser.add_argument("--followup-seconds", type=_positive_float, default=8.0, help="Attente d'une réponse sans répéter Hey Jarvis (8 secondes).")
     parser.add_argument("--raw-capture", action="store_true", help="Capture fixe de diagnostic, sans détection de fin de phrase.")
     parser.add_argument("--no-barge-in", action="store_true", help="Désactiver l'interruption de la voix par Hey Jarvis.")
@@ -122,6 +124,7 @@ def main(argv=None):
         pipeline.run_microphone(
             device_index=args.mic_device, sample_rate=args.sample_rate,
             command_seconds=args.command_seconds,
+            silence_seconds=args.silence_seconds, speech_threshold=args.speech_threshold,
             endpointing=not args.raw_capture, followup_seconds=args.followup_seconds,
             barge_in=not args.no_barge_in,
         )

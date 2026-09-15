@@ -16,7 +16,7 @@ def test_voice_entrypoint_passes_device_and_rate(monkeypatch):
     assert main.main(["--voice", "--mic-device", "3", "--sample-rate", "16000",
                       "--wake-threshold", "0.6", "--command-seconds", "7"]) == 0
     factory.assert_called_once_with(sample_rate=16000, threshold=0.6)
-    pipeline.run_microphone.assert_called_once_with(device_index=3, sample_rate=16000, command_seconds=7.0, endpointing=True, followup_seconds=8.0, barge_in=True)
+    pipeline.run_microphone.assert_called_once_with(device_index=3, sample_rate=16000, command_seconds=7.0, endpointing=True, followup_seconds=8.0, barge_in=True, silence_seconds=1.5, speech_threshold=120.0)
 
 
 def test_voice_defaults_use_system_microphone(monkeypatch):
@@ -28,6 +28,8 @@ def test_voice_defaults_use_system_microphone(monkeypatch):
     pipeline.prepare_voice.assert_called_once()
     keyboard.assert_not_called()
     assert pipeline.run_microphone.call_args.kwargs["device_index"] is None
+    assert pipeline.run_microphone.call_args.kwargs['command_seconds'] == 20.0
+    assert pipeline.run_microphone.call_args.kwargs['silence_seconds'] == 1.5
 
 
 def test_modes_are_mutually_exclusive():
@@ -47,7 +49,8 @@ def test_voice_startup_failure_never_falls_back_to_keyboard(monkeypatch):
 
 
 @pytest.mark.parametrize("args", [["--sample-rate", "0"], ["--mic-device", "-1"],
-    ["--wake-threshold", "1.1"], ["--wake-threshold", "nan"], ["--command-seconds", "inf"], ["--command-seconds", "-2"]])
+    ["--wake-threshold", "1.1"], ["--wake-threshold", "nan"], ["--command-seconds", "inf"], ["--command-seconds", "-2"],
+    ['--silence-seconds', '0'], ['--speech-threshold', 'nan']])
 def test_invalid_voice_options_are_rejected(args):
     with pytest.raises(SystemExit) as error:
         main.main(["--voice", *args])

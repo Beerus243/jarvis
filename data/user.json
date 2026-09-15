@@ -10,38 +10,6 @@
     },
     "action_history": [
         {
-            "action": "OPEN_BROWSER",
-            "timestamp": "2026-09-01T01:03:15.609241+01:00",
-            "result": "Navigateur ouvert",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "CLOSE_APPLICATION",
-            "timestamp": "2026-09-01T01:03:47.741281+01:00",
-            "result": "Cette action nécessite une confirmation explicite.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "DELETE_FILE",
-            "timestamp": "2026-09-01T01:03:47.744216+01:00",
-            "result": "Cette action est bloquée par la politique de sécurité.",
-            "success": false,
-            "confirmation": false,
-            "error": null
-        },
-        {
-            "action": "PLAY_MUSIC",
-            "timestamp": "2026-09-01T01:03:47.882919+01:00",
-            "result": "Je lance Damso.",
-            "success": true,
-            "confirmation": false,
-            "error": null
-        },
-        {
             "action": "GREETINGS",
             "timestamp": "2026-09-01T01:03:48.071768+01:00",
             "result": "Bonjour Fabrice. Je suis heureux de vous voir.",
@@ -408,6 +376,38 @@
             "success": false,
             "confirmation": false,
             "error": "Aucun résultat"
+        },
+        {
+            "action": "SCREENSHOT",
+            "timestamp": "2026-09-15T02:08:32.362727+01:00",
+            "result": "Capture enregistrée dans le dossier Pictures, Jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "RECORDING_START",
+            "timestamp": "2026-09-15T02:33:26.037979+01:00",
+            "result": "Sélectionne la cible dans Spectacle. La session vidéo s’arrêtera au plus tard dans 60 secondes. Dis « arrête la vidéo » pour terminer plus tôt.",
+            "success": true,
+            "confirmation": false,
+            "error": null
+        },
+        {
+            "action": "RECORDING_STOP",
+            "timestamp": "2026-09-15T02:34:26.108155+01:00",
+            "result": "Session vidéo terminée. Aucun fichier vidéo finalisé n’a pu être validé.",
+            "success": false,
+            "confirmation": false,
+            "error": "RECORDING_NOT_SAVED"
+        },
+        {
+            "action": "SCREENSHOT",
+            "timestamp": "2026-09-15T02:35:20.881011+01:00",
+            "result": "Capture enregistrée dans le dossier Pictures, Jarvis.",
+            "success": true,
+            "confirmation": false,
+            "error": null
         }
     ],
     "personal_state": {

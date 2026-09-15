@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from copy import deepcopy
+from pathlib import Path
 from enum import Enum
 import time
 
@@ -55,11 +57,37 @@ class OpenWakeWordDetector:
         self.model_name = model_name
         self.threshold = threshold
         self.sample_rate = sample_rate
+        self._ready_snapshot = None
+        self._model_key = model_name
         if model is None:
+            import openwakeword
             from openwakeword.model import Model
-
-            model = Model()
-        if model_name not in model.models:
+            metadata = openwakeword.models.get(model_name)
+            if not metadata:
+                raise ValueError(f"Modèle wake word indisponible : {model_name}")
+            model = Model(wakeword_model_paths=[metadata['model_path']])
+            # openWakeWord 0.4 nomme un modèle explicite d'après son fichier.
+            self._model_key = Path(metadata['model_path']).stem
+            # Le moteur ignore les 5 premières trames et conserve les anciens
+            # embeddings lors de reset(). Préparer une fois un état silencieux
+            # complet, puis le restaurer sans calcul ni attente sur le micro.
+            for _ in range(32):
+                model.predict(np.zeros(1280, dtype=np.int16))
+            features = {name: deepcopy(getattr(model.preprocessor, name)) for name in (
+                'raw_data_buffer', 'melspectrogram_buffer', 'accumulated_samples', 'feature_buffer')}
+            # 0.4.0 ne relit que 480 échantillons précédents, 76 trames mel,
+            # et la fenêtre d'entrée du modèle. Ne pas recopier dix secondes
+            # d'historique silencieux à chaque retour en veille.
+            while len(features['raw_data_buffer']) > 480:
+                features['raw_data_buffer'].popleft()
+            features['melspectrogram_buffer'] = features['melspectrogram_buffer'][-76:].copy()
+            context_frames = max(getattr(model, 'model_inputs', {model_name: 16}).values())
+            features['feature_buffer'] = features['feature_buffer'][-context_frames:].copy()
+            self._ready_snapshot = (
+                deepcopy(model.prediction_buffer),
+                features,
+            )
+        if self._model_key not in model.models:
             raise ValueError(f"Modèle wake word indisponible : {model_name}")
         self.model = model
         self._audio_buffer = np.empty(0, dtype=np.int16)
@@ -70,6 +98,11 @@ class OpenWakeWordDetector:
         reset = getattr(self.model, "reset", None)
         if reset:
             reset()
+        if self._ready_snapshot is not None:
+            predictions, features = self._ready_snapshot
+            self.model.prediction_buffer = deepcopy(predictions)
+            for name, value in features.items():
+                setattr(self.model.preprocessor, name, deepcopy(value))
 
     def detect(self, pcm_chunk: bytes) -> WakeDetection:
         pcm16 = _resample_to_16khz(pcm_chunk, self.sample_rate)
@@ -79,7 +112,7 @@ class OpenWakeWordDetector:
             frame = self._audio_buffer[:1280]
             self._audio_buffer = self._audio_buffer[1280:]
             predictions = self.model.predict(frame)
-            score = max(score, float(predictions.get(self.model_name, 0.0)))
+            score = max(score, float(predictions.get(self._model_key, 0.0)))
         return WakeDetection(
             detected=score >= self.threshold,
             score=score,

@@ -70,3 +70,40 @@ def test_reset_discards_pending_audio_and_model_scores():
     model.reset.assert_called_once()
     assert not detector.detect(b"\0\0" * 1000).detected
     assert detector.detect(b"\0\0" * 280).detected
+
+
+def test_default_model_is_single_and_ready_immediately_after_reset(monkeypatch):
+    import sys
+    from collections import deque
+    from types import SimpleNamespace
+    from unittest.mock import Mock
+
+    class StartupModel:
+        def __init__(self, **kwargs):
+            self.models = {'hey_jarvis_v0.1': object()}
+            self.prediction_buffer = {'hey_jarvis_v0.1': deque(maxlen=30)}
+            self.preprocessor = SimpleNamespace(raw_data_buffer=deque(maxlen=160000),
+                melspectrogram_buffer=np.zeros((76,32)), accumulated_samples=0,
+                feature_buffer=np.zeros((32,96)))
+        def reset(self):
+            self.prediction_buffer = {'hey_jarvis_v0.1': deque(maxlen=30)}
+        def predict(self, audio):
+            history = self.prediction_buffer['hey_jarvis_v0.1']
+            value = .9 if len(history) >= 5 and np.any(audio) else 0.
+            history.append(value)
+            self.preprocessor.raw_data_buffer.extend(audio)
+            return {'hey_jarvis_v0.1': value}
+
+    factory = Mock(side_effect=StartupModel)
+    monkeypatch.setitem(sys.modules, 'openwakeword', SimpleNamespace(
+        models={'hey_jarvis': {'model_path': '/models/hey_jarvis_v0.1.onnx'}}))
+    monkeypatch.setitem(sys.modules, 'openwakeword.model', SimpleNamespace(Model=factory))
+    detector = OpenWakeWordDetector(sample_rate=16000)
+    factory.assert_called_once_with(wakeword_model_paths=['/models/hey_jarvis_v0.1.onnx'])
+    for _ in range(2):
+        detector.model.preprocessor.feature_buffer[:] = 123
+        detector.reset()
+        assert not np.any(detector.model.preprocessor.feature_buffer)
+        assert not any(detector.model.preprocessor.raw_data_buffer)
+        # La première trame réelle n'est plus neutralisée après la veille.
+        assert detector.detect(np.ones(1280, dtype=np.int16).tobytes()).detected

@@ -1,10 +1,24 @@
 """Interface de haut niveau entre JARVIS et le moteur vocal Kokoro."""
 
 import threading
+import re
 
 _engine = None
 _player = None
 _synthesis_lock = threading.Lock()
+
+
+def _speech_chunks(text, limit=220):
+    """Petites portions pour commencer à parler et annuler la suite rapidement."""
+    for sentence in re.split(r'(?<=[.!?])\s+|\n+', text):
+        remaining = sentence.strip()
+        while len(remaining) > limit:
+            cut = remaining.rfind(' ', 0, limit + 1)
+            cut = cut if cut > 0 else limit
+            yield remaining[:cut]
+            remaining = remaining[cut:].lstrip()
+        if remaining:
+            yield remaining
 
 
 def prepare_voice():
@@ -51,17 +65,33 @@ def speak(text, cancel_event=None):
     try:
         from voice.speech_formatter import format_for_speech
 
-        # Une interruption peut laisser la génération CUDA en cours quelques
-        # instants ; ne pas lancer une seconde inférence sur le même modèle.
+        if cancel_event is not None:
+            from voice.audio_player import play_interruptible
+            spoken = False
+            for chunk in _speech_chunks(format_for_speech(text)):
+                # Attente du modèle annulable, même si une ancienne inférence
+                # CUDA finit encore son morceau en arrière-plan.
+                while not cancel_event.is_set():
+                    if _synthesis_lock.acquire(timeout=0.05):
+                        break
+                else:
+                    return False
+                try:
+                    if cancel_event.is_set():
+                        return False
+                    audio_path = _get_engine().generate(chunk)
+                finally:
+                    _synthesis_lock.release()
+                # Le lecteur supprime aussi un fichier généré après annulation.
+                if not audio_path or not play_interruptible(audio_path, cancel_event):
+                    return False
+                spoken = True
+            return spoken
+
         with _synthesis_lock:
-            if cancel_event is not None and cancel_event.is_set():
-                return False
             audio_path = _get_engine().generate(format_for_speech(text))
         if not audio_path:
             return False
-        if cancel_event is not None:
-            from voice.audio_player import play_interruptible
-            return play_interruptible(audio_path, cancel_event)
         return bool(_get_player()(audio_path))
     except Exception as error:  # pragma: no cover - dépend du matériel local
         print(f"⚠️ Voix indisponible : {error}")

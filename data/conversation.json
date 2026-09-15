@@ -122,5 +122,53 @@
     {
         "role": "assistant",
         "message": "Oui, je suis là. Que puis‑je faire pour vous ?"
+    },
+    {
+        "role": "user",
+        "message": "capture la fenêtre"
+    },
+    {
+        "role": "assistant",
+        "message": "Capture enregistrée dans le dossier Pictures, Jarvis."
+    },
+    {
+        "role": "user",
+        "message": "fais une capture"
+    },
+    {
+        "role": "assistant",
+        "message": "Je ne peux pas réaliser directement une capture d’écran depuis ici, mais je peux vous indiquer comment le faire :\n\n**Sous Windows :**\n1. Appuyez sur `Win + Shift + S` pour ouvrir l’outil de capture.  \n2. Sélectionnez la zone que vous voulez capturer.  \n3. L’image est copiée dans le presse‑papier ; vous pouvez la coller (`Ctrl + V`) dans Paint, un e‑mail ou un dossier.  \n4. Pour enregistrer directement dans le dossier **Images**, cliquez sur la petite notification qui apparaît après la capture et choisissez « Enregistrer sous ».\n\n**Sous macOS :**\n1. `Cmd + Shift + 4` vous permet de sélectionner une zone à capturer.  \n2. `Cmd + Shift + 3` capture tout l’écran.  \n3. La capture est automatiquement enregistrée sur le bureau (ou dans le dossier que vous avez défini dans les Préférences > Clavier > Raccourcis > Captures d’écran).\n\n**Sous Linux (ex. Ubuntu) :**\n- `PrtSc` capture tout l’écran et enregistre le fichier dans le dossier **Images**.  \n- `Shift + PrtSc` vous laisse sélectionner une zone.  \n- Vous pouvez aussi utiliser l’outil **gnome"
+    },
+    {
+        "role": "user",
+        "message": "fais une capture vidéo"
+    },
+    {
+        "role": "assistant",
+        "message": "Sélectionne la cible dans Spectacle. La session vidéo s’arrêtera au plus tard dans 60 secondes. Dis « arrête la vidéo » pour terminer plus tôt."
+    },
+    {
+        "role": "user",
+        "message": "arrête la vidéo"
+    },
+    {
+        "role": "assistant",
+        "message": "Session vidéo terminée. Aucun fichier vidéo finalisé n’a pu être validé."
+    },
+    {
+        "role": "user",
+        "message": "est Jarvis"
+    },
+    {
+        "role": "assistant",
+        "message": "Oui, je suis Jarvis, ton assistant personnel. Comment puis‑je t’aider aujourd’hui ?"
+    },
+    {
+        "role": "user",
+        "message": "fais une capture d'écran"
+    },
+    {
+        "role": "assistant",
+        "message": "Capture enregistrée dans le dossier Pictures, Jarvis."
     }
 ]

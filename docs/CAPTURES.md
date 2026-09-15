@@ -7,7 +7,7 @@ l'exécuteur PC que les autres commandes de `main.py`.
 
 | Commande | Résultat |
 |---|---|
-| « Fais une capture d'écran » | Image PNG du bureau complet. |
+| « Fais une capture » / « Fais une capture d'écran » | Image PNG du bureau complet. |
 | « Capture la fenêtre active » | Image PNG de la fenêtre actuellement au premier plan. |
 | « Capture une zone de l'écran » | Sélection rectangulaire dans Spectacle, puis image PNG. |
 | « Enregistre mon écran pendant trente secondes » | Vidéo WebM de l'écran choisi dans Spectacle. |
@@ -44,6 +44,11 @@ finalisent l'enregistrement. Le fichier est vérifié avec `ffprobe` avant
 l'annonce de réussite. Une annulation, un fichier absent ou illisible, ou un
 arrêt forcé donnent un échec explicite. Un fichier partiel éventuel reste
 sur disque pour diagnostic, sans être présenté comme une vidéo réussie.
+« Arrête la vidéo » rend immédiatement la main pendant la sauvegarde. Le
+statut indique cette étape et la confirmation arrive une fois le fichier
+validé. L'encodage logiciel VP9 dispose de 120 secondes pour terminer après
+l'arrêt de la capture, contre 20 auparavant. Un dépassement reste un échec
+explicite ; la fermeture de Jarvis attend la finalisation en cours.
 Sans runtime (`--no-proactive`), les commandes et l'arrêt automatique
 fonctionnent aussi ; l'annonce automatique de fin apparaît seulement dans
 le terminal. Avec le runtime, elle rejoint les notifications vocales.
@@ -68,7 +73,7 @@ Références de l'implémentation KDE :
 
 ## Validation
 
-La suite complète passe avec `.venv-kokoro-cuda/bin/python -m scripts.test_v5`.
+La suite complète s'exécute avec `.venv-kokoro-cuda/bin/python -m scripts.test_v5`.
 Deux avertissements existants subsistent : extraction TAR et initialisation
 NVML dans l'environnement de test.
 
@@ -83,3 +88,9 @@ arrêt automatique, avec suppression du fichier temporaire. Le premier essai
 n'avait pas produit de vidéo validable ; Jarvis avait correctement signalé
 l'échec. L'arrêt à la voix passe les tests de routage et de finalisation ;
 le parcours complet avec le microphone reste à essayer.
+
+Le journal du 15 septembre a exposé un WebM incomplet lors d'un arrêt vocal.
+Une copie de 12,167 secondes a été récupérée et décodée sans erreur ; l'original
+reste conservé. Les tests ciblés couvrent maintenant la sauvegarde asynchrone,
+le statut pendant un encodage lent et les appels d'arrêt d'une ancienne session.
+Un nouvel enregistrement réel reste à valider avec ce délai étendu.

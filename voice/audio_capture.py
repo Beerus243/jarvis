@@ -232,9 +232,12 @@ def capture_command(stream, config=None):
     frames = []
     loud = quiet = 0
     recording = False
+    limit_reached = False
     for _ in range(wait_frames + max_frames):
         frame = stream.read(cfg.chunk, exception_on_overflow=False)
-        active = rms(frame) >= cfg.minimum_threshold
+        # Une voix qui baisse en fin de mot ne doit pas être prise pour une
+        # pause. Le seuil de maintien est plus bas que celui de démarrage.
+        active = rms(frame) >= cfg.minimum_threshold * (0.6 if recording else 1.0)
         if not recording:
             pre_roll.append(frame)
             loud = loud + 1 if active else 0
@@ -247,7 +250,11 @@ def capture_command(stream, config=None):
             continue
         frames.append(frame)
         quiet = 0 if active else quiet + 1
-        if len(frames) >= max_frames or quiet >= silence_frames:
+        if quiet >= silence_frames:
+            break
+        if len(frames) >= max_frames:
+            limit_reached = True
             break
     data = b''.join(frames)
-    return {'audio': data, 'speech_detected': recording, 'duration': len(data) / (2 * cfg.sample_rate)}
+    return {'audio': data, 'speech_detected': recording, 'duration': len(data) / (2 * cfg.sample_rate),
+            'limit_reached': limit_reached}

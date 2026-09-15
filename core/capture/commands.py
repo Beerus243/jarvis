@@ -19,7 +19,8 @@ def parse_capture_command(message):
                 'est ce que tu enregistres', 'enregistres tu l ecran'}:
         return {'action': 'RECORDING_STATUS'}
     photo = re.fullmatch(r'(?:capture |(?:fais|prends) une capture (?:d |de )?)' + TARGET, text)
-    if text in {'screenshot', 'capture ecran', 'fais une capture ecran', 'prends une capture ecran'}:
+    if text in {'screenshot', 'capture ecran', 'fais une capture ecran', 'prends une capture ecran',
+                'fais une capture', 'prends une capture', 'fais moi une capture', 'prends moi une capture'}:
         return 'SCREENSHOT'
     if photo:
         target = photo['target']

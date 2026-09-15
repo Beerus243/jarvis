@@ -116,7 +116,7 @@ def execute_pc_action(action: PCAction, *, capture=None):
         params = action.parameters or {}
         if action.action_type == "RECORDING_START":
             return screen_recorder.start(scope=params.get("scope", "screen"), duration=params.get("duration", 60))
-        return screen_recorder.stop() if action.action_type == "RECORDING_STOP" else screen_recorder.status()
+        return screen_recorder.stop_async() if action.action_type == "RECORDING_STOP" else screen_recorder.status()
     if action.action_type == "LIST_APPLICATIONS":
         apps = discover_applications()
         return ActionResult(action.action_type, True, ", ".join(a['name'] for a in apps) if apps else "Aucune application découverte.")

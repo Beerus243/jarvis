@@ -60,6 +60,7 @@ COMMANDS = [
     ("cherche Python sur internet", {"action": "SEARCH_WEB", "query": "python"}),
     ("cherche Thor sur Wikipédia", {"action": "SEARCH_WIKIPEDIA", "query": "thor"}),
     ("fais une capture d'écran", "SCREENSHOT"),
+    ("fais une capture", "SCREENSHOT"),
     ("capture la fenêtre active", {"action": "SCREENSHOT", "scope": "window"}),
     ("capture une zone de l'écran", {"action": "SCREENSHOT", "scope": "region"}),
     ("enregistre mon écran pendant trente secondes", {"action": "RECORDING_START", "scope": "screen", "duration": 30}),

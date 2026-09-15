@@ -67,12 +67,23 @@ Options disponibles :
 ```
 
 Dites **« Hey Jarvis »**, attendez le signal et l'affichage **« J'écoute votre
-commande »**, puis parlez. Une pause de 0,8 seconde termine la phrase ; la capture
-est plafonnée à 5 secondes par défaut (`--command-seconds` permet de l'allonger).
+commande »**, puis parlez. Une pause de 1,5 seconde termine la phrase ; la capture
+est plafonnée à 20 secondes par défaut (`--command-seconds` permet de l'allonger).
+`--silence-seconds 2` autorise des pauses plus longues. Le seuil de début de
+parole est de 120 (`--speech-threshold`), avec un seuil plus bas pendant la
+phrase pour conserver les mots prononcés doucement. Une commande atteignant
+la durée maximale est signalée et n'est pas exécutée partiellement.
 Après la réponse, vous disposez de 8 secondes pour répondre sans répéter le
 mot-clé, notamment pour dire « confirme » ou « annule ». « Merci Jarvis » ou
 « retour en veille » termine cet échange. Pendant une réponse vocale, répétez
 « Hey Jarvis » pour interrompre la lecture puis donnez votre nouvelle commande.
+L'interruption annule les morceaux de réponse restants ; une inférence CUDA
+déjà commencée peut finir en arrière-plan, mais son audio ne sera pas joué.
+Attendez le signal et « J'écoute votre commande » pour donner la suite.
+Si la transcription ne comprend pas une commande après le réveil, Jarvis
+propose une nouvelle tentative après le signal. Pendant le suivi, un audio
+incompréhensible ramène discrètement en veille. « Hey Jarvis » seul, même
+transcrit « est Jarvis », relance l'écoute sans solliciter le modèle de dialogue.
 « Quitter » ou `Ctrl+C` arrête le programme.
 
 La détection du mot-clé est locale (`openwakeword`, modèle `hey_jarvis`). La
@@ -86,6 +97,14 @@ sortie 24 kHz et CUDA si disponible, sinon CPU. Les réponses, confirmations et
 rappels sont prononcés par ce même moteur. Si sa préparation échoue, le
 programme signale l’erreur sans basculer au clavier ni remplacer la voix.
 Le secours eSpeak reste limité aux anciens chemins de diagnostic.
+
+Au retour en veille, « micro prêt » est affiché après préparation du détecteur
+et ouverture du flux : vous pouvez alors dire « Hey Jarvis ». Le moteur ne
+charge que ce mot-clé et restaure un état silencieux déjà préparé pour éviter
+les premières trames ignorées après une réinitialisation. Les notifications
+sont consultées une fois par seconde pendant l'écoute. Si plus d'une
+demi-seconde d'audio s'accumule, les anciennes trames sont abandonnées pour
+revenir au son récent. Le gain du micro et le seuil de « Hey Jarvis » sont conservés.
 
 Les dépendances vocales CUDA figurent dans `requirements-voice-cuda.txt`. Si `.venv-kokoro-cuda/bin/python` est
 absent ou si un module vocal manque, réparez l'environnement Python avant

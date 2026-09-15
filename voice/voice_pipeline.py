@@ -190,10 +190,14 @@ class LocalWakeVoicePipeline:
             if not command or not str(command).strip():
                 self.session.timeout()
                 self.state = self.session.state
-                return {"success": False, "error": "Commande vide"}
+                return {"success": False, "error": "Je n’ai pas compris la commande.", "error_code": "UNRECOGNIZED_SPEECH"}
             command = str(command).strip()
             print(f"Fabrice > {command}", flush=True)
             from core.command_understanding import normalize_command
+            # Google peut transcrire le mot de réveil « est Jarvis » pendant
+            # l'échange. Ce n'est pas une question à envoyer au modèle distant.
+            if normalize_command(command) in {'jarvis', 'hey jarvis', 'eh jarvis', 'he jarvis', 'est jarvis'}:
+                return {'success': True, 'command': command, 'response': None, 'error': None, 'wake_only': True}
             sleeping = normalize_command(command) in {'retour en veille', 'mets toi en veille', 'merci jarvis'}
             should_exit = is_exit_command(command)
             response = 'Je reste disponible.' if sleeping else (GOODBYE if should_exit else self.brain(command))
@@ -213,6 +217,14 @@ class LocalWakeVoicePipeline:
             if sleeping:
                 result['sleep'] = True
         except Exception as error:
+            import speech_recognition as sr
+            if command is None and isinstance(error, getattr(sr, 'UnknownValueError', ())):
+                return {'success': False, 'command': None, 'response': None,
+                        'error': 'Je n’ai pas compris la commande.', 'error_code': 'UNRECOGNIZED_SPEECH'}
+            if command is None and isinstance(error, getattr(sr, 'RequestError', ())):
+                return {'success': False, 'command': None, 'response': None,
+                        'error': 'La transcription vocale est indisponible. Vérifie la connexion Internet.',
+                        'error_code': 'STT_UNAVAILABLE'}
             result = {"success": False, "command": command, "response": response,
                       "error": str(error) or type(error).__name__, "exit": should_exit}
         finally:
@@ -251,15 +263,17 @@ class LocalWakeVoicePipeline:
         )
 
     def run_microphone(self, device_index: int | None = None, sample_rate: int = 44100,
-                       chunk: int = 1024, command_seconds: float = 5.0,
+                       chunk: int = 1024, command_seconds: float = 20.0,
                        max_cycles: int | None = None, *, endpointing=False,
-                       followup_seconds=0.0, barge_in=False):
+                       followup_seconds=0.0, barge_in=False, silence_seconds=1.5,
+                       speech_threshold=120.0):
         """Run the two-step wake → command loop on the real PyAudio stream."""
         import pyaudio
         import speech_recognition as sr
 
         if (sample_rate <= 0 or chunk <= 0 or not math.isfinite(command_seconds)
-                or command_seconds <= 0):
+                or command_seconds <= 0 or not math.isfinite(silence_seconds) or silence_seconds <= 0
+                or not math.isfinite(speech_threshold) or speech_threshold <= 0):
             raise ValueError("Fréquence, taille des blocs et durée doivent être positives")
         if getattr(self.wake_detector, "sample_rate", sample_rate) != sample_rate:
             raise ValueError("La fréquence du microphone doit correspondre au détecteur")
@@ -268,6 +282,8 @@ class LocalWakeVoicePipeline:
         results = deque(maxlen=100)
         cycles = 0
         followup = False
+        retry_command = False
+        next_notification_check = 0.0
 
         def open_stream():
             return pa.open(
@@ -288,6 +304,18 @@ class LocalWakeVoicePipeline:
                 finally:
                     current.close()
 
+        def read_live_chunk(microphone):
+            # PortAudio peut conserver de vieilles trames après un ralentissement.
+            # Ne pas passer plusieurs secondes à analyser ce retard en veille.
+            available = getattr(microphone, 'get_read_available', lambda: 0)()
+            keep = max(chunk, int(sample_rate * 0.25))
+            if available > max(chunk * 2, int(sample_rate * 0.5)):
+                microphone.read(available - keep, exception_on_overflow=False)
+                reset = getattr(self.wake_detector, 'reset', None)
+                if reset:
+                    reset()
+            return microphone.read(chunk, exception_on_overflow=False)
+
         def speak_with_interrupt(text):
             from voice.voice_manager import speak
             if not barge_in or self.speaker is not speak:
@@ -306,12 +334,13 @@ class LocalWakeVoicePipeline:
                 microphone = open_stream()
                 worker.start()
                 while worker.is_alive():
-                    detection = self.wake_detector.detect(microphone.read(chunk, exception_on_overflow=False))
+                    detection = self.wake_detector.detect(read_live_chunk(microphone))
                     if detection.detected:
                         self._interrupted = True
                         cancelled.set()
+                        print('[INTERRUPT] Hey Jarvis détecté : réponse interrompue.', flush=True)
                         break
-                worker.join(timeout=3)
+                worker.join(timeout=0.25 if cancelled.is_set() else 3)
             finally:
                 cancelled.set()
                 if microphone is not None:
@@ -329,49 +358,66 @@ class LocalWakeVoicePipeline:
             print("JARVIS > Détection locale ; la commande est transcrite en français par Google (Internet requis).", flush=True)
             while max_cycles is None or cycles < max_cycles:
                 self.start()
-                stream = open_stream()
                 if followup:
                     self.state = self.session.state = VoiceState.COMMAND_LISTENING
                 else:
-                    print("JARVIS en veille...", flush=True)
+                    stream = open_stream()
+                    print("JARVIS en veille — micro prêt : dites « Hey Jarvis ».", flush=True)
+                next_notification_check = time.monotonic() + 1.0
                 while self.state == VoiceState.WAKE_WORD_LISTENING:
+                    pcm = read_live_chunk(stream)
+                    self.feed_wake_chunk(pcm, feedback=False)
+                    if self.state != VoiceState.WAKE_WORD_LISTENING:
+                        break
                     from core.runtime import get_runtime
                     runtime = get_runtime()
-                    if runtime:
+                    if runtime and time.monotonic() >= next_notification_check:
                         def announce(message):
                             close_stream()
                             print(f"JARVIS > {message}", flush=True)
                             try:
-                                self.speaker(message)
+                                self._interrupted = False
+                                speak_with_interrupt(message)
                             except Exception as error:
                                 print(f'JARVIS > Synthèse indisponible : {error}', flush=True)
                             self.wake_detector.reset()
+                            if self._interrupted:
+                                self.state = self.session.state = VoiceState.COMMAND_LISTENING
                             return True  # La notification reste lisible si l’audio échoue.
                         runtime.deliver(announce)
-                        if stream is None:
+                        next_notification_check = time.monotonic() + 1.0
+                        if stream is None and self.state == VoiceState.WAKE_WORD_LISTENING:
                             stream = open_stream()
-                    pcm = stream.read(chunk, exception_on_overflow=False)
-                    self.feed_wake_chunk(pcm, feedback=False)
+                            print("JARVIS en veille — micro prêt : dites « Hey Jarvis ».", flush=True)
                 close_stream()
                 if self.state != VoiceState.COMMAND_LISTENING:
                     continue
                 # Fermer/réouvrir élimine l'audio accumulé pendant le signal
                 # ou la réponse précédente. Le STT ne reçoit que la commande.
-                if not followup:
+                if not followup or self._interrupted or retry_command:
                     self._play_feedback()
+                retry_command = False
                 stream = open_stream()
+                if followup:
+                    print("[LISTEN] Micro prêt, tu peux continuer à parler.", flush=True)
                 print("[LISTEN] J'écoute votre commande...", flush=True)
                 if endpointing:
                     from voice.audio_capture import CaptureConfig, capture_command
                     capture = capture_command(stream, CaptureConfig(sample_rate=sample_rate, chunk=chunk,
                         device_index=device_index, maximum_duration=command_seconds,
-                        wait_timeout=followup_seconds if followup else 5.0))
+                        minimum_threshold=speech_threshold, silence_duration=silence_seconds,
+                        wait_timeout=(followup_seconds or 8.0) if followup else 8.0))
                     raw_command = capture['audio']
+                    if capture.get('limit_reached'):
+                        print('[LISTEN] Limite de durée atteinte : commande non exécutée. Reformule après Hey Jarvis, ou augmente --command-seconds.', flush=True)
+                        raw_command = b''
                 else:
                     raw_command = b"".join(stream.read(chunk, exception_on_overflow=False)
                         for _ in range(max(1, math.ceil(command_seconds * sample_rate / chunk))))
                 close_stream()
                 if not raw_command:
+                    if not followup and not (endpointing and capture.get('limit_reached')):
+                        print('[LISTEN] Aucune parole détectée. Réessaie après Hey Jarvis.', flush=True)
                     self.timeout_command()
                     followup = False
                     cycles += 1
@@ -382,22 +428,39 @@ class LocalWakeVoicePipeline:
                 if runtime:
                     runtime.busy.set()
                 self._interrupted = False
+                was_followup = followup
                 try:
                     result = self.process_command_audio(audio)
                 finally:
                     if runtime:
                         runtime.busy.clear()
-                followup = bool(followup_seconds and not result.get('sleep') and (result.get('success') or self._interrupted))
+                followup = bool(self._interrupted or (followup_seconds and not result.get('sleep') and result.get('success')))
+                if result.get('wake_only'):
+                    followup = retry_command = True
                 results.append(result)
-                if result.get("error"):
+                unclear = result.get('error_code') == 'UNRECOGNIZED_SPEECH'
+                if unclear and was_followup:
+                    # Une fausse amorce due au bruit pendant les 8 secondes de
+                    # suivi ne doit pas déclencher une nouvelle réponse vocale.
+                    print('[LISTEN] Aucune commande comprise. Retour en veille.', flush=True)
+                elif result.get("error"):
                     print(f"JARVIS > {result['error']}", flush=True)
                     try:
-                        self.speaker("Je n'ai pas pu traiter la commande. Réessaie après le signal.")
+                        if unclear:
+                            message = 'Je n’ai pas compris. Répète ta commande après le signal.'
+                            followup = retry_command = True
+                        elif result.get('error_code') == 'STT_UNAVAILABLE':
+                            message = result['error']
+                        else:
+                            message = "Je n'ai pas pu traiter la commande. Réessaie après Hey Jarvis."
+                        speak_with_interrupt(message)
+                        followup = followup or self._interrupted
                     except Exception:
                         pass
                 if result.get("exit"):
                     break
-                print("[LISTEN] Tu peux continuer à parler." if followup else "[SLEEP] Retour en veille", flush=True)
+                # La disponibilité est annoncée à la réouverture effective du
+                # flux au tour suivant, jamais avant de préparer le détecteur.
                 cycles += 1
             return list(results)
         finally:

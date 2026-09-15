@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 import subprocess
+import threading
 from types import SimpleNamespace
 from unittest.mock import Mock
 
@@ -94,6 +95,7 @@ class Process:
 
 @pytest.fixture
 def recorder(tmp_path, monkeypatch):
+    real_thread_start = threading.Thread.start
     monkeypatch.setenv('XDG_SESSION_TYPE', 'wayland')
     monkeypatch.setattr('shutil.which', lambda tool: '/usr/bin/' + tool)
     monkeypatch.setattr('threading.Thread.start', lambda _: None)
@@ -107,6 +109,7 @@ def recorder(tmp_path, monkeypatch):
             return SimpleNamespace(returncode=0, stdout='(true,)' if rec.process else '(false,)')
         return SimpleNamespace(returncode=0, stdout=responses[method.rsplit('.', 1)[1]])
     rec = ScreenRecorder(tmp_path, runner=Mock(side_effect=run), popen=Mock(return_value=process))
+    rec.real_thread_start = real_thread_start
     yield rec
     rec.stop()
 
@@ -202,3 +205,65 @@ def test_recording_uses_pc_policy_and_dispatch(recorder, monkeypatch):
     assert result.success
     argv = recorder.popen.call_args.args[0]
     assert argv[argv.index('--record') + 1] == 'region'
+
+
+def test_async_stop_keeps_status_available_until_slow_encoding_finishes(recorder, monkeypatch):
+    recorder.start()
+    recorder.target.write_bytes(b'video')
+    entered, release = threading.Event(), threading.Event()
+    waits = []
+    original_wait = recorder.process.wait
+    def slow_wait(timeout):
+        waits.append(timeout)
+        entered.set()
+        assert release.wait(3), 'Le test doit débloquer la finalisation'
+        return original_wait(timeout)
+    monkeypatch.setattr(recorder.process, 'wait', slow_wait)
+    monkeypatch.setattr(threading.Thread, 'start', recorder.real_thread_start)
+    runtime = Mock()
+    monkeypatch.setattr('core.runtime.get_runtime', lambda: runtime)
+    try:
+        result = recorder.stop_async()
+        assert result.success and result.artifact_path is None
+        assert entered.wait(2)
+        assert 'sauvegarde' in recorder.status().message
+        assert recorder.status().artifact_path is None
+        assert recorder.start().error == 'FINALIZING'
+        assert recorder.stop_async().artifact_path is None
+        assert waits == [120]
+    finally:
+        release.set()
+        if recorder.finalizer:
+            recorder.finalizer.join(timeout=3)
+    assert recorder.last.success and recorder.last.artifact_path
+    assert not recorder.finalizing.is_set()
+    assert not recorder.popen.return_value.terminated
+    runtime.enqueue.assert_called_once()
+
+
+def test_video_without_final_duration_is_not_claimed_complete(recorder):
+    recorder.target = recorder.destination/'partial.webm'
+    recorder.target.write_bytes(b'partial')
+    recorder.run = Mock(return_value=SimpleNamespace(returncode=0, stdout=json.dumps({
+        'streams': [{'codec_type': 'video', 'width': 1366, 'height': 768}], 'format': {'size': '262144'}})))
+    assert not recorder._valid_video()
+
+
+def test_stop_action_uses_background_finalization(monkeypatch):
+    from core.actions.models import ActionResult
+    manager = Mock()
+    manager.stop_async.return_value = ActionResult('RECORDING_STOP', True, 'Sauvegarde en cours.')
+    monkeypatch.setattr('core.capture.recording.screen_recorder', manager)
+    result = dispatch({'action': 'RECORDING_STOP'})
+    assert result.success and result.artifact_path is None
+    manager.stop_async.assert_called_once()
+    manager.stop.assert_not_called()
+
+
+def test_late_stop_from_old_session_cannot_stop_current_recording(recorder):
+    old_session = recorder.done
+    recorder.start()
+    recorder.run.reset_mock()
+    assert recorder.stop(expected_done=old_session) is None
+    recorder.run.assert_not_called()
+    assert recorder.process is not None

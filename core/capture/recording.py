@@ -20,6 +20,7 @@ from core.actions.models import ActionResult
 
 BUS = 'org.freedesktop.DBus'
 BUS_PATH = '/org/freedesktop/DBus'
+FINALIZATION_TIMEOUT = 120
 
 
 class ScreenRecorder:
@@ -37,6 +38,8 @@ class ScreenRecorder:
         self.watcher = None
         self.done = threading.Event()
         self.log_file = None
+        self.finalizing = threading.Event()
+        self.finalizer = None
 
     def _call(self, dest, path, method, *args):
         result = self.run(['gdbus', 'call', '--session', '--dest', dest,
@@ -65,6 +68,8 @@ class ScreenRecorder:
         return ActionResult(action, success, message, artifact_path=str(path) if path else None, error=error)
 
     def start(self, scope='screen', duration=60):
+        if self.finalizing.is_set():
+            return self._result('RECORDING_START', False, 'La vidéo précédente est encore en cours de sauvegarde.', 'FINALIZING')
         with self.lock:
             if self.process is not None:
                 return self._result('RECORDING_START', False, 'Une session vidéo est déjà active. Dis « arrête la vidéo ».', 'ALREADY_RECORDING')
@@ -141,43 +146,94 @@ class ScreenRecorder:
                 and any(s.get('codec_type') == 'video' and s.get('width', 0) > 0 and s.get('height', 0) > 0
                         for s in data.get('streams', [])))
 
-    def stop(self):
+    def stop(self, *, expected_done=None):
         with self.lock:
+            if expected_done is not None and expected_done is not self.done:
+                return None
+            if self.process is None:
+                return self.last or self._result('RECORDING_STOP', True, 'Aucune vidéo en cours.')
+            if self.finalizing.is_set() and threading.current_thread() is not self.finalizer:
+                return None if expected_done is not None else self._pending_result()
+            self.done.set()
+            self.finalizing.set()
+        # Aucun verrou d'état pendant l'encodage : statut et demandes vocales
+        # restent accessibles même si l'arrêt automatique arrive simultanément.
+        graceful = True
+        timed_out = False
+        result = self._result('RECORDING_STOP', False, 'La finalisation de la vidéo a échoué.', 'RECORDING_NOT_SAVED')
+        try:
+            if self.process.poll() is None:
+                if self.owner and self._owns(self.owner):
+                    # activate() termine une vidéo active. Sinon --dbus ne lance aucune capture.
+                    self._call(self.owner, '/org/kde/spectacle', 'org.kde.KDBusService.CommandLine',
+                               "['spectacle', '--dbus', '--nonotify']", '', '{}')
+                    try:
+                        # VP9 logiciel peut encore encoder des images en attente.
+                        self.process.wait(timeout=FINALIZATION_TIMEOUT if self.target.exists() else 5)
+                    except subprocess.TimeoutExpired:
+                        graceful = False
+                        timed_out = True
+                        self._terminate_owned()
+                else:
+                    graceful = False
+                    self._terminate_owned()
+            valid = graceful and self.process.returncode == 0 and self._valid_video()
+            result = self._result('RECORDING_STOP', valid,
+                'Vidéo enregistrée dans le dossier Videos, Jarvis.' if valid else
+                ('La sauvegarde a dépassé le délai. Le fichier partiel est conservé, mais la vidéo complète n’est pas validée.' if timed_out else
+                 'Session vidéo terminée. Aucun fichier vidéo finalisé n’a pu être validé.'),
+                None if valid else ('FINALIZATION_TIMEOUT' if timed_out else 'RECORDING_NOT_SAVED'), self.target if valid else None)
+        except (OSError, subprocess.SubprocessError, ValueError, TypeError):
+            self._terminate_owned()
+        finally:
+            with self.lock:
+                self._close_log(failed=not result.success)
+                self.process = None
+                self.owner = None
+                self.last = result
+                self.finalizing.clear()
+        if result.artifact_path:
+            print(f'[VIDÉO] {result.artifact_path}', flush=True)
+        return result
+
+    def _pending_result(self):
+        return self._result('RECORDING_STOP', True,
+            'Arrêt demandé. La vidéo est en cours de sauvegarde ; je confirmerai quand elle sera prête.')
+
+    def stop_async(self):
+        """Rendre immédiatement la main à la voix pendant la finalisation."""
+        if self.finalizing.is_set():
+            return self._pending_result()
+        with self.lock:
+            if self.finalizing.is_set():
+                return self._pending_result()
             if self.process is None:
                 return self.last or self._result('RECORDING_STOP', True, 'Aucune vidéo en cours.')
             self.done.set()
-            graceful = True
+            self.finalizing.set()
+            self.finalizer = threading.Thread(target=self._finish_and_notify, args=(self.done,), name='jarvis-video-save', daemon=False)
             try:
-                if self.process.poll() is None:
-                    if self.owner and self._owns(self.owner):
-                        # activate() termine une vidéo active. Sinon --dbus ne lance aucune capture.
-                        self._call(self.owner, '/org/kde/spectacle', 'org.kde.KDBusService.CommandLine',
-                                   "['spectacle', '--dbus', '--nonotify']", '', '{}')
-                        try:
-                            self.process.wait(timeout=20)
-                        except subprocess.TimeoutExpired:
-                            graceful = False
-                            self._terminate_owned()
-                    else:
-                        graceful = False
-                        self._terminate_owned()
-                valid = graceful and self.process.returncode == 0 and self._valid_video()
-                self.last = self._result('RECORDING_STOP', valid,
-                    'Vidéo enregistrée dans le dossier Videos, Jarvis.' if valid else
-                    'Session vidéo terminée. Aucun fichier vidéo finalisé n’a pu être validé.',
-                    None if valid else 'RECORDING_NOT_SAVED', self.target if valid else None)
-            except (OSError, subprocess.SubprocessError, ValueError, TypeError):
-                self._terminate_owned()
-                self.last = self._result('RECORDING_STOP', False, 'La finalisation de la vidéo a échoué.', 'RECORDING_NOT_SAVED')
-            finally:
-                self._close_log(failed=self.last is None or not self.last.success)
-                self.process = None
-                self.owner = None
-            if self.last.artifact_path:
-                print(f'[VIDÉO] {self.last.artifact_path}', flush=True)
-            return self.last
+                self.finalizer.start()
+            except RuntimeError:
+                self.finalizing.clear()
+                raise
+            return self._pending_result()
+
+    def _notify(self, result):
+        print(f'[VIDÉO] {result.message}', flush=True)
+        from core.runtime import get_runtime
+        runtime = get_runtime()
+        if runtime:
+            runtime.enqueue('video-' + uuid4().hex, result.message)
+
+    def _finish_and_notify(self, done):
+        result = self.stop(expected_done=done)
+        if result is not None:
+            self._notify(result)
 
     def status(self):
+        if self.finalizing.is_set():
+            return self._pending_result()
         with self.lock:
             if self.process is None:
                 return self.last or self._result('RECORDING_STATUS', True, 'Aucune vidéo en cours.')
@@ -193,20 +249,17 @@ class ScreenRecorder:
                     return
                 if self.process.poll() is None and self.clock() < self.deadline:
                     continue
-                result = self.stop()
-            print(f'[VIDÉO] {result.message}', flush=True)
-            from core.runtime import get_runtime
-            runtime = get_runtime()
-            if runtime:
-                runtime.enqueue('video-' + uuid4().hex, result.message)
+            result = self.stop(expected_done=done)
+            if result is not None:
+                self._notify(result)
             return
 
     def close(self):
         result = self.stop()
-        watcher = self.watcher
-        if watcher and watcher is not threading.current_thread():
-            watcher.join(timeout=2)
-        return result
+        for worker in (self.finalizer, self.watcher):
+            if worker and worker is not threading.current_thread() and worker.ident is not None:
+                worker.join(timeout=FINALIZATION_TIMEOUT + 20)
+        return self.last or result
 
 
 screen_recorder = ScreenRecorder()

@@ -206,3 +206,113 @@ def test_mic_loop_recovers_after_stt_error(monkeypatch):
     assert len(streams) == 4
     assert all(stream.closed for stream in streams)
     pa.terminate.assert_called_once()
+
+
+def test_wake_discards_old_audio_before_listening(monkeypatch):
+    pa, streams = fake_audio(monkeypatch)
+    open_original = pa.open.side_effect
+    reads = []
+    def open_stream(**kwargs):
+        stream = open_original(**kwargs)
+        stream.get_read_available = lambda: 44100
+        read_original = stream.read
+        def read(count, **options):
+            reads.append(count)
+            return read_original(count, **options)
+        stream.read = read
+        return stream
+    pa.open.side_effect = open_stream
+    detector = Detector(True)
+    detector.reset = Mock()
+    pipeline = make_pipeline(detector=detector, stt=lambda _: 'quitter')
+    pipeline.run_microphone(command_seconds=.01)
+    assert reads[:2] == [44100 - 11025, 1024]
+    assert detector.reset.call_count >= 2
+    assert all(s.closed for s in streams)
+
+
+def test_notifications_are_not_polled_for_each_audio_chunk(monkeypatch):
+    pa, streams = fake_audio(monkeypatch)
+    now = [0.]
+    detector = Detector(False)
+    def detect(_):
+        now[0] += .025
+        return WakeDetection(now[0] >= 2.5, .9, 'hey_jarvis', now[0])
+    detector.detect = detect
+    monkeypatch.setattr('voice.voice_pipeline.time.monotonic', lambda: now[0])
+    runtime = Mock()
+    monkeypatch.setattr('core.runtime.get_runtime', lambda: runtime)
+    pipeline = make_pipeline(detector=detector, stt=lambda _: 'quitter')
+    pipeline.run_microphone(command_seconds=.01)
+    assert runtime.deliver.call_count == 2  # ~100 blocs audio, deux consultations.
+
+
+def test_ready_notice_is_after_model_reset_and_microphone_open(monkeypatch, capsys):
+    pa, streams = fake_audio(monkeypatch)
+    original_open = pa.open.side_effect
+    def open_stream(**kwargs):
+        assert 'micro prêt' not in capsys.readouterr().out
+        return original_open(**kwargs)
+    # Contrôle de la première ouverture uniquement.
+    pa.open.side_effect = lambda **kwargs: open_stream(**kwargs) if not streams else original_open(**kwargs)
+    detector = Detector(True)
+    detector.reset = lambda: print('modèle prêt')
+    pipeline = make_pipeline(detector=detector, stt=lambda _: 'quitter')
+    pipeline.run_microphone(command_seconds=.01)
+    assert 'JARVIS en veille — micro prêt' in capsys.readouterr().out
+
+
+@pytest.mark.parametrize('command', ['Hey Jarvis', 'est Jarvis', 'Jarvis'])
+def test_wake_only_during_exchange_does_not_call_brain(command):
+    brain = Mock()
+    pipeline = make_pipeline(stt=lambda _: command, brain=brain)
+    speaker = Mock()
+    pipeline.speaker = speaker
+    pipeline.feed_wake_chunk(b'wake')
+    result = pipeline.process_command_audio(b'pcm')
+    assert result['wake_only'] and result['success']
+    brain.assert_not_called()
+    speaker.assert_not_called()
+
+
+def test_unknown_speech_in_followup_returns_to_silence(monkeypatch, capsys):
+    import speech_recognition as sr
+    unknown = sr.UnknownValueError
+    pa, streams = fake_audio(monkeypatch)
+    sys.modules['speech_recognition'].UnknownValueError = unknown
+    monkeypatch.setattr('voice.audio_capture.capture_command', lambda *_: {'audio': b'pcm'})
+    pipeline = make_pipeline(stt=Mock(side_effect=['bonjour', unknown()]))
+    speaker = Mock(return_value=True)
+    pipeline.speaker = speaker
+    results = pipeline.run_microphone(endpointing=True, followup_seconds=8, max_cycles=2)
+    assert results[1]['error_code'] == 'UNRECOGNIZED_SPEECH'
+    speaker.assert_called_once_with('réponse à bonjour')
+    output = capsys.readouterr().out
+    assert 'UnknownValueError' not in output
+    assert 'Retour en veille' in output
+
+
+def test_unknown_speech_after_wake_allows_one_retry_without_wake(monkeypatch):
+    import speech_recognition as sr
+    unknown = sr.UnknownValueError
+    fake_audio(monkeypatch)
+    sys.modules['speech_recognition'].UnknownValueError = unknown
+    monkeypatch.setattr('voice.audio_capture.capture_command', lambda *_: {'audio': b'pcm'})
+    detector = Detector(True)
+    feedback = Mock()
+    pipeline = make_pipeline(detector=detector, stt=Mock(side_effect=[unknown(), 'quitter']), feedback=feedback)
+    pipeline.speaker = Mock(return_value=True)
+    results = pipeline.run_microphone(endpointing=True, max_cycles=2)
+    assert results[1]['exit']
+    assert detector.calls == 1
+    assert feedback.call_count == 2
+
+
+def test_transcription_network_error_has_actionable_message(monkeypatch):
+    import speech_recognition as sr
+    pipeline = make_pipeline(stt=Mock(side_effect=sr.RequestError('private transport details')))
+    pipeline.feed_wake_chunk(b'wake')
+    result = pipeline.process_command_audio(b'pcm')
+    assert result['error_code'] == 'STT_UNAVAILABLE'
+    assert 'Internet' in result['error']
+    assert 'private transport' not in result['error']
