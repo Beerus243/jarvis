@@ -43,7 +43,7 @@ def test_silence_and_failed_delivery_preserve_reminder(monkeypatch):
     runtime.tick(1003)
     assert store.items('notifications')[0][1]['status'] == 'PENDING'
     sink.return_value = True
-    runtime.tick(1004)
+    runtime.tick(1064)
     assert store.items('notifications')[0][1]['status'] == 'DELIVERED'
 
 
@@ -141,7 +141,7 @@ def test_live_runtime_delivers_without_user_input(monkeypatch, tmp_path):
     delivered = Event()
     dispatcher = Mock(return_value=(True, '12:00'))
     runtime = Runtime(notify=lambda _: delivered.set(), pc_provider=lambda: {}, personal_provider=lambda: {},
-                      interval=.02, dispatcher=dispatcher)
+                      interval=.02, dispatcher=dispatcher, presence_provider=lambda: {'state': 'active'})
     task = create_task('heure', [{'action': 'GET_TIME'}])
     runtime.start()
     try:

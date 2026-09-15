@@ -53,3 +53,6 @@ Les détails de mesure figurent dans le [bilan V6.9](V6_9.md). Le numéro V6.9
 désigne le code livré, pas une promesse de vision parfaite. La V7 pourra
 construire les missions de projet sur ces capacités après validation des
 parcours quotidiens de Fabrice.
+
+La suite souhaitée par Fabrice est détaillée dans la [roadmap V7](ROADMAP_V7.md) :
+modèle personnel, contexte de travail, questions, anticipation et présence permanente.

@@ -2,11 +2,14 @@
 
 import argparse
 import math
+import signal
+import threading
+import time
 
 from core.command_session import GOODBYE, is_exit_command, process_command as think
 from voice.voice_manager import speak as speak_response
 
-VERSION = "V6.9"
+VERSION = "V7.7"
 
 
 def show_banner():
@@ -88,6 +91,7 @@ def build_parser():
     parser.add_argument("--raw-capture", action="store_true", help="Capture fixe de diagnostic, sans détection de fin de phrase.")
     parser.add_argument("--no-barge-in", action="store_true", help="Désactiver l'interruption de la voix par Hey Jarvis.")
     parser.add_argument("--no-proactive", action="store_true", help="Désactiver la surveillance et les rappels pour cette session.")
+    parser.add_argument("--background", action="store_true", help="Session automatique : sans annonce de démarrage, reprise du micro après déconnexion.")
     return parser
 
 
@@ -100,7 +104,21 @@ def main(argv=None):
         parser.error("--wake-threshold doit être compris entre 0 et 1.")
     from core.runtime import Runtime
     runtime = None
+    from core.lifecycle import ApplicationLock
+    app_lock = ApplicationLock()
+    old_signal = None
     try:
+        if not args.list_microphones:
+            if threading.current_thread() is threading.main_thread():
+                old_signal = signal.getsignal(signal.SIGTERM)
+                def terminate(signum, frame):
+                    raise KeyboardInterrupt
+                signal.signal(signal.SIGTERM, terminate)
+            while not app_lock.acquire():
+                if not args.background:
+                    print("JARVIS > Une instance est déjà active.")
+                    return 0
+                time.sleep(30)
         migrate()
         if not args.no_proactive and not args.list_microphones:
             def notify(message):
@@ -122,15 +140,28 @@ def main(argv=None):
         pipeline = LocalWakeVoicePipeline.from_defaults(
             sample_rate=args.sample_rate, threshold=args.wake_threshold,
         )
-        pipeline.prepare_voice()
-        pipeline.run_microphone(
-            device_index=args.mic_device, sample_rate=args.sample_rate,
-            command_seconds=args.command_seconds,
-            silence_seconds=args.silence_seconds, speech_threshold=args.speech_threshold,
-            endpointing=not args.raw_capture, followup_seconds=args.followup_seconds,
-            barge_in=not args.no_barge_in,
-        )
-        return 0
+        if args.background:
+            pipeline.prepare_voice(announce=False)
+        else:
+            pipeline.prepare_voice()
+        failures = 0
+        while True:
+            try:
+                pipeline.run_microphone(
+                    device_index=args.mic_device, sample_rate=args.sample_rate,
+                    command_seconds=args.command_seconds,
+                    silence_seconds=args.silence_seconds, speech_threshold=args.speech_threshold,
+                    endpointing=not args.raw_capture, followup_seconds=args.followup_seconds,
+                    barge_in=not args.no_barge_in,
+                )
+                return 0
+            except OSError:
+                if not args.background:
+                    raise
+                failures += 1
+                delay = min(60, 5 * failures)
+                print(f"JARVIS > Micro indisponible, nouvelle tentative dans {delay} secondes.", flush=True)
+                time.sleep(delay)
     except KeyboardInterrupt:
         print("\nJARVIS > Arrêt demandé. À bientôt, Fabrice.")
         return 0
@@ -153,6 +184,9 @@ def main(argv=None):
         if runtime:
             runtime.stop()
         reset_session()
+        app_lock.close()
+        if old_signal is not None:
+            signal.signal(signal.SIGTERM, old_signal)
 
 
 if __name__ == "__main__":

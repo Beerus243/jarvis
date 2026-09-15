@@ -18,6 +18,11 @@ def is_exit_command(message):
         from core.task_engine import get_active_task
         from core.pending_action import get_pending as get_pending_action
 
+        from core.runtime import get_runtime
+        runtime = get_runtime()
+        if runtime and runtime.personal_agent.pending():
+            return False
+
         # Une annulation doit atteindre le cerveau lorsqu'un plan est actif.
         if get_pending() is not None or get_pending_action() is not None or get_active_task():
             return False

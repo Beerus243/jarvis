@@ -214,7 +214,7 @@ class LocalWakeVoicePipeline:
                 "error": None if response else "Aucune réponse",
                 "exit": should_exit,
             }
-            if sleeping:
+            if sleeping or normalize_command(command) in {'je vais dormir', 'bonne nuit jarvis'}:
                 result['sleep'] = True
         except Exception as error:
             import speech_recognition as sr
@@ -235,13 +235,13 @@ class LocalWakeVoicePipeline:
         self.session.timeout()
         self.state = self.session.state
 
-    def prepare_voice(self):
+    def prepare_voice(self, *, announce=True):
         """Charge la voix avant l'écoute et annonce oralement la disponibilité."""
         from voice.voice_manager import prepare_voice, speak
 
         if self.speaker is speak:
             prepare_voice()
-        if self.speaker('Bonjour Fabrice. Je suis prêt.') is False:
+        if announce and self.speaker('Bonjour Fabrice. Je suis prêt.') is False:
             raise RuntimeError('La voix Kokoro ne peut pas être lue. Vérifiez la sortie audio.')
 
     @classmethod
@@ -322,9 +322,10 @@ class LocalWakeVoicePipeline:
                 return self.speaker(text)
             cancelled = threading.Event()
             errors = []
+            outcomes = []
             def output():
                 try:
-                    speak(text, cancel_event=cancelled)
+                    outcomes.append(speak(text, cancel_event=cancelled))
                 except Exception as error:
                     errors.append(error)
             worker = threading.Thread(target=output, daemon=True)
@@ -350,6 +351,7 @@ class LocalWakeVoicePipeline:
                         microphone.close()
             if errors:
                 raise errors[0]
+            return False if outcomes and outcomes[0] is False else None
 
         self._speaking_handler = speak_with_interrupt
 
@@ -375,15 +377,16 @@ class LocalWakeVoicePipeline:
                         def announce(message):
                             close_stream()
                             print(f"JARVIS > {message}", flush=True)
+                            spoken = False
                             try:
                                 self._interrupted = False
-                                speak_with_interrupt(message)
+                                spoken = speak_with_interrupt(message)
                             except Exception as error:
                                 print(f'JARVIS > Synthèse indisponible : {error}', flush=True)
                             self.wake_detector.reset()
                             if self._interrupted:
                                 self.state = self.session.state = VoiceState.COMMAND_LISTENING
-                            return True  # La notification reste lisible si l’audio échoue.
+                            return spoken is not False
                         runtime.deliver(announce)
                         next_notification_check = time.monotonic() + 1.0
                         if stream is None and self.state == VoiceState.WAKE_WORD_LISTENING:

@@ -20,12 +20,13 @@ def add_reminder(message, due_at):
 
 
 class Runtime:
-    def __init__(self, *, notify=None, pc_provider=None, personal_provider=None, interval=1.0, dispatcher=None):
+    def __init__(self, *, notify=None, pc_provider=None, personal_provider=None, interval=1.0, dispatcher=None, presence_provider=None):
         self.notify = notify
         self.pc_provider = pc_provider
         self.personal_provider = personal_provider
         self.interval = interval
         self.dispatcher = dispatcher
+        self.presence_provider = presence_provider
         self.busy = threading.Event()
         self.stopping = threading.Event()
         self.jobs = queue.Queue()
@@ -35,6 +36,10 @@ class Runtime:
         self._process_lock = None
         self._last_observation = 0
         self.threads = []
+        from core.proactivity.engine import PersonalAgent
+        from core.proactivity.idle import IdleMonitor
+        self.personal_agent = PersonalAgent(self.enqueue)
+        self.idle_monitor = IdleMonitor()
         from core.vision.watch import VisualWatch
         from core.vision.service import _vision_enabled
         self.visual_watch = VisualWatch(self.enqueue, self.cancel_visual_notifications,
@@ -56,6 +61,9 @@ class Runtime:
             self._process_lock = None
             raise RuntimeError('Une session Jarvis proactive utilise déjà cette base. Ferme-la ou utilise --no-proactive.')
         _runtime = self
+        self.personal_agent.start()
+        if self.presence_provider is None:
+            self.idle_monitor.start()
         # Les surveillances ne reprennent pas après un redémarrage, et leurs
         # annonces non lues ne doivent pas sembler concerner la nouvelle session.
         self.cancel_visual_notifications()
@@ -64,7 +72,7 @@ class Runtime:
         for task in list_tasks():
             if task.status == 'RUNNING':
                 pause_task(task.id)
-        for target in (self._clock, self._worker, self._watch_loop):
+        for target in (self._clock, self._worker, self._watch_loop, self._context_loop):
             # La surveillance finit son appel borné et nettoie ses captures
             # avant la sortie du processus, même si stop() rend la main avant.
             thread = threading.Thread(target=target, daemon=target != self._watch_loop)
@@ -75,6 +83,8 @@ class Runtime:
     def stop(self):
         global _runtime
         self.stopping.set()
+        self.personal_agent.stop()
+        self.idle_monitor.stop()
         self.visual_routines.stop()
         self.visual_watch.stop()
         from core.task_engine import list_tasks, pause_task
@@ -117,12 +127,12 @@ class Runtime:
                     self._scheduled.discard(task_id)
                 self.jobs.task_done()
 
-    def enqueue(self, key, message, *, reminder_id=None, now=None, visual_watch_id=None, priority=None):
+    def enqueue(self, key, message, *, reminder_id=None, now=None, visual_watch_id=None, priority=None, v7_id=None):
         now = time.time() if now is None else now
         def insert(value):
             return value or {'id': key, 'message': message, 'status': 'PENDING',
                              'created_at': now, 'reminder_id': reminder_id,
-                             'visual_watch_id': visual_watch_id,
+                             'visual_watch_id': visual_watch_id, 'v7_id': v7_id,
                              'priority': priority if priority is not None else (100 if reminder_id else 50 if visual_watch_id else 10)}
         return get_store().mutate('notifications', key, insert)
 
@@ -142,7 +152,7 @@ class Runtime:
         for key, reminder in store.items('reminders'):
             if reminder['status'] == 'SCHEDULED' and reminder['due_at'] <= now:
                 self.enqueue(f"reminder:{key}:{reminder['due_at']}", f"Rappel : {reminder['message']}", reminder_id=key, now=now)
-        if now - self._last_observation >= 30:
+        if not self.personal_agent.started and now - self._last_observation >= 30:
             self._last_observation = now
             self._observe(now)
         if self.notify is not None:
@@ -161,7 +171,8 @@ class Runtime:
             store.delete('attention', 'low_battery')
         current = datetime.fromtimestamp(now).astimezone()
         proposals = detect_pc_proposals(personal, pc, now=current)
-        proposals += detect_proposals(personal, now=current)
+        if not self.personal_agent.started:
+            proposals += detect_proposals(personal, now=current)
         for proposal in proposals:
             kind = proposal['type']
             episode = kind if kind == 'low_battery' else f"{kind}:{personal.get('started_at')}"
@@ -182,20 +193,49 @@ class Runtime:
         delivered = []
         # Rappels prioritaires, puis alertes visuelles ; ordre chronologique à priorité égale.
         pending = sorted((v for _, v in store.items('notifications') if v['status'] == 'PENDING'), key=lambda v: (-v.get('priority', 100 if v.get('reminder_id') else 10), v['created_at']))
-        for notice in pending[:1]:
+        for notice in pending:
+            if now < notice.get('retry_at', 0):
+                continue
+            if self.personal_agent.started:
+                if notice.get('v7_id') and not self.personal_agent.can_deliver(notice):
+                    continue
+                if not self.personal_agent.available(reminder=bool(notice.get('reminder_id'))):
+                    continue
             if not notice.get('reminder_id') and now - notice['created_at'] > 3600:
                 notice['status'] = 'EXPIRED'
                 store.put('notifications', notice['id'], notice)
                 continue
             if sink(notice['message']) is False:
+                store.mutate('notifications', notice['id'], lambda n: {**n, 'retry_at': now + 60} if n else None)
+                continue
+            if store.get('notifications', notice['id'], {}).get('status') != 'PENDING':
                 continue
             notice['status'] = 'DELIVERED'
             store.put('notifications', notice['id'], notice)
             store.put('session', 'last_notification', notice)
             if notice.get('reminder_id'):
                 store.mutate('reminders', notice['reminder_id'], lambda item: {**item, 'status': 'DELIVERED'} if item else None)
+            if notice.get('v7_id'):
+                self.personal_agent.delivered(notice)
             delivered.append(notice)
+            break
         return delivered
+
+    def _context_loop(self):
+        from core.pc_context import get_pc_context
+        from core.proactivity.presence import read_presence
+        while not self.stopping.is_set():
+            try:
+                pc = (self.pc_provider or get_pc_context)()
+                presence = self.presence_provider() if self.presence_provider else read_presence(self.idle_monitor)
+                if self.stopping.is_set():
+                    return
+                self.personal_agent.observe(pc, presence)
+                self._observe(time.time())
+            except Exception as error:
+                get_store().put('health', 'personal_context', {'error': str(error), 'at': time.time()})
+            if self.stopping.wait(15):
+                return
 
     def _clock(self):
         while not self.stopping.wait(self.interval):
@@ -209,6 +249,12 @@ class Runtime:
         while not self.stopping.wait(0.25):
             try:
                 self.visual_routines.step()
+            except Exception:
+                # L'échec d'un capteur de routine ne doit pas annuler une
+                # surveillance indépendante demandée par Fabrice.
+                self.visual_routines.stop()
+                get_store().put('health', 'vision_routine', {'error': 'Routine interrompue.', 'at': time.time()})
+            try:
                 self.visual_watch.step()
             except Exception:
                 self.visual_watch.stop()

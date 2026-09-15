@@ -305,7 +305,8 @@ def test_watch_alert_respects_busy_silent_and_cancellation():
 def test_slow_vision_does_not_block_reminders(monkeypatch):
     import time
     entered, release, delivered = Event(), Event(), Event()
-    runtime = Runtime(notify=lambda _: delivered.set(), pc_provider=lambda: {}, personal_provider=lambda: {}, interval=.02)
+    runtime = Runtime(notify=lambda _: delivered.set(), pc_provider=lambda: {}, personal_provider=lambda: {},
+                      interval=.02, presence_provider=lambda: {'state': 'active'})
     def capture():
         entered.set()
         assert release.wait(5)

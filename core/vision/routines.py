@@ -1,6 +1,7 @@
 """Règle contextuelle opt-in, bornée à cette session, sans reprise automatique."""
 from datetime import datetime
 import threading
+import re
 import time
 import uuid
 
@@ -81,14 +82,34 @@ class VisualRoutines:
             if self.clock() < rule['next_check']:
                 return
             rule['next_check'] = self.clock() + 30
-            from core.pc_context import get_pc_context
-            from core.task_engine import list_tasks
-            pc = (self.pc_provider or get_pc_context)()
-            active = pc.get('active_window', {})
-            coding = active.get('available') and any(name in str(active.get('application', '')).lower() for name in ('code', 'konsole', 'terminal', 'pycharm', 'kate'))
-            coding = coding or any(t.status == 'RUNNING' and any(w in t.goal.lower() for w in ('compil', 'test', 'code')) for t in list_tasks())
-            if not coding:
+        # Une lecture native peut attendre le bus du bureau. Garder le verrou
+        # libre permet à stop(), au silence et au changement de routine d'agir.
+        from core.pc_context import get_pc_context
+        from core.task_engine import list_tasks
+        pc = (self.pc_provider or get_pc_context)()
+        active = pc.get('active_window') or {}
+        application = str(active.get('application', '')).lower().rsplit('.', 1)[-1]
+        coding = active.get('available') and application in {
+            'code', 'code-oss', 'codium', 'konsole', 'terminal', 'pycharm',
+            'jetbrains-pycharm', 'jetbrains-pycharm-ce', 'kate',
+        }
+        coding = coding or any(t.status == 'RUNNING' and re.search(
+            r'\b(?:compil\w*|tests?|code|coder|programm\w*)\b', t.goal.lower()) for t in list_tasks())
+        with self._lock:
+            # Une annulation ou une autre activation invalide le résultat lent.
+            if self._rule is not rule or rule['state'] != 'ARMED':
                 return
+            if self.clock() >= rule['deadline'] or provider_name() != rule['provider']:
+                self.stop()
+                rule['state'] = 'EXPIRED'
+                return
+            if not coding or get_store().get('settings', 'silent', False) or self.watch.busy.is_set():
+                return
+            hour = datetime.fromtimestamp(time.time() if now is None else now).hour
+            if rule['hours']:
+                start, end = rule['hours']
+                if not (start <= hour < end if start < end else hour >= start or hour < end):
+                    return
             remaining = min(900, int(rule['deadline'] - self.clock()))
             if remaining < 60:
                 rule['state'] = 'EXPIRED'

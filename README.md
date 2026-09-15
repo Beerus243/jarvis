@@ -1,6 +1,6 @@
 # JARVIS
 
-Assistant personnel Python V6.9, vocal par défaut avec « Hey Jarvis » et Kokoro :
+Assistant personnel Python V7.7, vocal par défaut avec « Hey Jarvis » et Kokoro :
 actions PC, mémoire corrigible, tâches persistantes, rappels proactifs et
 vision ponctuelle de l'écran ou de la webcam après configuration.
 
@@ -11,6 +11,13 @@ Les lots 6.3 à 6.9 ajoutent ciblage, lecture structurée, diagnostic de fichier
 propositions d’action, routines et choix du fournisseur. Le [guide V6.9](docs/V6_9.md)
 donne les commandes, les essais réalisés et les limites. La [roadmap](docs/ROADMAP_V6.md)
 récapitule leur état.
+
+Les lots [V7.0 à V7.7](docs/V7_7.md) ajoutent les sessions de projet, les
+préférences de pause corrigibles, les questions, les propositions contextualisées,
+les points de reprise et le démarrage automatique à la connexion au bureau.
+La [roadmap V7](docs/ROADMAP_V7.md) distingue cette intégration de l’évaluation
+quotidienne à venir ; les [résultats de validation](docs/VALIDATION_V7_7.md)
+détaillent les tests et leurs limites.
 
 ## Installation
 

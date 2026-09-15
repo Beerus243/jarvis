@@ -136,9 +136,10 @@ def _network():
 
 def get_pc_context():
     global _CONTEXT_CACHE, _CONTEXT_CACHE_TIME
-    now = time.time()
+    now = time.monotonic()
     if _CONTEXT_CACHE is not None and now - _CONTEXT_CACHE_TIME < CONTEXT_TTL:
         return _CONTEXT_CACHE
+    observed_at = time.time()
     kwin = get_kwin_context()
     context = {
         "os": platform.platform(),
@@ -149,14 +150,16 @@ def get_pc_context():
         "battery": _battery(),
         "power": _battery().get("status", "unknown"),
         "network": _network(),
-        "observed_at": now,
+        "observed_at": observed_at,
         "audio": _audio(),
         "system": _cpu_gpu_memory(),
         "applications": get_known_applications(),
         "active_window": kwin["active_window"],
         "windows": kwin["windows"],
     }
-    _CONTEXT_CACHE, _CONTEXT_CACHE_TIME = context, now
+    # La collecte peut durer plus longtemps que le TTL. Le cache doit rester
+    # utilisable après son arrivée, indépendamment des changements d’heure.
+    _CONTEXT_CACHE, _CONTEXT_CACHE_TIME = context, time.monotonic()
     return context
 
 def clear_pc_context_cache():

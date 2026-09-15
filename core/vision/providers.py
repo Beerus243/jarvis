@@ -92,8 +92,9 @@ class LocalVisionClient(GroqVisionClient):
         if not self.model or 'cloud' in self.model.lower() or '://' in self.model:
             raise VisionError('Vision locale indisponible : configure un modèle visuel installé dans JARVIS_LOCAL_VISION_MODEL. Aucun repli vers Groq.')
         info = self._post('show', {'model': self.model}, timeout=3)
+        capabilities = info.get('capabilities')
         if (info.get('remote_host') or info.get('remote_model') or
-                'vision' not in info.get('capabilities', [])):
+                not isinstance(capabilities, list) or 'vision' not in capabilities):
             raise VisionError('Ce modèle Ollama n’est pas une vision locale vérifiée. Aucun envoi cloud.')
 
     def _post(self, endpoint, payload, timeout=60):
@@ -124,7 +125,10 @@ class LocalVisionClient(GroqVisionClient):
         if response_format:
             payload['format'] = 'json'
         result = self._post('chat', payload)
-        answer = result.get('message', {}).get('content')
+        message = result.get('message')
+        if not isinstance(message, dict):
+            raise VisionError('Le modèle local a retourné une réponse invalide. Aucun repli vers Groq.')
+        answer = message.get('content')
         if not isinstance(answer, str) or not answer.strip():
             raise VisionError('Le modèle local n’a retourné aucune description.')
         return answer.strip()

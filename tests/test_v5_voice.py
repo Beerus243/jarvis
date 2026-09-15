@@ -1,4 +1,5 @@
 import struct
+import pytest
 from unittest.mock import Mock
 
 from voice.audio_capture import CaptureConfig, capture_command
@@ -152,7 +153,8 @@ def test_endpointing_reports_hard_limit_on_continuous_speech():
     assert stream.read.call_count == 20
 
 
-def test_notification_can_be_interrupted_into_a_command(monkeypatch):
+@pytest.mark.parametrize('outcome', [None, False])
+def test_notification_can_be_interrupted_into_a_command(monkeypatch, outcome):
     from tests.test_local_wake_pipeline import Detector, fake_audio
     from voice.voice_pipeline import LocalWakeVoicePipeline
     from voice.wake_word_engine import WakeDetection
@@ -169,11 +171,15 @@ def test_notification_can_be_interrupted_into_a_command(monkeypatch):
     def speaker(text, cancel_event=None):
         calls.append((text, cancel_event))
         assert cancel_event is not None and cancel_event.wait(2)
+        return outcome
     monkeypatch.setattr('voice.voice_manager.speak', speaker)
     runtime = Mock()
     def deliver(sink):
         announcing[0] = True
-        return sink('Un rappel à interrompre.')
+        result = sink('Un rappel à interrompre.')
+        from voice.wake_word_engine import VoiceState
+        assert pipeline.state == VoiceState.COMMAND_LISTENING
+        return result
     runtime.deliver.side_effect = deliver
     monkeypatch.setattr('core.runtime.get_runtime', lambda: runtime)
     monkeypatch.setattr('voice.audio_capture.capture_command', lambda *_: {'audio': b'pcm'})
