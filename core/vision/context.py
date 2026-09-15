@@ -14,6 +14,9 @@ class VisualContext:
     answer: str
     expires_at: float
     generation: int
+    target: object = None
+    provider: str | None = None
+    evidence: dict | None = None
 
 
 class VisualSession:
@@ -34,19 +37,23 @@ class VisualSession:
                 self._timer = None
             return self._generation
 
+    def is_current(self, generation):
+        with self._lock:
+            return generation == self._generation
+
     def _expire(self, generation):
         with self._lock:
             if generation == self._generation:
                 self.clear()
 
-    def save(self, generation, image, source, question, answer):
+    def save(self, generation, image, source, question, answer, *, target=None, provider=None, evidence=None):
         with self._lock:
             if generation != self._generation:
                 return False  # Un oubli ou une autre capture a eu lieu entre-temps.
             if not image.startswith(b'\xff\xd8\xff') or len(image) > MAX_IMAGE_BYTES:
                 return False
             self._context = VisualContext(image, source, question[:2000], answer[:6000],
-                                          self.clock() + self.ttl, generation)
+                                          self.clock() + self.ttl, generation, target, provider, evidence)
             self._timer = threading.Timer(self.ttl, self._expire, args=(generation,))
             self._timer.daemon = True
             self._timer.start()

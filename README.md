@@ -1,14 +1,16 @@
 # JARVIS
 
-Assistant personnel Python V6.2, vocal par défaut avec « Hey Jarvis » et Kokoro :
+Assistant personnel Python V6.9, vocal par défaut avec « Hey Jarvis » et Kokoro :
 actions PC, mémoire corrigible, tâches persistantes, rappels proactifs et
 vision ponctuelle de l'écran ou de la webcam après configuration.
 
 Le [bilan V5](docs/V5_IMPLEMENTATION.md) décrit les ajouts, les validations et les limites avant la vision.
 La [vision V6](docs/V6_VISION.md) décrit les nouvelles commandes et le choix du
 fournisseur d'analyse des images.
-La [roadmap V6.2 à V6.9](docs/ROADMAP_V6.md) distingue le lot actuel des
-capacités prévues pour les prochaines versions.
+Les lots 6.3 à 6.9 ajoutent ciblage, lecture structurée, diagnostic de fichiers,
+propositions d’action, routines et choix du fournisseur. Le [guide V6.9](docs/V6_9.md)
+donne les commandes, les essais réalisés et les limites. La [roadmap](docs/ROADMAP_V6.md)
+récapitule leur état.
 
 ## Installation
 
@@ -40,6 +42,12 @@ locaux. « Arrête la vidéo » termine l'enregistrement. Les images vont dans
 `~/Pictures/Jarvis`, les vidéos dans `~/Videos/Jarvis`, avec des noms uniques.
 La sélection vidéo et de zone utilise Spectacle sous KDE Wayland.
 Voir les [commandes de capture et leurs limites](docs/CAPTURES.md).
+
+Nouveautés vocales : « regarde la fenêtre active », « définis la zone 0 0 800 600 »,
+« lis précisément la cible », « diagnostique cette erreur avec le fichier … »,
+« prépare la correction », « quand je code, préviens-moi des erreurs de compilation ».
+« Vérifie l'état de tes capacités » donne le diagnostic. Le mode local optionnel
+nécessite un modèle visuel Ollama installé ; aucun repli cloud n'est automatique.
 
 Le profil `requirements-voice-cuda.txt` conserve Torch 2.6.0 + CUDA 11.8,
 Kokoro 0.9.4 et Transformers 5.15.1. `requirements.txt` est le profil CPU

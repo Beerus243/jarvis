@@ -1,13 +1,10 @@
 # Roadmap JARVIS V6.2 → V6.9
 
-Point de départ : V6.1, écran/webcam sur demande, réponses Kokoro, une image
-en mémoire vive pendant deux minutes pour les questions de suivi. Le moteur
-de vision choisi est Groq. Le premier lot V6.2 est intégré et testé ; une
-surveillance vocale réelle reste à valider sur la machine. Les versions
-suivantes sont prévues. Un premier ajout de captures locales prépare la V6.3 :
-images écran/fenêtre/zone et vidéos sélectionnées, commandes d'arrêt et de
-statut, fichiers conservés avec des noms uniques. Voir [Captures](CAPTURES.md).
-L'analyse et la surveillance de fenêtres/zones restent à intégrer.
+État au 15 septembre 2026 : les lots V6.3 à V6.9 sont intégrés au routeur
+vocal et à `main.py`. Le [guide V6.9](V6_9.md) décrit le périmètre livré,
+les commandes et les mesures. Les critères ci-dessous restent des critères
+de validation ; les essais matériels et les limites ne sont pas effacés par
+le passage du numéro de version.
 
 | Version | Résultat attendu | Exemple vocal | Critère de validation |
 |---|---|---|---|
@@ -40,23 +37,19 @@ L'analyse et la surveillance de fenêtres/zones restent à intégrer.
   suivent le stockage habituel des notifications.
 - Pas de reprise automatique après fermeture ou redémarrage de Jarvis.
 
-## Ordre de travail et passage de version
+## État des lots 6.3 à 6.9
 
-Le premier lot V6.2 passe la suite générale (690 tests), puis les 46 tests
-de surveillance après le dernier ajustement. Les classifications Groq ont
-été essayées sur deux images artificielles. Le [guide V6](V6_VISION.md)
-décrit les commandes, les limites et les validations.
+| Lot | Livré | Validation ou limite restante |
+|---|---|---|
+| 6.3 | Zones fixes, moniteur, fenêtre active et identifiant KWin ; comparaison de pixels locale. | Captures réelles et nettoyage vérifiés. Fenêtre doit rester active ; moniteur à 100 %, sans rotation. |
+| 6.4 | JSON de lecture validé, texte/qualité/positions/hypothèses ; benchmark reproductible. | Transcription exacte sur une fixture, aucun texte inventé sur une image blanche ; positions approximatives, précision générale non certifiée. |
+| 6.5 | Diagnostic image + fichier désigné, lecture bornée, provenance et correction proposée. | Tests de sources, masquage, fichier absent/non régulier et oubli ; qualité des diagnostics réels à évaluer. |
+| 6.6 | Proposition d'ouverture du fichier dans VS Code ou vérification Wi-Fi ; confirmation consommée une fois et politique existante. | Exécution/résultat natif distingués ; aucune édition automatique ni clic par coordonnées. |
+| 6.7 | Routine développement opt-in, contexte PC/tâche/horaire, 15 minutes, une surveillance, priorité/report/silence. | Pas de reprise après redémarrage ; essai vocal réel jusqu'à l'alerte restant. |
+| 6.8 | Groq/local interchangeables explicitement, budget partagé et latences de session. | Ollama/modèle local absents ; matériel mesuré mais aucune inférence locale revendiquée. |
+| 6.9 | Rapport de capacités, migration additive, commandes documentées et tests de régression. | Micro, vidéo et parcours de bout en bout à valider avec l'utilisateur avant de déclarer la V6 stabilisée sur tous les usages. |
 
-Les captures locales écran/fenêtre/zone et l'enregistrement vidéo sont
-maintenant branchés dans `main.py` ; les captures réelles écran/fenêtre et
-une vidéo avec arrêt automatique ont été vérifiées. La prochaine étape
-est de valider la surveillance réelle, puis de réutiliser le ciblage dans
-l'analyse et la surveillance de la V6.3. Les observations
-visuelles restent probabilistes : une image ne prouve pas l'état interne
-d'un processus. La lecture native de l'état d'une tâche Jarvis est préférable
-quand cet état est déjà disponible.
-
-Pour chaque version : code et documentation cohérents, tests ciblés puis
-contrôle des intégrations touchées, essai matériel lorsque nécessaire, bilan
-séparant ce qui a été réellement observé de ce qui reste à vérifier. Les
-versions 6.3 à 6.9 évolueront selon ces résultats et les essais sur la machine.
+Les détails de mesure figurent dans le [bilan V6.9](V6_9.md). Le numéro V6.9
+désigne le code livré, pas une promesse de vision parfaite. La V7 pourra
+construire les missions de projet sur ces capacités après validation des
+parcours quotidiens de Fabrice.

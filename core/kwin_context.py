@@ -1,12 +1,12 @@
-"""Lecture du contexte des fenêtres KWin sous Wayland.
+"""Contexte KWin en lecture seule : fournisseur externe ou script éphémère.
 
-KWin expose les fenêtres via son KWin Scripting API (workspace.activeWindow
-et workspace.stackingOrder). Le script KWin qui publie ces données n'est pas
-installé par JARVIS : en son absence, ce module signale explicitement que le
-contexte est indisponible au lieu d'utiliser wmctrl ou XWayland.
+Le Python système utilise dbus-next pour un instantané de la fenêtre active.
+Le script est immédiatement déchargé ; si ce transport manque, le contexte
+est déclaré indisponible. Aucune commande XWayland n'est utilisée.
 """
 
 import json
+from pathlib import Path
 import os
 import shutil
 import subprocess
@@ -16,6 +16,7 @@ import re
 def _empty_window():
     return {
         "available": False,
+        "id": None,
         "application": None,
         "title": None,
         "pid": None,
@@ -32,6 +33,10 @@ def _read_provider():
     """Lit un fournisseur KWin script optionnel, sans commande arbitraire."""
     provider = shutil.which("jarvis-kwin-context")
     if not provider:
+        if os.getenv("XDG_SESSION_TYPE") == "wayland":
+            snapshot = _read_snapshot()
+            if snapshot is not None:
+                return snapshot
         return _fetch_via_dbus()
     try:
         result = subprocess.run(
@@ -43,6 +48,19 @@ def _read_provider():
         return payload if isinstance(payload, dict) else None
     except (OSError, ValueError, subprocess.SubprocessError, json.JSONDecodeError):
         return None
+
+def _read_snapshot():
+    """Pas de dépendance supplémentaire dans le venv Kokoro."""
+    try:
+        result = subprocess.run(['/usr/bin/python3', str(Path(__file__).with_name('kwin_snapshot.py'))],
+                                capture_output=True, text=True, timeout=10, check=False)
+        if result.returncode != 0 or len(result.stdout) > 128 * 1024:
+            return None
+        payload = json.loads(result.stdout)
+        return payload if isinstance(payload, dict) and isinstance(payload.get('windows'), list) else None
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return None
+
 
 def _dbus_call(path, method):
     tool = shutil.which("qdbus") or shutil.which("qdbus6")

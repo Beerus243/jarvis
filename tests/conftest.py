@@ -23,3 +23,17 @@ def isolated_visual_context():
     visual_session.clear()
     yield
     visual_session.clear()
+
+
+@pytest.fixture(autouse=True)
+def isolated_v69_session():
+    from core.vision.providers import reset_session
+    from core.vision.targets import select_target, VisualTarget
+    from core.vision.development import clear
+    reset_session()
+    select_target(VisualTarget())
+    clear()
+    yield
+    reset_session()
+    select_target(VisualTarget())
+    clear()

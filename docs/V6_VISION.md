@@ -1,6 +1,7 @@
-# JARVIS V6.2 — vision, suivi et surveillance bornée
+# JARVIS V6.9 — vision, suivi et surveillance bornée
 
-La [roadmap V6.2 à V6.9](ROADMAP_V6.md) décrit les étapes suivantes.
+Les ajouts 6.3 à 6.9 et leurs commandes sont décrits dans le [guide V6.9](V6_9.md).
+La [roadmap](ROADMAP_V6.md) indique le code livré et les validations restantes.
 
 La V6 ajoute l'analyse d'une image de l'écran ou de la webcam au dialogue
 vocal existant. Une première demande déclenche une capture, une description puis une
@@ -53,10 +54,10 @@ observation démarre au moins trente secondes après la fin de la précédente,
 avec dix analyses Groq au maximum. Il n'y a aucune capture de surveillance
 avant la commande de démarrage. La webcam reste réservée aux prises ponctuelles.
 
-L'écran entier est capturé. Une image strictement identique à la précédente
-n'est pas renvoyée, sauf pour confirmer un événement candidat. Les changements
-de curseur ou d'horloge peuvent encore déclencher une analyse ; le filtrage par
-région est prévu en V6.3. Une réponse structurée indique attente, fin, erreur
+La cible choisie est capturée (écran entier par défaut). Les images identiques
+et les changements sous le seuil de pixels ne sont pas renvoyés, sauf pour
+confirmer un événement candidat. Le ciblage et le filtre sont décrits dans
+le [guide V6.9](V6_9.md). Une réponse structurée indique attente, fin, erreur
 ou inconnu, avec un indice visible. Deux observations concordantes sont
 nécessaires pour annoncer un événement, puis la surveillance s'arrête.
 Trois échecs consécutifs, la limite d'analyses ou la durée maximale l'arrêtent
@@ -82,8 +83,8 @@ Il s'agit d'un indice visuel, pas d'une lecture native du processus : une
 fenêtre masquée ou un message ambigu peut empêcher la détection. Un événement
 très bref entre deux observations peut être manqué, et deux réponses du
 modèle ne garantissent pas l'absence de faux positifs. Garder la fenêtre cible
-visible : cette version ne suit pas encore une fenêtre particulière lors
-d'un changement d'application. Une nouvelle surveillance annule les annonces
+active pour le suivi par identifiant KWin ; une perte de focus est refusée,
+sans analyser une autre fenêtre. Une nouvelle surveillance annule les annonces
 encore en attente de la précédente.
 
 ## Configuration
@@ -102,7 +103,8 @@ JARVIS_CAMERA_DEVICE=/dev/video0
 ```
 
 `JARVIS_VISION_PROVIDER=disabled` désactive toute capture destinée à l'analyse.
-Un moteur de vision local n'est pas encore fourni.
+Un adaptateur local Ollama est fourni en V6.8 ; il exige un modèle visuel déjà
+installé. Aucun repli local vers Groq n'est automatique. Voir [V6.9](V6_9.md).
 
 Le modèle par défaut de l'adaptateur est `qwen/qwen3.6-27b`, documenté pour les
 entrées image par [Groq](https://console.groq.com/docs/vision). Sa disponibilité
@@ -123,7 +125,8 @@ Le trajet est `main.py → brain → orchestrator → core.vision → réponse K
 La reconnaissance des commandes de vision précède le dialogue général. Les
 réponses sont descriptives : le contenu de l'image ne déclenche aucune action
 PC. Les captures ponctuelles s'effectuent sur une demande reconnue. La seule
-surveillance périodique est celle activée explicitement en V6.2 et bornée
+surveillance périodique est celle activée explicitement, directement ou par
+une routine contextuelle V6.7, et bornée
 comme décrit ci-dessus. Une demande qui mentionne explicitement
 l'écran ou la webcam, ou « regarde à nouveau », prend une nouvelle image.
 Les demandes courtes de suivi s'appuient sur la dernière image disponible.
@@ -144,7 +147,7 @@ conversations, ni une requête déjà envoyée au fournisseur.
 Chaque image utilise un répertoire temporaire privé et unique, supprimé
 après l'analyse, y compris lors d'une erreur ou d'un `Ctrl+C`. L'image est
 convertie en JPEG, limitée à 1920 pixels par côté et à 4 Mio avant envoi.
-Spectacle est limité à 20 secondes pour la vision, FFmpeg à 12 secondes et le client Groq
+Spectacle est limité à 20 secondes pour la vision (60 secondes pour sélectionner une zone), FFmpeg à 12 secondes et le client Groq
 réutilise le délai de 20 secondes sans nouvelle tentative automatique.
 
 L'écran entier peut contenir des informations personnelles. Avec Groq,

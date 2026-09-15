@@ -17,7 +17,7 @@ class VisionError(RuntimeError):
 
 
 @contextmanager
-def capture_image(source, *, camera_device='/dev/video0'):
+def capture_image(source, *, camera_device='/dev/video0', target=None):
     if source not in {'screen', 'webcam'}:
         raise VisionError('Source visuelle inconnue. Précise écran ou webcam.')
     if not shutil.which('ffmpeg'):
@@ -30,18 +30,27 @@ def capture_image(source, *, camera_device='/dev/video0'):
     with tempfile.TemporaryDirectory(prefix='jarvis-vision-') as directory:
         output = Path(directory) / 'image.jpg'
         if source == 'screen':
-            result = ScreenCapture(destination=directory, timeout=20).capture()
+            from core.vision.targets import check_window, crop_filter
+            if target is not None:
+                check_window(target)
+            scope = target.kind if target and (target.kind == 'window' or (target.kind == 'region' and target.rect is None)) else 'screen'
+            tool = ScreenCapture(destination=directory, timeout=20)
+            result = tool.capture() if scope == 'screen' else tool.capture(scope)
             if not result.success or not result.artifact_path:
                 raise VisionError('Je ne peux pas capturer ton écran. Vérifie Spectacle et la session graphique.')
+            if target is not None:
+                check_window(target)
+            crop = crop_filter(target, result.artifact_path) if target else ''
             input_args = ['-i', result.artifact_path]
         else:
+            crop = ''
             if not Path(camera_device).exists():
                 raise VisionError('Aucune webcam disponible sur le périphérique configuré.')
             input_args = ['-f', 'video4linux2', '-i', camera_device, '-ss', '0.5']
         try:
             result = subprocess.run(
                 ['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-y',
-                 *input_args, '-frames:v', '1', '-vf', SCALE, '-q:v', '3',
+                 *input_args, '-frames:v', '1', '-vf', crop + SCALE, '-q:v', '3',
                  '-threads', '1', str(output)],
                 capture_output=True, timeout=12, check=False,
             )

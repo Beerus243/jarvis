@@ -18,6 +18,16 @@ def handle_watch_command(message):
         n = suffix[1]
         duration = (int(n) if n.isdigit() else MINUTES[n]) * 60
         text = text[:suffix.start()]
+    from core.vision.targets import parse_target, selected_target
+    target = None
+    scoped = re.search(r' sur (.+)$', text)
+    if scoped:
+        target = parse_target(scoped[1])
+        if target:
+            text = text[:scoped.start()]
+    if text in {'surveille seulement ce terminal', 'surveille cette zone', 'surveille la cible', 'surveille la fenetre active'}:
+        target = parse_target(text.removeprefix('surveille '))
+        text = 'surveille les erreurs'
     goals = {
         'compilation': (r'surveille (?:cette|la|ma) compilation(?: et previens moi quand elle (?:termine|se termine|est terminee))?',),
         'download': (r'surveille (?:ce|le|mon) telechargement(?: et previens moi quand il (?:termine|se termine|est termine))?',
@@ -45,7 +55,13 @@ def handle_watch_command(message):
     if not _vision_enabled():
         return 'La vision est désactivée. Aucune surveillance démarrée.'
     try:
-        GroqVisionClient()  # Vérification de la clé avant toute capture.
+        from core.vision.providers import get_client
+        get_client(groq_factory=GroqVisionClient)  # Précontrôle avant capture.
     except VisionError as error:
         return str(error)
-    return runtime.visual_watch.start(goal, duration=duration)
+    try:
+        target = target or selected_target()
+        options = {'target': target} if target.kind != 'screen' else {}
+        return runtime.visual_watch.start(goal, duration=duration, **options)
+    except VisionError as error:
+        return str(error)

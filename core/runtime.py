@@ -39,6 +39,8 @@ class Runtime:
         from core.vision.service import _vision_enabled
         self.visual_watch = VisualWatch(self.enqueue, self.cancel_visual_notifications,
                                        busy=self.busy, enabled=_vision_enabled)
+        from core.vision.routines import VisualRoutines
+        self.visual_routines = VisualRoutines(self.visual_watch, pc_provider=pc_provider)
 
     def start(self):
         global _runtime
@@ -73,6 +75,7 @@ class Runtime:
     def stop(self):
         global _runtime
         self.stopping.set()
+        self.visual_routines.stop()
         self.visual_watch.stop()
         from core.task_engine import list_tasks, pause_task
         for task in list_tasks():
@@ -114,12 +117,13 @@ class Runtime:
                     self._scheduled.discard(task_id)
                 self.jobs.task_done()
 
-    def enqueue(self, key, message, *, reminder_id=None, now=None, visual_watch_id=None):
+    def enqueue(self, key, message, *, reminder_id=None, now=None, visual_watch_id=None, priority=None):
         now = time.time() if now is None else now
         def insert(value):
             return value or {'id': key, 'message': message, 'status': 'PENDING',
                              'created_at': now, 'reminder_id': reminder_id,
-                             'visual_watch_id': visual_watch_id}
+                             'visual_watch_id': visual_watch_id,
+                             'priority': priority if priority is not None else (100 if reminder_id else 50 if visual_watch_id else 10)}
         return get_store().mutate('notifications', key, insert)
 
     def cancel_visual_notifications(self, watch_id=None):
@@ -176,8 +180,8 @@ class Runtime:
         if self.busy.is_set() or store.get('settings', 'silent', False):
             return []
         delivered = []
-        # Une seule annonce à la fois, ordre chronologique.
-        pending = sorted((v for _, v in store.items('notifications') if v['status'] == 'PENDING'), key=lambda v: v['created_at'])
+        # Rappels prioritaires, puis alertes visuelles ; ordre chronologique à priorité égale.
+        pending = sorted((v for _, v in store.items('notifications') if v['status'] == 'PENDING'), key=lambda v: (-v.get('priority', 100 if v.get('reminder_id') else 10), v['created_at']))
         for notice in pending[:1]:
             if not notice.get('reminder_id') and now - notice['created_at'] > 3600:
                 notice['status'] = 'EXPIRED'
@@ -204,6 +208,7 @@ class Runtime:
     def _watch_loop(self):
         while not self.stopping.wait(0.25):
             try:
+                self.visual_routines.step()
                 self.visual_watch.step()
             except Exception:
                 self.visual_watch.stop()

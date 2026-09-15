@@ -6,7 +6,7 @@ import math
 from core.command_session import GOODBYE, is_exit_command, process_command as think
 from voice.voice_manager import speak as speak_response
 
-VERSION = "V6.2"
+VERSION = "V6.9"
 
 
 def show_banner():
@@ -92,6 +92,7 @@ def build_parser():
 
 
 def main(argv=None):
+    from core.vision.health import migrate
     parser = build_parser()
     args = parser.parse_args(argv)
     voice_mode = not args.text and not args.list_microphones
@@ -100,6 +101,7 @@ def main(argv=None):
     from core.runtime import Runtime
     runtime = None
     try:
+        migrate()
         if not args.no_proactive and not args.list_microphones:
             def notify(message):
                 print(f"\nJARVIS > {message}", flush=True)
@@ -143,8 +145,14 @@ def main(argv=None):
         screen_recorder.close()
         from core.vision.context import visual_session
         visual_session.clear()
+        from core.vision.development import clear
+        from core.vision.targets import select_target, VisualTarget
+        from core.vision.providers import reset_session
+        clear()
+        select_target(VisualTarget())
         if runtime:
             runtime.stop()
+        reset_session()
 
 
 if __name__ == "__main__":
