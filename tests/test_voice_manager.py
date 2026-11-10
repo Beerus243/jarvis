@@ -6,6 +6,8 @@ from voice import voice_manager
 def setup_function():
     voice_manager._engine = None
     voice_manager._player = None
+    voice_manager._prepare_thread = None
+    voice_manager._prepare_error = None
 
 
 def test_speak_uses_engine_and_loads_it_once():
@@ -33,6 +35,24 @@ def test_speak_ignores_empty_text():
     with patch("voice.voice_manager._get_engine") as get_engine:
         assert voice_manager.speak("   ") is False
         get_engine.assert_not_called()
+
+
+def test_prepare_voice_async_loads_once(monkeypatch):
+    from threading import Event
+    ready = Event()
+    engine = Mock()
+
+    def load():
+        ready.wait(1)
+        voice_manager._engine = engine
+        return engine
+
+    monkeypatch.setattr(voice_manager, 'prepare_voice', load)
+    voice_manager.prepare_voice_async()
+    voice_manager.prepare_voice_async()
+    ready.set()
+    assert voice_manager.wait_voice(timeout=2) is engine
+    assert voice_manager._engine is engine
 
 
 def test_prepare_voice_uses_existing_kokoro_without_fallback(monkeypatch):

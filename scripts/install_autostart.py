@@ -23,7 +23,8 @@ def render(root):
 [Unit]
 Description=Jarvis personnel — voix et contexte local
 PartOf=graphical-session.target
-After=graphical-session-pre.target
+Wants=pipewire.service pipewire-pulse.service
+After=graphical-session-pre.target pipewire.service pipewire-pulse.service
 StartLimitIntervalSec=300
 StartLimitBurst=3
 
@@ -71,10 +72,13 @@ def main(argv=None):
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument('--install', action='store_true')
     modes.add_argument('--disable', action='store_true')
+    parser.add_argument('--start-now', action='store_true', help='Démarrer le service immédiatement après son installation.')
     parser.add_argument('--migrate-existing', action='store_true', help='Sauvegarder et migrer uniquement l’ancien lanceur Jarvis reconnu.')
     args = parser.parse_args(argv)
     if args.migrate_existing and not args.install:
         parser.error('--migrate-existing nécessite --install')
+    if args.start_now and not args.install:
+        parser.error('--start-now nécessite --install')
     root = Path(__file__).resolve().parents[1]
     destination = Path.home() / '.config/systemd/user/jarvis.service'
     unit = render(root)
@@ -112,7 +116,11 @@ def main(argv=None):
             Path(temp).unlink()
     subprocess.run(['systemctl', '--user', 'daemon-reload'], check=True, timeout=30)
     subprocess.run(['systemctl', '--user', 'enable', 'jarvis.service'], check=True, timeout=30)
-    print('Service activé pour la prochaine connexion graphique. Aucun lancement effectué maintenant.')
+    if args.start_now:
+        subprocess.run(['systemctl', '--user', 'start', 'jarvis.service'], check=True, timeout=30)
+        print('Service activé et démarré maintenant.')
+    else:
+        print('Service activé pour la prochaine connexion graphique. Aucun lancement effectué maintenant.')
     return 0
 
 

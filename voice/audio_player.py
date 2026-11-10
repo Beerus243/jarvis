@@ -4,6 +4,9 @@ import os
 import subprocess
 
 
+PLAYBACK_TIMEOUT = 15
+
+
 def play(audio_path, cleanup=True):
     """Joue un fichier WAV avec le lecteur disponible sur le système."""
     if not audio_path:
@@ -18,9 +21,10 @@ def play(audio_path, cleanup=True):
         )
         for command in players:
             try:
-                subprocess.run([*command, audio_path], check=True)
+                subprocess.run([*command, audio_path], check=True, timeout=PLAYBACK_TIMEOUT)
                 return True
-            except (FileNotFoundError, OSError, subprocess.CalledProcessError) as error:
+            except (FileNotFoundError, OSError, subprocess.CalledProcessError,
+                    subprocess.TimeoutExpired) as error:
                 errors.append(f"{command[0]}: {error}")
 
         print(f"⚠️ Lecture audio indisponible : {'; '.join(errors)}")

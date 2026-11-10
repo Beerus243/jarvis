@@ -1,3 +1,5 @@
+import time
+
 from tools.tools import open_browser, open_musique, get_time
 from tools.applications import open_application, open_folder, open_website
 from tools.projects import resolve_project, format_projects
@@ -18,7 +20,7 @@ from tools.browser import (
 from core.actions import PCAction, execute_pc_action
 
 
-def dispatch(intent):
+def _dispatch(intent):
 
     if intent == "SCREENSHOT":
         result = execute_pc_action(PCAction("SCREENSHOT"))
@@ -267,3 +269,22 @@ def dispatch(intent):
     # ========================================================
 
     return None
+
+
+def dispatch(intent):
+    from core.ui_bridge import events
+
+    name = intent.get('action') if isinstance(intent, dict) else intent
+    if not isinstance(name, str) or name in {'GREETINGS', 'OPEN_SITE', 'OPEN_WEBSITE'}:
+        return _dispatch(intent)
+    started = time.monotonic()
+    events.tool(name, 'started')
+    try:
+        result = _dispatch(intent)
+    except Exception as error:
+        events.tool(name, 'failed', error=error,
+                    duration_ms=(time.monotonic() - started) * 1000)
+        raise
+    events.tool(name, 'completed', result=result,
+                duration_ms=(time.monotonic() - started) * 1000)
+    return result

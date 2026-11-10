@@ -40,7 +40,7 @@ def capability_report():
             'camera_present': Path(os.getenv('JARVIS_CAMERA_DEVICE', '/dev/video0')).exists(),
             'target': selected_target().label, 'hourly_limit': quota(), 'metrics': metrics(),
             'modules': modules, 'tools': tools,
-            'live_checks_pending': ['micro et interruption Hey Jarvis', 'lecture visuelle réelle',
+            'live_checks_pending': ['micro et interruption Jarvis', 'lecture visuelle réelle',
                                     'surveillance sur le bureau', 'sélection vidéo et finalisation',
                                     'inférence locale sur le GPU']}
 

@@ -161,6 +161,7 @@ class PersonalAgent:
     def _anticipate(self, now):
         if not self.session or get_store().get('settings', 'silent', False):
             return
+        # Le mode muet V7.8 continue d'enfiler ; seule la prononciation est bloquée.
         if get_store().get('v7', 'suppressed_day') == datetime.fromtimestamp(now).date().isoformat():
             return
         minutes = model.preference('break_minutes')

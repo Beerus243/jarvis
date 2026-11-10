@@ -69,3 +69,50 @@ def test_threshold_detects_weak_and_strong_voice_without_noise_trigger():
     assert max([100, 110, 120, 130]) <= threshold
     assert 250 > threshold
     assert 2000 > threshold
+
+
+def test_capture_command_calibrates_noise_and_accepts_quieter_speech():
+    from types import SimpleNamespace
+    from voice.audio_capture import capture_command
+
+    config = CaptureConfig(
+        sample_rate=100,
+        chunk=10,
+        calibration_duration=0.2,
+        pre_roll=0.2,
+        wait_timeout=0.5,
+        maximum_duration=1.0,
+        silence_duration=0.2,
+        minimum_speech=0.1,
+        minimum_threshold=80,
+        threshold_multiplier=1.5,
+    )
+    frames = [
+        pcm(*([20] * 10)), pcm(*([20] * 10)),
+        pcm(*([100] * 10)), pcm(*([100] * 10)),
+        pcm(*([0] * 10)), pcm(*([0] * 10)),
+    ]
+    stream = SimpleNamespace(read=lambda count, **kwargs: frames.pop(0))
+
+    result = capture_command(stream, config)
+
+    assert result['speech_detected'] is True
+    assert result['threshold'] == 80
+    assert result['noise_floor'] == 20
+    assert result['duration'] > 0
+
+
+def test_capture_command_can_reuse_noise_floor_without_waiting_for_calibration():
+    from types import SimpleNamespace
+    from voice.audio_capture import capture_command
+
+    config = CaptureConfig(sample_rate=100, chunk=10, wait_timeout=0.5,
+                           maximum_duration=1.0, silence_duration=0.2,
+                           minimum_speech=0.1, minimum_threshold=80)
+    frames = [pcm(*([100] * 10)), pcm(*([100] * 10)), pcm(*([0] * 10))]
+    stream = SimpleNamespace(read=lambda count, **kwargs: frames.pop(0))
+
+    result = capture_command(stream, config, noise_floor=20)
+
+    assert result['speech_detected'] is True
+    assert result['noise_floor'] == 20

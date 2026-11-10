@@ -13,3 +13,4 @@ soundfile
 kokoro; python_version < '3.14'
 pyttsx3
 requests
+websockets>=15,<16

@@ -25,11 +25,15 @@ def test_background_mic_retry_has_no_greeting(monkeypatch):
     pipeline = Mock()
     pipeline.run_microphone.side_effect = [OSError('micro disconnected'), None]
     monkeypatch.setattr('voice.voice_pipeline.LocalWakeVoicePipeline.from_defaults', lambda **kw: pipeline)
+    monkeypatch.setattr('voice.voice_manager.prepare_voice_async', Mock())
     sleep = Mock()
     monkeypatch.setattr(main.time, 'sleep', sleep)
     assert main.main(['--background', '--no-proactive']) == 0
-    pipeline.prepare_voice.assert_called_once_with(announce=False)
+    pipeline.prepare_voice.assert_called_once_with(announce=False, background=True)
     assert pipeline.run_microphone.call_count == 2
+    assert pipeline.run_microphone.call_args.kwargs['followup_seconds'] == 20.0
+    assert pipeline.run_microphone.call_args.kwargs['speech_threshold'] == 160.0
+    assert pipeline.run_microphone.call_args.kwargs['keep_alive'] is True
     sleep.assert_called_once_with(5)
 
 
@@ -51,9 +55,24 @@ def test_silent_preparation_still_loads_configured_voice(monkeypatch):
     speaker.assert_not_called()
 
 
+def test_background_preparation_starts_voice_without_blocking(monkeypatch):
+    from voice.voice_pipeline import LocalWakeVoicePipeline
+    speaker, async_prepare, prepare = Mock(), Mock(), Mock()
+    monkeypatch.setattr('voice.voice_manager.speak', speaker)
+    monkeypatch.setattr('voice.voice_manager.prepare_voice_async', async_prepare)
+    monkeypatch.setattr('voice.voice_manager.prepare_voice', prepare)
+    LocalWakeVoicePipeline(Mock(), Mock(), Mock(), speaker=speaker).prepare_voice(
+        announce=False, background=True)
+    async_prepare.assert_called_once()
+    prepare.assert_not_called()
+    speaker.assert_not_called()
+
+
 def test_service_starts_at_login_and_limits_restart(tmp_path):
     unit = render(tmp_path / 'Jarvis projet')
     assert 'WantedBy=graphical-session.target' in unit
+    assert 'Wants=pipewire.service pipewire-pulse.service' in unit
+    assert 'After=graphical-session-pre.target pipewire.service pipewire-pulse.service' in unit
     assert '--background' in unit
     assert 'Restart=on-failure' in unit
     assert 'StartLimitBurst=3' in unit
@@ -62,6 +81,17 @@ def test_service_starts_at_login_and_limits_restart(tmp_path):
     assert quoted('/path/100%') == '"/path/100%%"'
     with pytest.raises(ValueError):
         quoted('/path\ninjection')
+
+
+def test_background_mic_failure_eventually_reaches_systemd(monkeypatch):
+    import main
+    pipeline = Mock()
+    pipeline.run_microphone.side_effect = OSError('micro disconnected')
+    monkeypatch.setattr('voice.voice_pipeline.LocalWakeVoicePipeline.from_defaults', lambda **kw: pipeline)
+    monkeypatch.setattr('voice.voice_manager.prepare_voice_async', Mock())
+    monkeypatch.setattr(main.time, 'sleep', Mock())
+    assert main.main(['--background', '--no-proactive']) == 1
+    assert pipeline.run_microphone.call_count == main.MAX_BACKGROUND_MIC_FAILURES
 
 
 def test_idle_protocol_only_subscribes_to_activity(monkeypatch):
@@ -109,6 +139,8 @@ import signal
 from types import SimpleNamespace
 import main
 from voice.voice_pipeline import LocalWakeVoicePipeline
+import voice.voice_manager as voice_manager
+voice_manager.prepare_voice_async = lambda: None
 def listen(**kwargs):
     print('TEST_READY', flush=True)
     signal.pause()

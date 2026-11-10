@@ -6,7 +6,11 @@ from .lock import InstallationLock
 from pathlib import Path
 from .decision import decide, format_decision
 
-def handle_environment_intent(intent):
+def handle_environment_intent(intent, *, expected_plan_id=None):
+    if expected_plan_id is not None:
+        current = get_pending()
+        if current is None or current.plan_id != expected_plan_id:
+            return "Cette confirmation a expiré ou a changé. Aucune action exécutée."
     capability = getattr(intent, "capability", None)
     if capability:
         caps = discover_capabilities()

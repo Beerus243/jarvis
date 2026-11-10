@@ -42,3 +42,12 @@ def test_audio_player_success_cleans_temporary_file():
         assert audio_player.play("/tmp/jarvis-test.wav") is True
 
     remove.assert_called_once_with("/tmp/jarvis-test.wav")
+
+
+def test_audio_player_bounds_a_blocked_player():
+    with patch.object(
+        audio_player.subprocess,
+        "run",
+        side_effect=audio_player.subprocess.TimeoutExpired("pw-cat", audio_player.PLAYBACK_TIMEOUT),
+    ), patch.object(audio_player.os, "remove"):
+        assert audio_player.play("/tmp/jarvis-test.wav") is False

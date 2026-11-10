@@ -34,7 +34,6 @@ def routed(monkeypatch, tmp_path):
 
 
 COMMANDS = [
-    ("bonjour", "GREETINGS"),
     ("quelle heure est-il", "GET_TIME"),
     ("ouvre chrome", "OPEN_BROWSER"),
     ("ouvre le navigateur", "OPEN_BROWSER"),
@@ -166,3 +165,11 @@ def test_normalized_exit_commands(command, monkeypatch):
 def test_terminal_eof_exits_cleanly(monkeypatch):
     monkeypatch.setattr("builtins.input", Mock(side_effect=EOFError))
     assert main.main(['--text']) == 0
+
+
+def test_greeting_uses_local_dialogue_from_main(routed):
+    action, environment = routed
+    answer = main.think("bonjour")
+    assert "Bonjour" in answer
+    action.assert_not_called()
+    environment.assert_not_called()

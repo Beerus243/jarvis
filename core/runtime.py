@@ -185,10 +185,14 @@ class Runtime:
         with self._delivery_lock:
             return self._deliver(sink, now)
 
+    def _speech_blocked(self, store=None):
+        from core.proactivity.speech import speech_blocked
+        return speech_blocked(self, store)
+
     def _deliver(self, sink, now=None):
         now = time.time() if now is None else now
         store = get_store()
-        if self.busy.is_set() or store.get('settings', 'silent', False):
+        if self._speech_blocked(store):
             return []
         delivered = []
         # Rappels prioritaires, puis alertes visuelles ; ordre chronologique à priorité égale.
@@ -205,9 +209,13 @@ class Runtime:
                 notice['status'] = 'EXPIRED'
                 store.put('notifications', notice['id'], notice)
                 continue
+            if self._speech_blocked(store):
+                return delivered
             if sink(notice['message']) is False:
                 store.mutate('notifications', notice['id'], lambda n: {**n, 'retry_at': now + 60} if n else None)
                 continue
+            if self._speech_blocked(store):
+                return delivered
             if store.get('notifications', notice['id'], {}).get('status') != 'PENDING':
                 continue
             notice['status'] = 'DELIVERED'

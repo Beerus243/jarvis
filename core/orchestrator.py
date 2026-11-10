@@ -63,6 +63,13 @@ def process(message):
                 message=session_response.message, metadata={"error": session_response.error}))
             return CommandResponse(session_response.message)
         return CommandResponse(session_response)
+    from personality.dialogue import handle_dialogue
+    dialogue_response = handle_dialogue(message)
+    if dialogue_response is not None:
+        for stage in ('INTELLIGENCE', 'PLANNER', 'EXECUTOR'):
+            record_diagnostic(create_diagnostic_event(stage, source='DIALOGUE',
+                confidence=1.0, success=True if stage == 'EXECUTOR' else None))
+        return CommandResponse(dialogue_response)
     context = build_decision_context(message)
     context["personal_context"] = get_personal_context()
     context["user_state"] = detect_user_state(message)
@@ -71,7 +78,7 @@ def process(message):
     banter = _advanced_personality.handle_banter(message)
     decision = intelligence.analyze(message, context=context)
     if decision.get("type") in {"GENERAL_AI", "UNKNOWN"} and (cultural or banter):
-        return cultural or banter
+        return CommandResponse(cultural or banter)
     record_diagnostic(create_diagnostic_event(
         "INTELLIGENCE",
         source=decision.get("type"),
@@ -133,7 +140,7 @@ def process(message):
         },
     ))
     if result.success:
-        return CommandResponse(result.response) if result.source in {'ACTION', 'ACTION_COMPOSED', 'TASK', 'ENVIRONMENT'} else result.response
+        return result.response if result.source == 'CLARIFICATION' else CommandResponse(result.response)
 
     if not result.fallback_allowed:
         if result.error_type in {"ACTION_FAILED", "CONFIRMATION_REQUIRED"} and result.response:
@@ -143,14 +150,14 @@ def process(message):
         return None
 
     if result.source == "SEMANTIC_MEMORY":
-        return _ai_fallback(message, context["reference"])
+        return CommandResponse(_ai_fallback(message, context["reference"]))
 
     # Une source locale absente autorise uniquement le fallback contrôlé.
     resolved_reference = context["reference"]
     semantic_response = _semantic_fallback(message, resolved_reference)
     if semantic_response:
-        return semantic_response
-    return _ai_fallback(message, resolved_reference)
+        return CommandResponse(semantic_response)
+    return CommandResponse(_ai_fallback(message, resolved_reference))
 
 
 def _handle_composed(message, actions):

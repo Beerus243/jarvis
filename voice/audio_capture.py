@@ -18,7 +18,7 @@ class CaptureConfig:
     channels: int = 1
     sample_width: int = 2
     chunk: int = 1024
-    device_index: int | None = 12
+    device_index: int | None = None
     calibration_duration: float = 0.25
     threshold_multiplier: float = 1.5
     minimum_threshold: float = 300.0
@@ -222,13 +222,31 @@ def write_wav(path: str, data: bytes, config: CaptureConfig | None = None) -> No
         output.writeframes(data)
 
 
-def capture_command(stream, config=None):
-    """Capture une phrase sur un flux existant, sans recalibrage qui mange son début."""
+def capture_command(stream, config=None, noise_floor=None):
+    """Capture une phrase sur un flux existant avec un seuil adapte au bruit."""
     cfg = config or CaptureConfig(device_index=None)
     wait_frames = max(1, math.ceil(cfg.wait_timeout * cfg.sample_rate / cfg.chunk))
     max_frames = max(1, math.ceil(cfg.maximum_duration * cfg.sample_rate / cfg.chunk))
     silence_frames = max(1, math.ceil(cfg.silence_duration * cfg.sample_rate / cfg.chunk))
     pre_roll = deque(maxlen=max(1, math.ceil(cfg.pre_roll * cfg.sample_rate / cfg.chunk)))
+    if noise_floor is None:
+        calibration_frames = max(1, math.ceil(
+            cfg.calibration_duration * cfg.sample_rate / cfg.chunk
+        ))
+        calibration = [
+            stream.read(cfg.chunk, exception_on_overflow=False)
+            for _ in range(calibration_frames)
+        ]
+        threshold, noise_floor = calculate_speech_threshold(
+            [rms(frame, cfg.sample_width) for frame in calibration],
+            cfg.threshold_multiplier,
+            cfg.minimum_threshold,
+        )
+        pre_roll.extend(calibration)
+    else:
+        threshold, noise_floor = calculate_speech_threshold(
+            [noise_floor], cfg.threshold_multiplier, cfg.minimum_threshold,
+        )
     frames = []
     loud = quiet = 0
     recording = False
@@ -237,7 +255,7 @@ def capture_command(stream, config=None):
         frame = stream.read(cfg.chunk, exception_on_overflow=False)
         # Une voix qui baisse en fin de mot ne doit pas être prise pour une
         # pause. Le seuil de maintien est plus bas que celui de démarrage.
-        active = rms(frame) >= cfg.minimum_threshold * (0.6 if recording else 1.0)
+        active = rms(frame, cfg.sample_width) >= threshold * (0.6 if recording else 1.0)
         if not recording:
             pre_roll.append(frame)
             loud = loud + 1 if active else 0
@@ -256,5 +274,12 @@ def capture_command(stream, config=None):
             limit_reached = True
             break
     data = b''.join(frames)
-    return {'audio': data, 'speech_detected': recording, 'duration': len(data) / (2 * cfg.sample_rate),
-            'limit_reached': limit_reached}
+    return {
+        'audio': data,
+        'speech_detected': recording,
+        'duration': len(data) / (cfg.sample_width * cfg.sample_rate),
+        'limit_reached': limit_reached,
+        'threshold': threshold,
+        'noise_rms': noise_floor,
+        'noise_floor': noise_floor,
+    }

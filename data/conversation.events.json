@@ -1,0 +1,323 @@
+[
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "socket-request-1",
+            "origin": "ui_text",
+            "text": "hello",
+            "status": "received",
+            "updatedAt": "2026-11-10T17:51:32.336998+00:00",
+            "conversationId": "default"
+        },
+        "eventId": "0c8a3dc50ff34a84a45b3d24187d9c67",
+        "sequence": 18,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:32.337400+00:00",
+        "requestId": "socket-request-1",
+        "origin": "ui_text",
+        "conversationId": "default"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "0002d2614cc4451ca42966401d588083",
+            "role": "jarvis",
+            "text": "socket-test-reply",
+            "timestamp": "2026-11-10T17:51:32.438164+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "socket-request-1",
+        "origin": "ui_text",
+        "conversationId": "default",
+        "eventId": "5b3d98758baa4671a283d34c8252b35d",
+        "sequence": 19,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:32.438614+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "socket-request-1",
+            "origin": "ui_text",
+            "text": "hello",
+            "status": "completed",
+            "updatedAt": "2026-11-10T17:51:32.496788+00:00",
+            "detail": "Commande déjà reçue; aucune nouvelle exécution."
+        },
+        "eventId": "9010f0e081974e9a8621a308107a6f82",
+        "sequence": 20,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:32.499347+00:00",
+        "requestId": "socket-request-1",
+        "origin": "ui_text"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "replay-once",
+            "origin": "ui_voice",
+            "text": "Test",
+            "status": "received",
+            "updatedAt": "2026-11-10T17:51:32.866517+00:00",
+            "conversationId": "default"
+        },
+        "eventId": "f4fa9d766e4f4114aefefad2d39b634a",
+        "sequence": 21,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:32.867137+00:00",
+        "requestId": "replay-once",
+        "origin": "ui_voice",
+        "conversationId": "default"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "replay-once",
+            "origin": "ui_voice",
+            "text": "Test",
+            "status": "started",
+            "updatedAt": "2026-11-10T17:51:32.896974+00:00",
+            "conversationId": "default"
+        },
+        "eventId": "dc40b739571c4f45b159835687d73415",
+        "sequence": 22,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:32.897290+00:00",
+        "requestId": "replay-once",
+        "origin": "ui_voice",
+        "conversationId": "default"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "replay-once",
+            "origin": "ui_voice",
+            "text": "Test",
+            "status": "speaking",
+            "updatedAt": "2026-11-10T17:51:33.008967+00:00",
+            "detail": "Commande déjà reçue; aucune nouvelle exécution."
+        },
+        "eventId": "2b030192fb384216982ff56667c7e2ab",
+        "sequence": 23,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:33.009249+00:00",
+        "requestId": "replay-once",
+        "origin": "ui_voice",
+        "conversationId": "default"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "socket-request-1",
+            "origin": "ui_text",
+            "text": "hello",
+            "status": "received",
+            "updatedAt": "2026-11-10T17:53:38.339513+00:00",
+            "conversationId": "default"
+        },
+        "eventId": "2f80b676985a496092e72a8e05ecb8f2",
+        "sequence": 60,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:38.339858+00:00",
+        "requestId": "socket-request-1",
+        "origin": "ui_text",
+        "conversationId": "default"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "1ba2d0a3bdf54df3aa78bb71dd2faf4e",
+            "role": "jarvis",
+            "text": "socket-test-reply",
+            "timestamp": "2026-11-10T17:53:38.467621+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "socket-request-1",
+        "origin": "ui_text",
+        "conversationId": "default",
+        "eventId": "1af135f1a3a44cf8ac8d5a088ff4d366",
+        "sequence": 61,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:38.472063+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "socket-request-1",
+            "origin": "ui_text",
+            "text": "hello",
+            "status": "started",
+            "updatedAt": "2026-11-10T17:53:38.572034+00:00",
+            "detail": "Commande déjà reçue; aucune nouvelle exécution."
+        },
+        "eventId": "0dc5ce6123b242f0ab04c2635755b9ef",
+        "sequence": 62,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:38.572343+00:00",
+        "requestId": "socket-request-1",
+        "origin": "ui_text"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "replay-once",
+            "origin": "ui_voice",
+            "text": "Test",
+            "status": "received",
+            "updatedAt": "2026-11-10T17:53:39.206273+00:00",
+            "conversationId": "default"
+        },
+        "eventId": "bc52ce950c774f90adc2c710ff69a452",
+        "sequence": 63,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:39.206675+00:00",
+        "requestId": "replay-once",
+        "origin": "ui_voice",
+        "conversationId": "default"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "replay-once",
+            "origin": "ui_voice",
+            "text": "Test",
+            "status": "started",
+            "updatedAt": "2026-11-10T17:53:39.264002+00:00",
+            "conversationId": "default"
+        },
+        "eventId": "2c71f40885e94160b492f1ce638d5376",
+        "sequence": 64,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:39.264308+00:00",
+        "requestId": "replay-once",
+        "origin": "ui_voice",
+        "conversationId": "default"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "replay-once",
+            "origin": "ui_voice",
+            "text": "Test",
+            "status": "speaking",
+            "updatedAt": "2026-11-10T17:53:39.342321+00:00",
+            "detail": "Commande déjà reçue; aucune nouvelle exécution."
+        },
+        "eventId": "f5cdf243764248d6b1fccd85c831ff53",
+        "sequence": 65,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:39.342615+00:00",
+        "requestId": "replay-once",
+        "origin": "ui_voice",
+        "conversationId": "default"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "socket-request-1",
+            "origin": "ui_text",
+            "text": "hello",
+            "status": "received",
+            "updatedAt": "2026-11-10T17:56:11.901934+00:00",
+            "conversationId": "default"
+        },
+        "eventId": "3f153ecc0c0747b790e0b64823cad968",
+        "sequence": 105,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:11.905436+00:00",
+        "requestId": "socket-request-1",
+        "origin": "ui_text",
+        "conversationId": "default"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "83771a2a5ecb4ab58f55bb560ecb90e5",
+            "role": "jarvis",
+            "text": "socket-test-reply",
+            "timestamp": "2026-11-10T17:56:12.095421+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "socket-request-1",
+        "origin": "ui_text",
+        "conversationId": "default",
+        "eventId": "28d284565cd440259d51de66dd336629",
+        "sequence": 106,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:12.097071+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "socket-request-1",
+            "origin": "ui_text",
+            "text": "hello",
+            "status": "completed",
+            "updatedAt": "2026-11-10T17:56:12.206388+00:00",
+            "detail": "Commande déjà reçue; aucune nouvelle exécution."
+        },
+        "eventId": "1c96b22706c8441baeef1687aea7eef0",
+        "sequence": 107,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:12.206842+00:00",
+        "requestId": "socket-request-1",
+        "origin": "ui_text"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "replay-once",
+            "origin": "ui_voice",
+            "text": "Test",
+            "status": "received",
+            "updatedAt": "2026-11-10T17:56:12.988203+00:00",
+            "conversationId": "default"
+        },
+        "eventId": "bbcc6f00ff7f4c43a31607720f0b1229",
+        "sequence": 108,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:12.988551+00:00",
+        "requestId": "replay-once",
+        "origin": "ui_voice",
+        "conversationId": "default"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "replay-once",
+            "origin": "ui_voice",
+            "text": "Test",
+            "status": "started",
+            "updatedAt": "2026-11-10T17:56:13.103734+00:00",
+            "conversationId": "default"
+        },
+        "eventId": "d33efae6486d47c19d5d10ae581d8fb7",
+        "sequence": 109,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:13.104059+00:00",
+        "requestId": "replay-once",
+        "origin": "ui_voice",
+        "conversationId": "default"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "replay-once",
+            "origin": "ui_voice",
+            "text": "Test",
+            "status": "speaking",
+            "updatedAt": "2026-11-10T17:56:13.271350+00:00",
+            "detail": "Commande déjà reçue; aucune nouvelle exécution."
+        },
+        "eventId": "5e54c61fec2548e0b2f925b89017141a",
+        "sequence": 110,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:13.271707+00:00",
+        "requestId": "replay-once",
+        "origin": "ui_voice",
+        "conversationId": "default"
+    }
+]

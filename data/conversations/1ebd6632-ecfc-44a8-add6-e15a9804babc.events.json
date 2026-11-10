@@ -1,0 +1,1426 @@
+[
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "restart-e2e-1",
+            "origin": "ui_text",
+            "text": "Quelle heure est-il ?",
+            "status": "received",
+            "updatedAt": "2026-11-10T18:02:08.153909+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "d5f2878e2eb748e6a0df52c0d0b445eb",
+        "sequence": 161,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:08.154178+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "restart-e2e-1",
+            "origin": "ui_text",
+            "text": "Quelle heure est-il ?",
+            "status": "started",
+            "updatedAt": "2026-11-10T18:02:08.708070+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "fb2b8ae560b14732a6b1bc21ae84b82a",
+        "sequence": 162,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:08.708352+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "5acf4de392db4e43a761c84090ab3817",
+            "role": "user",
+            "text": "Quelle heure est-il ?",
+            "timestamp": "2026-11-10T18:02:08.736121+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "4350d2c691424974b813108635fd6e60",
+        "sequence": 163,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:08.736468+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "restart-e2e-1",
+            "origin": "ui_text",
+            "text": "Quelle heure est-il ?",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T18:02:08.852323+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "f997d575290749f58739e6242032ee5b",
+        "sequence": 164,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:08.852830+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "3940e0bba9b44076b4d230f27185afb7",
+        "sequence": 165,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:08.927999+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "restart-e2e-1",
+            "origin": "ui_text",
+            "text": "GET_TIME",
+            "status": "tool_started",
+            "updatedAt": "2026-11-10T18:02:10.694242+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "tool": "GET_TIME"
+        },
+        "eventId": "3a8f04a1d81a4360a16db2a8a3ab584f",
+        "sequence": 167,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:10.694677+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "tool.updated",
+        "tool": {
+            "requestId": "restart-e2e-1",
+            "name": "GET_TIME",
+            "status": "started",
+            "timestamp": "2026-11-10T18:02:10.693594+00:00"
+        },
+        "eventId": "fef2fbcbc4cd40de94f6bf6032c8f6d9",
+        "sequence": 168,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:10.737787+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "restart-e2e-1",
+            "origin": "ui_text",
+            "text": "GET_TIME",
+            "status": "tool_completed",
+            "updatedAt": "2026-11-10T18:02:10.883466+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "tool": "GET_TIME",
+            "result": "(True, 'Il est actuellement 19:02:10')",
+            "durationMs": 192
+        },
+        "eventId": "13477b7c0c3d44ed8d9d23772cc23820",
+        "sequence": 169,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:10.883820+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "tool.updated",
+        "tool": {
+            "requestId": "restart-e2e-1",
+            "name": "GET_TIME",
+            "status": "completed",
+            "timestamp": "2026-11-10T18:02:10.883180+00:00",
+            "result": "(True, 'Il est actuellement 19:02:10')",
+            "durationMs": 192
+        },
+        "eventId": "6a94a7677401437e98dabd154c57c32f",
+        "sequence": 170,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:10.985880+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "6b6488a2db9c461b9e2a5d0ca8bda147",
+            "role": "jarvis",
+            "text": "Il est actuellement 19:02:10",
+            "timestamp": "2026-11-10T18:02:11.582924+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "db005a276fe744d7972429d37c11820a",
+        "sequence": 171,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:11.583187+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "restart-e2e-1",
+            "origin": "ui_text",
+            "text": "Quelle heure est-il ?",
+            "status": "completed",
+            "updatedAt": "2026-11-10T18:02:11.764033+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "result": "Il est actuellement 19:02:10",
+            "durationMs": 3055
+        },
+        "eventId": "82b0262d5ee44b0aa9a020e8cfe56703",
+        "sequence": 172,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:11.764584+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "d0ec9ecd29f545fcb5f56e9b2e8f0a91",
+        "sequence": 173,
+        "historical": false,
+        "timestamp": "2026-11-10T18:02:11.914043+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+            "origin": "ui_text",
+            "text": "salut",
+            "status": "received",
+            "updatedAt": "2026-11-10T18:55:22.924747+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "aff0c13ecbe54886991bdf588070836f",
+        "sequence": 781,
+        "historical": false,
+        "timestamp": "2026-11-10T18:55:22.924782+00:00",
+        "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+            "origin": "ui_text",
+            "text": "salut",
+            "status": "started",
+            "updatedAt": "2026-11-10T18:55:22.936435+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "f05c7ad3c5f04f1582c8636ce38fe6cf",
+        "sequence": 782,
+        "historical": false,
+        "timestamp": "2026-11-10T18:55:22.936487+00:00",
+        "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "09f26ea79c7440f7b3a27f96143522b9",
+            "role": "user",
+            "text": "salut",
+            "timestamp": "2026-11-10T18:55:22.950332+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "4a6b2dc5abda4fc398261fd62b164f5d",
+        "sequence": 783,
+        "historical": false,
+        "timestamp": "2026-11-10T18:55:22.950373+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+            "origin": "ui_text",
+            "text": "salut",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T18:55:22.963349+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "85a24959019a40b1b40c8a60739043e2",
+        "sequence": 784,
+        "historical": false,
+        "timestamp": "2026-11-10T18:55:22.963410+00:00",
+        "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "470e6983212d40baadb40a6dfdb59065",
+        "sequence": 785,
+        "historical": false,
+        "timestamp": "2026-11-10T18:55:22.975956+00:00",
+        "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "31b3e8126c334d9296dbae43227680b5",
+            "role": "jarvis",
+            "text": "Bonjour, Fabrice. À votre service.",
+            "timestamp": "2026-11-10T18:55:23.068613+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "6ba9aca68a2e4687bf73bbbf94b1e7b0",
+        "sequence": 786,
+        "historical": false,
+        "timestamp": "2026-11-10T18:55:23.068680+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+            "origin": "ui_text",
+            "text": "salut",
+            "status": "completed",
+            "updatedAt": "2026-11-10T18:55:23.080709+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "result": "Bonjour, Fabrice. À votre service.",
+            "durationMs": 144
+        },
+        "eventId": "352338d864d74d5291cf8b18662597c6",
+        "sequence": 787,
+        "historical": false,
+        "timestamp": "2026-11-10T18:55:23.080784+00:00",
+        "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "3596096d198b4ed78f28f18f589763e4",
+        "sequence": 788,
+        "historical": false,
+        "timestamp": "2026-11-10T18:55:23.094130+00:00",
+        "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+            "origin": "ui_text",
+            "text": "au travail",
+            "status": "received",
+            "updatedAt": "2026-11-10T18:56:44.779228+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "1099dccf7b2040eb9be22cc09072b40d",
+        "sequence": 812,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:44.779294+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+            "origin": "ui_text",
+            "text": "au travail",
+            "status": "started",
+            "updatedAt": "2026-11-10T18:56:44.813591+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "39edfdca591f4b56824e4cd3e99fbc95",
+        "sequence": 813,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:44.813650+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "b2b4440d47f047edb82b4bfb5731563e",
+            "role": "user",
+            "text": "au travail",
+            "timestamp": "2026-11-10T18:56:44.886509+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "64eb58d8bacb4eac867adc9275cf4aeb",
+        "sequence": 814,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:44.891312+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+            "origin": "ui_text",
+            "text": "au travail",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T18:56:44.932303+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "13496040d78a43739b47dc6d7276df89",
+        "sequence": 815,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:44.932597+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "98db23b2224f496e9a300be8ab150a1c",
+        "sequence": 816,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:44.987197+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+            "origin": "ui_text",
+            "text": "OPEN_BROWSER",
+            "status": "tool_started",
+            "updatedAt": "2026-11-10T18:56:47.008128+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "tool": "OPEN_BROWSER"
+        },
+        "eventId": "32ccf8dd4ccb4f9d8da4cd4d4ea8c907",
+        "sequence": 818,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:47.008156+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "tool.updated",
+        "tool": {
+            "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+            "name": "OPEN_BROWSER",
+            "status": "started",
+            "timestamp": "2026-11-10T18:56:47.008096+00:00"
+        },
+        "eventId": "a25d8e6fa03e47628144526ffd516795",
+        "sequence": 819,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:47.031419+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+            "origin": "ui_text",
+            "text": "OPEN_BROWSER",
+            "status": "failed",
+            "updatedAt": "2026-11-10T18:56:47.449881+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "tool": "OPEN_BROWSER",
+            "result": "unhashable type: 'dict'",
+            "durationMs": 441
+        },
+        "eventId": "361e8f0300fe4f64a795bacb30d10ce5",
+        "sequence": 822,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:47.450138+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "tool.updated",
+        "tool": {
+            "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+            "name": "OPEN_BROWSER",
+            "status": "failed",
+            "timestamp": "2026-11-10T18:56:47.449581+00:00",
+            "error": "unhashable type: 'dict'",
+            "durationMs": 441
+        },
+        "eventId": "1c2fd8a1ecd8487091c854c3e39898ab",
+        "sequence": 823,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:47.495873+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "996ea9cd2d07437faafafad377580e4f",
+            "role": "jarvis",
+            "text": "Tâche FAILED à l'étape 0. L'action a échoué.",
+            "timestamp": "2026-11-10T18:56:47.914050+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "28b8603f324f41fdb1bf730db0485409",
+        "sequence": 824,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:47.916129+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+            "origin": "ui_text",
+            "text": "au travail",
+            "status": "completed",
+            "updatedAt": "2026-11-10T18:56:48.005892+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "result": "Tâche FAILED à l'étape 0. L'action a échoué.",
+            "durationMs": 3185
+        },
+        "eventId": "aaa80720d7cc494691c339cfd9ad78ca",
+        "sequence": 825,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:48.006375+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "2398d0cded8b4ef680c855502be64750",
+        "sequence": 826,
+        "historical": false,
+        "timestamp": "2026-11-10T18:56:48.108609+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+            "origin": "ui_text",
+            "text": "ouvre mon espace de travail",
+            "status": "received",
+            "updatedAt": "2026-11-10T18:57:06.288269+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "abdd055d0bb4456d8672d7b968367871",
+        "sequence": 833,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:06.288544+00:00",
+        "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+            "origin": "ui_text",
+            "text": "ouvre mon espace de travail",
+            "status": "started",
+            "updatedAt": "2026-11-10T18:57:06.393745+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "a0ec8be8ff1e4111af88308407410baa",
+        "sequence": 834,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:06.394005+00:00",
+        "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "4afaad17fd814e37a8c78d3598707ecd",
+            "role": "user",
+            "text": "ouvre mon espace de travail",
+            "timestamp": "2026-11-10T18:57:06.477899+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "fee71233e78e4d408274b8ab2749abe8",
+        "sequence": 835,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:06.478126+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+            "origin": "ui_text",
+            "text": "ouvre mon espace de travail",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T18:57:06.584421+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "29bf46634f574bd9a1035fe86f0b0c01",
+        "sequence": 836,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:06.584788+00:00",
+        "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "54b9b895244745fc859ebd212d8d7fca",
+        "sequence": 837,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:06.667126+00:00",
+        "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+            "origin": "ui_text",
+            "text": "ouvre mon espace de travail",
+            "status": "completed",
+            "updatedAt": "2026-11-10T18:57:09.576017+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "result": "Aucune réponse",
+            "durationMs": 3182
+        },
+        "eventId": "422260c863654d10a2941f4a3eed20e9",
+        "sequence": 838,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:09.576076+00:00",
+        "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "23610db47e314c8491cf4b704e0d1c99",
+        "sequence": 839,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:09.663999+00:00",
+        "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+            "origin": "ui_text",
+            "text": "ouvre vscode",
+            "status": "received",
+            "updatedAt": "2026-11-10T18:57:32.016891+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "91efcef6eeda4f5f8aa82190b39ece4a",
+        "sequence": 846,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:32.017169+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+            "origin": "ui_text",
+            "text": "ouvre vscode",
+            "status": "started",
+            "updatedAt": "2026-11-10T18:57:32.050127+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "37115cffcd5842a0bbae39ec5670a46d",
+        "sequence": 847,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:32.050180+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "f80de34a00f3457cbe8c4b1d9abc78c4",
+            "role": "user",
+            "text": "ouvre vscode",
+            "timestamp": "2026-11-10T18:57:32.085498+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "14380e286a2d4275aa23e9bb892d75bc",
+        "sequence": 848,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:32.085855+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+            "origin": "ui_text",
+            "text": "ouvre vscode",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T18:57:32.121193+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "901ce76821b7465a9552d8ee44f3af1f",
+        "sequence": 849,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:32.121474+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "01c5023d804246b1b0cd4fdedfc5a7ba",
+        "sequence": 850,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:32.154284+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+            "origin": "ui_text",
+            "text": "OPEN_APPLICATION",
+            "status": "tool_started",
+            "updatedAt": "2026-11-10T18:57:33.661482+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "tool": "OPEN_APPLICATION"
+        },
+        "eventId": "5e0e4ebc605144018659a6aebb0b5ead",
+        "sequence": 851,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:33.661520+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "tool.updated",
+        "tool": {
+            "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+            "name": "OPEN_APPLICATION",
+            "status": "started",
+            "timestamp": "2026-11-10T18:57:33.661441+00:00"
+        },
+        "eventId": "2918eacd467a452d83503a813b4f3a92",
+        "sequence": 852,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:33.696842+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+            "origin": "ui_text",
+            "text": "OPEN_APPLICATION",
+            "status": "tool_completed",
+            "updatedAt": "2026-11-10T18:57:33.784729+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "tool": "OPEN_APPLICATION",
+            "result": "ActionResult(action_type='OPEN_APPLICATION', success=True, message=\"J'ouvre Visual Studio Code.\", artifact_path=None, error=None)",
+            "durationMs": 122
+        },
+        "eventId": "80aab703e9da43b3bfa277402d846d3b",
+        "sequence": 853,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:33.785053+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "tool.updated",
+        "tool": {
+            "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+            "name": "OPEN_APPLICATION",
+            "status": "completed",
+            "timestamp": "2026-11-10T18:57:33.784346+00:00",
+            "result": "ActionResult(action_type='OPEN_APPLICATION', success=True, message=\"J'ouvre Visual Studio Code.\", artifact_path=None, error=None)",
+            "durationMs": 122
+        },
+        "eventId": "0de12727370e4088bb34787a5ead0207",
+        "sequence": 854,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:33.955149+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "cdbaac3d1937497ebe32e4fbd73ab3a7",
+            "role": "jarvis",
+            "text": "J'ouvre Visual Studio Code.",
+            "timestamp": "2026-11-10T18:57:34.288984+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "4b0384d1b77443e784e20c06cc68bb56",
+        "sequence": 855,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:34.289229+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+            "origin": "ui_text",
+            "text": "ouvre vscode",
+            "status": "completed",
+            "updatedAt": "2026-11-10T18:57:34.364939+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "result": "J'ouvre Visual Studio Code.",
+            "durationMs": 2314
+        },
+        "eventId": "f9e0ac67e9f14a7093f6b56ca58ed9fd",
+        "sequence": 856,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:34.365260+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "5c43adc650ed41c1ab18d2ec04f41752",
+        "sequence": 857,
+        "historical": false,
+        "timestamp": "2026-11-10T18:57:34.451982+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+            "origin": "ui_text",
+            "text": "au boulot",
+            "status": "received",
+            "updatedAt": "2026-11-10T18:58:09.137165+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "5d2699a6a2e34f31941d8add9131ba79",
+        "sequence": 866,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:09.137429+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+            "origin": "ui_text",
+            "text": "au boulot",
+            "status": "started",
+            "updatedAt": "2026-11-10T18:58:09.165600+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "55573904e7af4ffab0f68de3fb65f974",
+        "sequence": 867,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:09.165702+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "839dd9256ed84c7c94b329d60bea4755",
+            "role": "user",
+            "text": "au boulot",
+            "timestamp": "2026-11-10T18:58:09.203603+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "88ba657bf8e44abc809dad4a7ff44ccd",
+        "sequence": 868,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:09.206093+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+            "origin": "ui_text",
+            "text": "au boulot",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T18:58:09.252726+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "d0a8ec78b24d42669ed2da94c53d1cc7",
+        "sequence": 869,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:09.255759+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "2625d64ede3747ddba03c1df77fc7b73",
+        "sequence": 870,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:09.293207+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+            "origin": "ui_text",
+            "text": "OPEN_BROWSER",
+            "status": "tool_started",
+            "updatedAt": "2026-11-10T18:58:09.574417+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "tool": "OPEN_BROWSER"
+        },
+        "eventId": "89cb53a35a5f4c889ac2604a2b787453",
+        "sequence": 871,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:09.575397+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "tool.updated",
+        "tool": {
+            "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+            "name": "OPEN_BROWSER",
+            "status": "started",
+            "timestamp": "2026-11-10T18:58:09.574185+00:00"
+        },
+        "eventId": "ba67b8e6f9b44a518842b9146a3b6611",
+        "sequence": 872,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:09.628891+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+            "origin": "ui_text",
+            "text": "OPEN_BROWSER",
+            "status": "failed",
+            "updatedAt": "2026-11-10T18:58:09.672012+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "tool": "OPEN_BROWSER",
+            "result": "unhashable type: 'dict'",
+            "durationMs": 97
+        },
+        "eventId": "2b3bc9608c1544f1a1b35b6111e77879",
+        "sequence": 873,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:09.672251+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "tool.updated",
+        "tool": {
+            "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+            "name": "OPEN_BROWSER",
+            "status": "failed",
+            "timestamp": "2026-11-10T18:58:09.671761+00:00",
+            "error": "unhashable type: 'dict'",
+            "durationMs": 97
+        },
+        "eventId": "f0baaf2451314fe7a77ca4545bd6da83",
+        "sequence": 874,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:09.722100+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "33c8663f671942e38d9751f76a1c71c8",
+            "role": "jarvis",
+            "text": "Tâche FAILED à l'étape 0. L'action a échoué.",
+            "timestamp": "2026-11-10T18:58:13.828793+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "05fc6c83186c4aa7b69e1c82d1ff02fb",
+        "sequence": 879,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:13.828836+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+            "origin": "ui_text",
+            "text": "au boulot",
+            "status": "completed",
+            "updatedAt": "2026-11-10T18:58:13.927973+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "result": "Tâche FAILED à l'étape 0. L'action a échoué.",
+            "durationMs": 4762
+        },
+        "eventId": "3dd70a72ff7847b1b49dba5e866f8ce5",
+        "sequence": 880,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:13.930106+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "db8b76d8bfc24d17b70e12fc7e707304",
+        "sequence": 881,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:13.982100+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+            "origin": "ui_text",
+            "text": "salut",
+            "status": "received",
+            "updatedAt": "2026-11-10T18:58:20.782175+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "d0257c6daecf4b8ca413e8635b05bcc1",
+        "sequence": 884,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:20.782446+00:00",
+        "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+            "origin": "ui_text",
+            "text": "salut",
+            "status": "started",
+            "updatedAt": "2026-11-10T18:58:20.822290+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "690b738cc90c4b38a77dbbd06995f277",
+        "sequence": 885,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:20.822344+00:00",
+        "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "cde9cf9e589b4ed8a0b7994f95147640",
+            "role": "user",
+            "text": "salut",
+            "timestamp": "2026-11-10T18:58:20.882376+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "3291067d79094215a003e49e712330bc",
+        "sequence": 886,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:20.882607+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+            "origin": "ui_text",
+            "text": "salut",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T18:58:20.961784+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "d13d07812d7e4e498a95d2195c9bb46d",
+        "sequence": 887,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:20.961851+00:00",
+        "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "4572849b51af4bd28d80fc999ffe6f30",
+        "sequence": 888,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:21.089762+00:00",
+        "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "88e49a615c22424e9198364e5cea0a0c",
+            "role": "jarvis",
+            "text": "Bonjour, Monsieur. Je vous écoute.",
+            "timestamp": "2026-11-10T18:58:22.734567+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "48917374bdf14e5f998243cd5ff92a47",
+        "sequence": 889,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:22.734946+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+            "origin": "ui_text",
+            "text": "salut",
+            "status": "completed",
+            "updatedAt": "2026-11-10T18:58:22.772317+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "result": "Bonjour, Monsieur. Je vous écoute.",
+            "durationMs": 1949
+        },
+        "eventId": "2665bf02107444f2a061f3fd099ee686",
+        "sequence": 890,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:22.772750+00:00",
+        "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "395b217790a14069adb55189a9bcb903",
+        "sequence": 891,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:23.075072+00:00",
+        "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+            "origin": "ui_text",
+            "text": "Au boulot",
+            "status": "received",
+            "updatedAt": "2026-11-10T18:58:37.362327+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "0671baae42054297afe62e9b8cd231db",
+        "sequence": 896,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:37.362608+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+            "origin": "ui_text",
+            "text": "Au boulot",
+            "status": "started",
+            "updatedAt": "2026-11-10T18:58:37.407327+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "f74a39d7c2d247ddb17fe8a5f5507b21",
+        "sequence": 897,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:37.407377+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "2599a45ac2c045f2adc09237d8ae0c46",
+            "role": "user",
+            "text": "Au boulot",
+            "timestamp": "2026-11-10T18:58:37.453383+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "00bbfaaf85a143669009e13ddcd1e6f7",
+        "sequence": 898,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:37.453423+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+            "origin": "ui_text",
+            "text": "Au boulot",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T18:58:37.488212+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+        },
+        "eventId": "91ce47f39d1d4db98709967cad8f92ef",
+        "sequence": 899,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:37.488265+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "1df91a66a6054576bda5fd5a0e128eec",
+        "sequence": 900,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:37.523142+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+            "origin": "ui_text",
+            "text": "OPEN_BROWSER",
+            "status": "tool_started",
+            "updatedAt": "2026-11-10T18:58:37.846952+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "tool": "OPEN_BROWSER"
+        },
+        "eventId": "ed541ca27e204a4495a2438af940c900",
+        "sequence": 901,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:37.846997+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "tool.updated",
+        "tool": {
+            "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+            "name": "OPEN_BROWSER",
+            "status": "started",
+            "timestamp": "2026-11-10T18:58:37.846905+00:00"
+        },
+        "eventId": "e16fc5c1f79847e0b22179c893a632cc",
+        "sequence": 902,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:37.906854+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+            "origin": "ui_text",
+            "text": "OPEN_BROWSER",
+            "status": "failed",
+            "updatedAt": "2026-11-10T18:58:37.961058+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "tool": "OPEN_BROWSER",
+            "result": "unhashable type: 'dict'",
+            "durationMs": 113
+        },
+        "eventId": "f21b0b7b2f484e8abec5070172ac62d3",
+        "sequence": 903,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:37.961325+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "tool.updated",
+        "tool": {
+            "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+            "name": "OPEN_BROWSER",
+            "status": "failed",
+            "timestamp": "2026-11-10T18:58:37.960818+00:00",
+            "error": "unhashable type: 'dict'",
+            "durationMs": 113
+        },
+        "eventId": "27595ea35680468fb24117a2262ceae3",
+        "sequence": 904,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:38.007333+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "ec390da84d4f41bd8bcf1d5f01fc89cf",
+            "role": "jarvis",
+            "text": "Tâche FAILED à l'étape 0. L'action a échoué.",
+            "timestamp": "2026-11-10T18:58:38.206071+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+        "eventId": "5f11bdeba4e44e8893648f81feedc55f",
+        "sequence": 906,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:38.206115+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+            "origin": "ui_text",
+            "text": "Au boulot",
+            "status": "completed",
+            "updatedAt": "2026-11-10T18:58:38.259251+00:00",
+            "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc",
+            "result": "Tâche FAILED à l'étape 0. L'action a échoué.",
+            "durationMs": 851
+        },
+        "eventId": "0035f1c10cfc48889b8cdb91d8984bdd",
+        "sequence": 907,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:38.259552+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "8e934c7c0e1944e5aac7453be0592231",
+        "sequence": 908,
+        "historical": false,
+        "timestamp": "2026-11-10T18:58:38.310366+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    }
+]

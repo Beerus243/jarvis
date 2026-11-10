@@ -36,37 +36,17 @@ def ask_ai(message, memory_context=""):
 
     context = get_context()
 
-    messages = [
-        {
-            "role": "system",
-            "content": (
-                "Tu es JARVIS, l'assistant personnel de Fabrice. "
-"Réponds toujours en français. "
-"Adapte la longueur de ta réponse à la question. "
-"Pour une question simple, réponds brièvement. "
-"Pour une question nécessitant une explication, réponds "
-"clairement et suffisamment en détail. "
-"N'invente jamais une information absente de ta mémoire. "
-"Lorsque la mémoire fournie contient une information fiable, "
-"utilise-la comme source de vérité. "
-"Ne prétends jamais qu'une conversation ou un événement a eu "
-"lieu s'il n'est pas présent dans le contexte fourni."
-                "Utilise l'historique fourni pour comprendre "
-                "les références aux messages précédents. "
-                "Si l'utilisateur dit 'il', 'elle', 'ça', 'ce projet', "
-                "etc., utilise le contexte précédent pour déterminer "
-                "ce à quoi il fait référence.\n\n"
-
-            "Voici les souvenirs pertinents de Fabrice :\n"
-            f"{memory_context}"
-            )
-        }
-    ]
-
+    from personality.dialogue import system_prompt, response_tokens, context_message
+    messages = [{"role": "system", "content": system_prompt(message)}]
+    if memory_context:
+        messages.append({"role": "user", "content": context_message(memory_context)})
 
     # Ajouter l'historique
 
-    messages.extend(context)
+    messages.extend({"role": item["role"], "content": item["content"]}
+                    for item in context if isinstance(item, dict)
+                    and item.get("role") in {"user", "assistant"}
+                    and isinstance(item.get("content"), str))
 
 
     # Ajouter le message actuel
@@ -82,28 +62,26 @@ def ask_ai(message, memory_context=""):
         response = _get_client().chat.completions.create(
             model=MODEL,
             messages=messages,
-            temperature=0.7,
-            max_tokens=400
+            temperature=0.55,
+            max_tokens=response_tokens(message)
         )
 
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        if not isinstance(content, str) or not content.strip():
+            return "Je n’ai pas reçu de réponse exploitable. Vous pouvez reformuler votre demande."
+        if response.choices[0].finish_reason == 'length':
+            # Do not silently present a cut sentence/code block as a complete answer.
+            content = content.rstrip() + "\nLa réponse a atteint sa limite de longueur ; je peux poursuivre sur demande."
+        return content.strip()
 
 
     except Exception as error:
 
         err_str = str(error)
-        print(f"Erreur Groq : {err_str}")
+        print(f"Erreur Groq : {type(error).__name__}")
 
-        # Fournir un message clair si le modèle est introuvable
         if "model_not_found" in err_str or "does not exist" in err_str:
-            return (
-                "Désolé Fabrice, le modèle demandé n'est pas disponible "
-                "ou tu n'y as pas accès. Vérifie la variable d'environnement "
-                "`MODEL` dans ton fichier .env (par ex. "
-                "MODEL=openai/gpt-oss-120b) "
-                "ou demande l'accès au modèle auprès du fournisseur."
-            )
-
-        return (
-            "Désolé Fabrice, je rencontre un problème avec mon cerveau IA."
-        )
+            return "Le modèle de dialogue configuré est indisponible. Le réglage MODEL doit être vérifié."
+        if "429" in err_str or "rate_limit" in err_str:
+            return "Le service de dialogue a atteint sa limite de requêtes. Réessayez dans un moment ; les commandes locales restent disponibles."
+        return "Je n’arrive pas à joindre le service de dialogue. Les commandes locales restent disponibles."

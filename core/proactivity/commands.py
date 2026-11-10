@@ -7,6 +7,15 @@ from core.proactivity import model, projects
 
 
 def handle_personal_command(message):
+    from core.proactivity.speech import handle_speech_command
+    speech_response = handle_speech_command(message)
+    if speech_response is not None:
+        from core.runtime import get_runtime
+        runtime = get_runtime()
+        agent = getattr(runtime, 'personal_agent', None)
+        if agent:
+            agent.touch()
+        return speech_response
     from core.runtime import get_runtime
     runtime = get_runtime()
     agent = getattr(runtime, 'personal_agent', None)

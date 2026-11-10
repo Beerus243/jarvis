@@ -71,7 +71,9 @@ class OpenWakeWordDetector:
             # Le moteur ignore les 5 premières trames et conserve les anciens
             # embeddings lors de reset(). Préparer une fois un état silencieux
             # complet, puis le restaurer sans calcul ni attente sur le micro.
-            for _ in range(32):
+            # 16 trames suffisent pour les fenêtres mel / features (16) sans
+            # retarder inutilement l'ouverture du microphone en session permanente.
+            for _ in range(16):
                 model.predict(np.zeros(1280, dtype=np.int16))
             features = {name: deepcopy(getattr(model.preprocessor, name)) for name in (
                 'raw_data_buffer', 'melspectrogram_buffer', 'accumulated_samples', 'feature_buffer')}

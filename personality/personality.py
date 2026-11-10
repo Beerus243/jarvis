@@ -1900,6 +1900,15 @@ class PersonalityEngine:
             return base_response
 
         subjective_state = (context or {}).get("user_state") or detect_user_state(message)
+        if subjective_state and subjective_state.get("state") in {'frustrated', 'confused', 'satisfied'}:
+            responses = {
+                'frustrated': 'Reprenons calmement, un point à la fois. Quel résultat était attendu ?',
+                'confused': 'Reprenons depuis le point qui pose problème. Quelle étape faut-il éclaircir ?',
+                'satisfied': 'Bonne nouvelle. Nous pouvons poursuivre à partir de ce résultat.',
+            }
+            response = responses[subjective_state['state']]
+            self.remember(message, response)
+            return response
         if subjective_state and subjective_state.get("state") == "tired_followup":
             response = self.followup_response(subjective_state.get("answer"), context or {})
             self.remember(message, response)
@@ -2075,12 +2084,16 @@ class PersonalityEngine:
         return None
 
     def tired_response(self, context):
+        from personality.dialogue import profile
+        formal = profile()["address"] == "vous"
+        subject = "Vous" if formal else "Tu"
+        question = "Souhaitez-vous faire une pause ou continuer ?" if formal else "Tu préfères faire une pause ou continuer ?"
         personal = context.get("personal_context") or {}
         activity = personal.get("activity")
         duration = personal.get("duration")
         duration_relevant = {
-            "working": "travailles",
-            "studying": "étudies",
+            "working": "travaillez" if formal else "travailles",
+            "studying": "étudiez" if formal else "étudies",
         }
         self.state.pending_intent = "FATIGUE_FOLLOWUP"
         self.state.pending_slots = {"missing": "pause_or_continue"}
@@ -2090,9 +2103,9 @@ class PersonalityEngine:
         if activity in duration_relevant:
             label = duration_relevant[activity]
             if duration:
-                return f"Je vois. Tu {label} depuis {duration}. Une pause serait probablement judicieuse. Tu veux continuer ou faire une pause ?"
-            return f"Je vois. Tu {label} actuellement. Une pause serait probablement judicieuse. Tu veux continuer ou faire une pause ?"
-        return "Je vois. Tu sembles fatigué. Tu préfères faire une pause ou continuer ?"
+                return f"Je comprends. {subject} {label} depuis {duration}. Une pause serait probablement judicieuse. {question}"
+            return f"Je comprends. {subject} {label} actuellement. Une pause serait probablement judicieuse. {question}"
+        return f"Je comprends. {question}"
 
     def followup_response(self, answer, context=None):
         if answer == "pause":

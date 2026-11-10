@@ -62,12 +62,14 @@ def handle_message(message, dispatcher=None):
         if environment_pending() and not (explicit_confirm or explicit_cancel):
             return f"Deux confirmations sont en attente. Pour l'action PC, dis « confirme {pending['id']} » ou « annule {pending['id']} »."
         if text in CANCEL or explicit_cancel:
-            clear_pending()
+            pending = consume(expected_id=pending['id'])
+            if not pending:
+                return 'Cette confirmation a expiré ou a déjà été utilisée.'
             if pending.get('task_id'):
                 from core.task_engine import cancel_task
                 cancel_task(pending['task_id'])
             return 'Action annulée.'
-        pending = consume()
+        pending = consume(expected_id=pending['id'])
         if not pending:
             return 'Cette confirmation a expiré ou a déjà été utilisée.'
         if pending.get('task_id'):

@@ -2,6 +2,8 @@
 from collections import deque
 import json, re
 from pathlib import Path
+from core.command_understanding import normalize_command
+from personality.dialogue import profile
 
 class AdvancedPersonalityEngine:
     def __init__(self, memory_file=None):
@@ -29,28 +31,37 @@ class AdvancedPersonalityEngine:
         self.context_history.append(result); return result
     def select_response(self,action_type,params=None,context=None):
         pools={
-            'OPEN_APPLICATION':['Bien sûr, Monsieur.','Je m’en occupe. Le thé sera prêt dans cinq minutes.','Comme vous voulez. J’ai vérifié qu’elle était à jour.','La voici, Monsieur. Essayez de ne pas la planter, j’ai déjà assez de travail.'],
+            'OPEN_APPLICATION':['Bien sûr, Monsieur.','Très bien.','Entendu.','À votre service.'],
             'VOLUME_UP':['J’augmente le volume. Vous voulez que je prépare des boules Quies pour les voisins ?','Le volume est augmenté, Monsieur. Cela vous semble suffisant ?','Très bien, Monsieur.'],
-            'SYSTEM_STATUS':['Tout fonctionne dans les limites acceptables. Pour l’instant.','Le système est stable. Je n’ose pas dire « pour l’instant » de peur de le tenter.','Les indicateurs sont convenables, Monsieur.'],
+            'SYSTEM_STATUS':['Examinons les indicateurs disponibles.','Je me fie aux mesures du système.','Les mesures permettront de répondre précisément.'],
             'fallback_general':['Je vous écoute, Monsieur.','Compris, Monsieur.','À votre service, Monsieur.']}
         pool=pools.get(action_type,pools['fallback_general']); serious=(context or {}).get('seriousness',self.current_seriousness)>0.8 or self.error_streak>1
         if serious: pool=pool[:1]
         for response in pool:
             if response not in self._last_responses: self._last_responses.append(response); return response
         response=pool[0]; self._last_responses.append(response); return response
-    def handle_banter(self,user_input):
-        if self.current_seriousness>0.8: return None
-        text=str(user_input or '').casefold()
-        if 'tu reflechis trop' in text or 'tu réfléchis trop' in text: return 'Avec tout le respect que je vous dois, c’est précisément pour cela que je suis là.'
-        if 'je sais ce que je fais' in text or 'fais moi confiance' in text: return 'Je vous fais confiance. C’est le code qui m’inspire des réserves.'
-        if 'c est facile pour toi' in text or "c'est facile pour toi" in text: return 'Je suis une machine, Monsieur. Mais même moi, j’apprécie un peu de considération.'
-        if 'ca va marcher' in text or 'ça va marcher' in text: return 'C’est ce que nous disions la dernière fois. Le café est prêt, au cas où.'
-        if 't es sur' in text or "t'es sûr" in text: return 'Aussi sûr que possible. Mais je garde une gomme effaçable à portée de main.'
-        if 't es pas drole' in text or "t'es pas drôle" in text: return 'Je ne suis pas payé pour être drôle, Monsieur. Je suis payé pour votre sécurité.'
-        return None
-    def handle_cultural_reference(self,user_input):
-        text=str(user_input or '').casefold()
-        if re.search(r'valar\s+morghulis',text): return 'Valar Dohaeris.'
-        if re.search(r'que la force',text) and self.current_seriousness<=0.8: return 'Et avec vous, Monsieur.'
-        if re.search(r'je suis ton pere',text): return 'Cela expliquerait beaucoup de choses. Mais non, je ne suis que le majordome.'
+    def handle_banter(self, user_input):
+        if self.current_seriousness > .8 or not profile()['humor']:
+            return None
+        text = normalize_command(user_input)
+        responses = {
+            'tu reflechis trop': 'Je préfère quelques précautions à une brillante erreur.',
+            'je sais ce que je fais': 'Très bien. Une vérification reste une excellente compagne de la confiance.',
+            'fais moi confiance': 'Volontiers. Et gardons les vérifications utiles.',
+            'c est facile pour toi': 'Disons que j’ai un certain avantage pour les tâches répétitives.',
+            'ca va marcher': 'Je l’espère. Le test aura le dernier mot.',
+            't es pas drole': 'Je note. Revenons à l’essentiel.',
+        }
+        return responses.get(text)
+
+    def handle_cultural_reference(self, user_input):
+        text = normalize_command(user_input)
+        if text == 'valar morghulis':
+            return 'Valar Dohaeris.'
+        if self.current_seriousness > .8 or not profile()['humor']:
+            return None
+        if text in {'que la force soit avec toi', 'que la force soit avec vous'}:
+            return 'Et avec vous.' if profile()['address'] == 'vous' else 'Et avec toi.'
+        if text == 'je suis ton pere':
+            return 'Une parenté ambitieuse. Restons sur assistant personnel, si vous le voulez bien.'
         return None

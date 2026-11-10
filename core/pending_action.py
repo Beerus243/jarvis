@@ -29,10 +29,12 @@ def get_pending(now=None):
         lambda value: value if value and value['expires_at'] > current else None)
 
 
-def consume(now=None):
+def consume(now=None, *, expected_id=None):
     current = time.time() if now is None else now
     claimed = []
     def take(value):
+        if value and expected_id is not None and value['id'] != expected_id:
+            return value
         if value and value['expires_at'] > current:
             claimed.append(value)
         return None

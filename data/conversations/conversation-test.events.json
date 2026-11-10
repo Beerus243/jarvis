@@ -1,0 +1,350 @@
+[
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "request-test",
+            "origin": "ui_text",
+            "text": "liste mes tâches",
+            "status": "started",
+            "updatedAt": "2026-11-10T17:51:26.896153+00:00",
+            "conversationId": "conversation-test"
+        },
+        "eventId": "d2022c64f7494811af3feef21c210f51",
+        "sequence": 1,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:26.901327+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "cb540a10c98241c98526c6180f09ee1b",
+            "role": "user",
+            "text": "liste mes tâches",
+            "timestamp": "2026-11-10T17:51:26.933396+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test",
+        "eventId": "b7498382d0d14bada57c52b4a137eec0",
+        "sequence": 2,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:26.938391+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "request-test",
+            "origin": "ui_text",
+            "text": "liste mes tâches",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T17:51:26.991099+00:00",
+            "conversationId": "conversation-test"
+        },
+        "eventId": "8ecdb45d32a6460bbab031010adda927",
+        "sequence": 3,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:26.993721+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "976a23b1c580491b81e190e8483eeea2",
+        "sequence": 4,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:27.072836+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "14c6e89275d04c208ea9806b0afe4b1f",
+            "role": "jarvis",
+            "text": "Réponse réelle du cerveau de test",
+            "timestamp": "2026-11-10T17:51:27.116583+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test",
+        "eventId": "282a6f472d594174ba0d2ccecdaad533",
+        "sequence": 5,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:27.119051+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "request-test",
+            "origin": "ui_text",
+            "text": "liste mes tâches",
+            "status": "completed",
+            "updatedAt": "2026-11-10T17:51:27.168887+00:00",
+            "conversationId": "conversation-test",
+            "result": "Réponse réelle du cerveau de test",
+            "durationMs": 268
+        },
+        "eventId": "0f4ff8fb7a3b407292dd0bcee1366d2a",
+        "sequence": 6,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:27.169245+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "52b5c02fc76f4c08bf7186c55dcc7985",
+        "sequence": 7,
+        "historical": false,
+        "timestamp": "2026-11-10T17:51:27.213952+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "request-test",
+            "origin": "ui_text",
+            "text": "liste mes tâches",
+            "status": "started",
+            "updatedAt": "2026-11-10T17:53:35.988461+00:00",
+            "conversationId": "conversation-test"
+        },
+        "eventId": "a84a5e8adf03478ca9c75f3419018eea",
+        "sequence": 43,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:35.996977+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "6e16dcdc52b94bdcbc5baddff0882d6d",
+            "role": "user",
+            "text": "liste mes tâches",
+            "timestamp": "2026-11-10T17:53:36.035400+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test",
+        "eventId": "330ee00a85ba4ae68722ce78ba558ce9",
+        "sequence": 44,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:36.035788+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "request-test",
+            "origin": "ui_text",
+            "text": "liste mes tâches",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T17:53:36.078883+00:00",
+            "conversationId": "conversation-test"
+        },
+        "eventId": "51c09928c78147f7ac6e8c67f483246f",
+        "sequence": 45,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:36.079243+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "3bab6f5d66874a94965631b38a635b52",
+        "sequence": 46,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:36.182893+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "cd16c02d1def4dfbb4478f5993bfa015",
+            "role": "jarvis",
+            "text": "Réponse réelle du cerveau de test",
+            "timestamp": "2026-11-10T17:53:36.243946+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test",
+        "eventId": "40a5bce45dd6413eacb94a5210eae9de",
+        "sequence": 47,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:36.244291+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "request-test",
+            "origin": "ui_text",
+            "text": "liste mes tâches",
+            "status": "completed",
+            "updatedAt": "2026-11-10T17:53:36.324871+00:00",
+            "conversationId": "conversation-test",
+            "result": "Réponse réelle du cerveau de test",
+            "durationMs": 327
+        },
+        "eventId": "f6025a722be849f0be2a4068a23dc7e2",
+        "sequence": 48,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:36.325306+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "c118c43bc18c4604b562d86c2eb6d628",
+        "sequence": 49,
+        "historical": false,
+        "timestamp": "2026-11-10T17:53:36.430938+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "request-test",
+            "origin": "ui_text",
+            "text": "liste mes tâches",
+            "status": "started",
+            "updatedAt": "2026-11-10T17:56:06.156980+00:00",
+            "conversationId": "conversation-test"
+        },
+        "eventId": "2e09f35e96164629bae1d361e9cd8844",
+        "sequence": 85,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:06.178384+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "36680e3144d04218b0098ea2d4f073e4",
+            "role": "user",
+            "text": "liste mes tâches",
+            "timestamp": "2026-11-10T17:56:06.227194+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test",
+        "eventId": "eba469ffef2748f2bb1a5c02866f4e9c",
+        "sequence": 86,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:06.227506+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "request-test",
+            "origin": "ui_text",
+            "text": "liste mes tâches",
+            "status": "thinking",
+            "updatedAt": "2026-11-10T17:56:06.271754+00:00",
+            "conversationId": "conversation-test"
+        },
+        "eventId": "95368e5b9fe043b39ff9e4268d8a4864",
+        "sequence": 87,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:06.272123+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "state.changed",
+        "state": "thinking",
+        "detail": "Traitement par le Core Python",
+        "eventId": "6cbae9a850ab4cf1852ff1cb6f9e64b1",
+        "sequence": 88,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:06.333348+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "message.updated",
+        "message": {
+            "id": "b357f1b765dc44a2aad68b1764631cd7",
+            "role": "jarvis",
+            "text": "Réponse réelle du cerveau de test",
+            "timestamp": "2026-11-10T17:56:06.393336+00:00",
+            "status": "sent",
+            "tools": []
+        },
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test",
+        "eventId": "b3b28f7f576f41ad94aeb64648235900",
+        "sequence": 89,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:06.393758+00:00"
+    },
+    {
+        "type": "command.updated",
+        "command": {
+            "requestId": "request-test",
+            "origin": "ui_text",
+            "text": "liste mes tâches",
+            "status": "completed",
+            "updatedAt": "2026-11-10T17:56:06.447821+00:00",
+            "conversationId": "conversation-test",
+            "result": "Réponse réelle du cerveau de test",
+            "durationMs": 290
+        },
+        "eventId": "93e00046a8a54ef0bdb2ef0badbcf0b2",
+        "sequence": 90,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:06.448184+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    },
+    {
+        "type": "state.changed",
+        "state": "idle",
+        "detail": "JARVIS prêt",
+        "eventId": "000bec613806477b8aad4067e1bbeb2b",
+        "sequence": 91,
+        "historical": false,
+        "timestamp": "2026-11-10T17:56:06.503064+00:00",
+        "requestId": "request-test",
+        "origin": "ui_text",
+        "conversationId": "conversation-test"
+    }
+]

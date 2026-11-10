@@ -1,4 +1,4 @@
-"""Diagnostic local borné : micro, modèle Hey Jarvis et génération française."""
+"""Diagnostic local borné : micro, modèle Jarvis et génération française."""
 import argparse
 import json
 from pathlib import Path
@@ -31,7 +31,7 @@ def check(device=None, sample_rate=44100):
         detector.detect(b'\0\0' * sample_rate)
         result['wake_model'] = True
     except Exception as error:
-        result['errors'].append('Hey Jarvis : ' + str(error))
+        result['errors'].append('Jarvis : ' + str(error))
     try:
         engine = prepare_voice()
         result['voice'] = engine.voice

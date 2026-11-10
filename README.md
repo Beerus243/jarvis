@@ -1,6 +1,6 @@
 # JARVIS
 
-Assistant personnel Python V7.7, vocal par défaut avec « Hey Jarvis » et Kokoro :
+Assistant personnel Python V7.7, vocal par défaut avec « Jarvis » et Kokoro :
 actions PC, mémoire corrigible, tâches persistantes, rappels proactifs et
 vision ponctuelle de l'écran ou de la webcam après configuration.
 
@@ -18,6 +18,9 @@ les points de reprise et le démarrage automatique à la connexion au bureau.
 La [roadmap V7](docs/ROADMAP_V7.md) distingue cette intégration de l’évaluation
 quotidienne à venir ; les [résultats de validation](docs/VALIDATION_V7_7.md)
 détaillent les tests et leurs limites.
+
+La [personnalité de Jarvis](docs/PERSONNALITE.md) privilégie un majordome élégant,
+des réponses adaptées à l’oral et des réglages vocaux persistants.
 
 ## Installation
 
@@ -81,7 +84,15 @@ Options disponibles :
 .venv-kokoro-cuda/bin/python main.py --voice --sample-rate 44100 --wake-threshold 0.4 --command-seconds 12
 ```
 
-Dites **« Hey Jarvis »**, attendez le signal et l'affichage **« J'écoute votre
+Pour activer l'écoute automatique à chaque connexion graphique et lancer le
+service immédiatement :
+
+```bash
+.venv-kokoro-cuda/bin/python scripts/install_autostart.py --install --start-now
+systemctl --user status jarvis.service
+```
+
+Dites **« Jarvis »**, attendez le signal et l'affichage **« J'écoute votre
 commande »**, puis parlez. Une pause de 1,5 seconde termine la phrase ; la capture
 est plafonnée à 20 secondes par défaut (`--command-seconds` permet de l'allonger).
 `--silence-seconds 2` autorise des pauses plus longues. Le seuil de début de
@@ -91,15 +102,21 @@ la durée maximale est signalée et n'est pas exécutée partiellement.
 Après la réponse, vous disposez de 8 secondes pour répondre sans répéter le
 mot-clé, notamment pour dire « confirme » ou « annule ». « Merci Jarvis » ou
 « retour en veille » termine cet échange. Pendant une réponse vocale, répétez
-« Hey Jarvis » pour interrompre la lecture puis donnez votre nouvelle commande.
+« Jarvis » pour interrompre la lecture puis donnez votre nouvelle commande.
 L'interruption annule les morceaux de réponse restants ; une inférence CUDA
 déjà commencée peut finir en arrière-plan, mais son audio ne sera pas joué.
 Attendez le signal et « J'écoute votre commande » pour donner la suite.
 Si la transcription ne comprend pas une commande après le réveil, Jarvis
 propose une nouvelle tentative après le signal. Pendant le suivi, un audio
-incompréhensible ramène discrètement en veille. « Hey Jarvis » seul, même
+incompréhensible ramène discrètement en veille. « Jarvis » seul, même
 transcrit « est Jarvis », relance l'écoute sans solliciter le modèle de dialogue.
-« Quitter » ou `Ctrl+C` arrête le programme.
+En mode manuel, « Quitter » ou `Ctrl+C` arrête le programme. Dans le service
+permanent, « Quitter » termine l'échange et laisse Jarvis en veille ; utilisez
+`systemctl --user stop jarvis.service` pour arrêter réellement le service.
+
+En arrière-plan, le bruit ambiant est mesuré au début de chaque commande afin
+d'adapter le seuil de parole. Le journal indique si une commande a commencé,
+terminé par silence ou atteint sa durée maximale.
 
 La détection du mot-clé est locale (`openwakeword`, modèle `hey_jarvis`). La
 transcription de la commande utilise Google en français via `SpeechRecognition`
@@ -114,17 +131,17 @@ programme signale l’erreur sans basculer au clavier ni remplacer la voix.
 Le secours eSpeak reste limité aux anciens chemins de diagnostic.
 
 Au retour en veille, « micro prêt » est affiché après préparation du détecteur
-et ouverture du flux : vous pouvez alors dire « Hey Jarvis ». Le moteur ne
+et ouverture du flux : vous pouvez alors dire « Jarvis ». Le moteur ne
 charge que ce mot-clé et restaure un état silencieux déjà préparé pour éviter
 les premières trames ignorées après une réinitialisation. Les notifications
 sont consultées une fois par seconde pendant l'écoute. Si plus d'une
 demi-seconde d'audio s'accumule, les anciennes trames sont abandonnées pour
-revenir au son récent. Le gain du micro et le seuil de « Hey Jarvis » sont conservés.
+revenir au son récent. Le gain du micro et le seuil de « Jarvis » sont conservés.
 
 Les dépendances vocales CUDA figurent dans `requirements-voice-cuda.txt`. Si `.venv-kokoro-cuda/bin/python` est
 absent ou si un module vocal manque, réparez l'environnement Python avant
 l'essai au microphone. `--help` et le terminal ne chargent pas les modèles de
-détection vocale. Le mode « Hey Jarvis, commande » sans pause n'est pas encore
+détection vocale. Le mode « Jarvis, commande » sans pause n'est pas encore
 pris en charge.
 
 Diagnostic local du micro (250 ms oubliées aussitôt), du modèle et de la synthèse :

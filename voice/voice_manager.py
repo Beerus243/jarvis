@@ -6,6 +6,9 @@ import re
 _engine = None
 _player = None
 _synthesis_lock = threading.Lock()
+_prepare_lock = threading.Lock()
+_prepare_thread = None
+_prepare_error = None
 
 
 def _speech_chunks(text, limit=220):
@@ -23,10 +26,46 @@ def _speech_chunks(text, limit=220):
 
 def prepare_voice():
     """Précharge le Kokoro configuré ; le mode vocal exige cette voix existante."""
-    global _engine
-    from voice.kokoro_engine import get_engine
+    global _engine, _prepare_error
+    with _prepare_lock:
+        if _engine is not None:
+            return _engine
+        from voice.kokoro_engine import get_engine
+        _engine = get_engine()
+        _prepare_error = None
+        return _engine
 
-    _engine = get_engine()
+
+def prepare_voice_async():
+    """Lance Kokoro en arrière-plan pour laisser le micro démarrer tout de suite."""
+    global _prepare_thread, _prepare_error
+    with _prepare_lock:
+        if _engine is not None:
+            return
+        if _prepare_thread is not None and _prepare_thread.is_alive():
+            return
+
+        def load():
+            global _prepare_error
+            try:
+                prepare_voice()
+                print('JARVIS > Voix prête.', flush=True)
+            except Exception as error:
+                _prepare_error = error
+                print(f'JARVIS > Préchargement vocal échoué : {error}', flush=True)
+
+        print('JARVIS > Chargement de la voix en arrière-plan…', flush=True)
+        _prepare_thread = threading.Thread(target=load, name='jarvis-kokoro', daemon=True)
+        _prepare_thread.start()
+
+
+def wait_voice(timeout=None):
+    """Attend la fin du préchargement asynchrone ; None si déjà prêt."""
+    thread = _prepare_thread
+    if thread is not None and thread.is_alive():
+        thread.join(timeout=timeout)
+    if _prepare_error is not None and _engine is None:
+        raise _prepare_error
     return _engine
 
 
@@ -34,16 +73,16 @@ def _get_engine():
     """Charge Kokoro une seule fois, uniquement au premier besoin vocal."""
     global _engine
 
-    if _engine is None:
-        try:
-            from voice.kokoro_engine import get_engine
-            _engine = get_engine()
-        except (ImportError, RuntimeError, OSError) as error:
-            from voice.fallback_engine import EspeakEngine
-            print(f"JARVIS > Synthèse locale de secours (Kokoro : {error}).")
-            _engine = EspeakEngine()
-
-    return _engine
+    wait_voice()
+    if _engine is not None:
+        return _engine
+    try:
+        return prepare_voice()
+    except (ImportError, RuntimeError, OSError) as error:
+        from voice.fallback_engine import EspeakEngine
+        print(f"JARVIS > Synthèse locale de secours (Kokoro : {error}).")
+        _engine = EspeakEngine()
+        return _engine
 
 
 def _get_player():

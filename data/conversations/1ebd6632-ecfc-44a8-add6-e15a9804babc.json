@@ -1,0 +1,173 @@
+[
+    {
+        "role": "user",
+        "message": "Quelle heure est-il ?",
+        "id": "62fee5f8cd224a2bbbb084d8a5181dcd",
+        "timestamp": "2026-11-10T17:11:47.890449+00:00",
+        "requestId": "4319424b-ee82-458a-94d8-a89151dad887",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "assistant",
+        "message": "Il est actuellement 18:11:46",
+        "id": "0f841741db59428b8a077c5623277b3c",
+        "timestamp": "2026-11-10T17:11:47.913309+00:00",
+        "requestId": "4319424b-ee82-458a-94d8-a89151dad887",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "user",
+        "message": "Quelle heure est-il ?",
+        "id": "94ca65fad25647b28accc4b52348170f",
+        "timestamp": "2026-11-10T17:22:44.464622+00:00",
+        "requestId": "353c82ff-6e53-4f90-ab5d-7c81cd4a8ed2",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "assistant",
+        "message": "Il est actuellement 18:22:44",
+        "id": "bd17a374d1f74922a80883436500a93a",
+        "timestamp": "2026-11-10T17:22:44.500127+00:00",
+        "requestId": "353c82ff-6e53-4f90-ab5d-7c81cd4a8ed2",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "user",
+        "message": "Quelle heure est-il ?",
+        "id": "1e41950b048a4882ad474c7123829e9e",
+        "timestamp": "2026-11-10T18:02:11.362746+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "assistant",
+        "message": "Il est actuellement 19:02:10",
+        "id": "bd23bfd5d4164b7284e11e5fa173b92a",
+        "timestamp": "2026-11-10T18:02:11.468762+00:00",
+        "requestId": "restart-e2e-1",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "user",
+        "message": "salut",
+        "id": "1a5e3bdb3ea647d6b0ef2ec1b1823137",
+        "timestamp": "2026-11-10T18:55:23.045534+00:00",
+        "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "assistant",
+        "message": "Bonjour, Fabrice. À votre service.",
+        "id": "51e4338456cb4bfc976460026ddf173b",
+        "timestamp": "2026-11-10T18:55:23.056993+00:00",
+        "requestId": "777fae3b-7518-406e-b043-6fe016523c5e",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "user",
+        "message": "au travail",
+        "id": "aaa94f0bf2e14bb68daa677fc5c80feb",
+        "timestamp": "2026-11-10T18:56:47.796499+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "assistant",
+        "message": "Tâche FAILED à l'étape 0. L'action a échoué.",
+        "id": "8e85b99728a44a789d3b252edbecf361",
+        "timestamp": "2026-11-10T18:56:47.842849+00:00",
+        "requestId": "c972d244-6adb-437f-b4c3-b8ab0c5c8f05",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "user",
+        "message": "ouvre mon espace de travail",
+        "id": "43332d70da8248c6ab2b61e25a901b6d",
+        "timestamp": "2026-11-10T18:57:09.530102+00:00",
+        "requestId": "65cc93f1-6c2a-4d36-8723-fffeb8b4b12a",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "user",
+        "message": "ouvre vscode",
+        "id": "b376a453973343b0beff36417804a42e",
+        "timestamp": "2026-11-10T18:57:34.195413+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "assistant",
+        "message": "J'ouvre Visual Studio Code.",
+        "id": "635d35abd37a4581b9a8cdb541043197",
+        "timestamp": "2026-11-10T18:57:34.240099+00:00",
+        "requestId": "a3180b1a-e9aa-4dee-ad03-3e8af82a68c4",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "user",
+        "message": "au boulot",
+        "id": "37b414d160f844cb86fd7a46c1b118e7",
+        "timestamp": "2026-11-10T18:58:13.743517+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "assistant",
+        "message": "Tâche FAILED à l'étape 0. L'action a échoué.",
+        "id": "a8079baca3e64b488cffee6aae1fcaf8",
+        "timestamp": "2026-11-10T18:58:13.789392+00:00",
+        "requestId": "7115b018-6115-4c78-a6f0-00c58431065c",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "user",
+        "message": "salut",
+        "id": "5060c54aecd84580b2e3345e7bdf4f62",
+        "timestamp": "2026-11-10T18:58:22.690576+00:00",
+        "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "assistant",
+        "message": "Bonjour, Monsieur. Je vous écoute.",
+        "id": "45803a12f5604028bf70886037634367",
+        "timestamp": "2026-11-10T18:58:22.713257+00:00",
+        "requestId": "806c89ac-1f45-410c-8ff2-6096c138ea37",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "user",
+        "message": "Au boulot",
+        "id": "740500f32e8c42d586084c1e3ac9b833",
+        "timestamp": "2026-11-10T18:58:38.151614+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    },
+    {
+        "role": "assistant",
+        "message": "Tâche FAILED à l'étape 0. L'action a échoué.",
+        "id": "b761db26414a4a50ac741f84e53f2a32",
+        "timestamp": "2026-11-10T18:58:38.172119+00:00",
+        "requestId": "9c2cf786-f96a-4b76-a485-4f303fb110ff",
+        "origin": "ui_text",
+        "conversationId": "1ebd6632-ecfc-44a8-add6-e15a9804babc"
+    }
+]
